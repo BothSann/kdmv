@@ -1,6 +1,6 @@
 import ProductDetailCarousel from "@/components/ProductDetailCarousel";
 import { Button } from "@/components/ui/button";
-import { Heart } from "lucide-react";
+import { Heart, Minus, Plus } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -59,21 +59,61 @@ export default function Detail() {
           </div>
           <ul className="flex gap-2">
             <li>
-              <Button className="w-20 rounded-none cursor-pointer">S</Button>
+              <Button className="w-20 rounded-none cursor-pointer text-lg">
+                S
+              </Button>
             </li>
             <li>
-              <Button className="w-20 rounded-none cursor-pointer">M</Button>
+              <Button className="w-20 rounded-none cursor-pointer text-lg">
+                M
+              </Button>
             </li>
             <li>
-              <Button className="w-20 rounded-none cursor-pointer">L</Button>
+              <Button className="w-20  rounded-none cursor-pointer text-lg">
+                L
+              </Button>
             </li>
             <li>
-              <Button className="w-20 rounded-none cursor-pointer">XL</Button>
+              <Button className="w-20 rounded-none cursor-pointer text-lg">
+                XL
+              </Button>
             </li>
             <li>
-              <Button className="w-20 rounded-none cursor-pointer">XL</Button>
+              <Button className="w-20 rounded-none cursor-pointer text-lg">
+                XXL
+              </Button>
             </li>
           </ul>
+        </div>
+
+        {/* Product Quantity */}
+        <div>
+          <p className="text-2xl font-semibold">Quantity</p>
+          <div className="flex items-center gap-2">
+            <Button className="w-12 rounded-none cursor-pointer ">
+              <Minus size={28} />
+            </Button>
+            <Button className="w-12 rounded-none hover:bg-black">1</Button>
+            <Button className="w-12 rounded-none cursor-pointer ">
+              <Plus size={28} />
+            </Button>
+          </div>
+        </div>
+
+        {/* Product Description */}
+        <div>
+          <p className="text-lg font-semibold">21225031246</p>
+          <p className="text-gray-500">
+            Relaxed t-shirt featuring short sleeves with front design printed
+            and round neck.
+          </p>
+        </div>
+
+        {/* Add to Cart */}
+        <div>
+          <Button className="w-full rounded-none cursor-pointer text-lg py-6">
+            Add to cart
+          </Button>
         </div>
       </div>
     </div>
