@@ -1,7 +1,8 @@
 import Link from "next/link";
 import Logo from "./Logo";
-import { Handbag, Heart, User } from "lucide-react";
+import { Heart, User } from "lucide-react";
 import { ModeToggle } from "@/components/ModeToggle";
+import CartDrawer from "@/components/CartDrawer";
 
 export default function Navigation() {
   return (
@@ -13,11 +14,9 @@ export default function Navigation() {
             <Heart />
           </Link>
         </li>
-        <li>
-          <Link href="/">
-            <Handbag />
-          </Link>
-        </li>
+
+        <CartDrawer />
+
         <li>
           <Link href="/">
             <User />

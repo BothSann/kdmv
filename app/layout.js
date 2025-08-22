@@ -1,7 +1,7 @@
 import { robotoCondensed } from "@/lib/fonts";
 import Navigation from "@/components/Navigation";
 import { ThemeProvider } from "@/components/theme-provider";
-
+import CartDrawerII from "@/components/CartDrawer";
 import "./globals.css";
 
 export const metadata = {
@@ -21,7 +21,7 @@ export default function RootLayout({ children }) {
           enableSystem
           disableTransitionOnChange
         >
-          <div className="max-w-7xl min-h-screen mx-auto p-6">
+          <div className="max-w-7xl min-h-screen mx-auto p-6 text-gray-900 dark:text-gray-50">
             <Navigation />
             {children}
           </div>
