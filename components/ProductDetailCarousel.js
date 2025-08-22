@@ -50,8 +50,8 @@ export default function ProductDetailCarousel() {
         </CarouselItem>
         {/* ... other items */}
       </CarouselContent>
-      <CarouselPrevious className="absolute top-1/2 -translate-y-1/2 left-4" />
-      <CarouselNext className="absolute top-1/2 -translate-y-1/2 right-4" />
+      <CarouselPrevious className="absolute top-1/2 -translate-y-1/2 left-4 dark:bg-white dark:text-black" />
+      <CarouselNext className="absolute top-1/2 -translate-y-1/2 right-4 dark:bg-white dark:text-black" />
     </Carousel>
   );
 }

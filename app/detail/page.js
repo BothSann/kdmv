@@ -6,7 +6,7 @@ import Link from "next/link";
 
 export default function Detail() {
   return (
-    <div className="grid grid-cols-2 gap-4">
+    <div className="grid grid-cols-2 gap-6">
       {/* Left Side */}
       <div>
         <ProductDetailCarousel />
@@ -29,7 +29,7 @@ export default function Detail() {
         </div>
 
         {/* Product Colors */}
-        <div>
+        <div className="mt-6 space-y-2">
           <p className="text-2xl font-semibold">2 Colors available</p>
           <div className="flex gap-2">
             <div className="flex flex-col justify-center items-center gap-1.5">
@@ -50,7 +50,7 @@ export default function Detail() {
         </div>
 
         {/* Product Sizes */}
-        <div>
+        <div className="mt-6 space-y-2">
           <div className="flex justify-between">
             <p className="text-2xl font-semibold">Size</p>
             <Link href="/size-guide">
@@ -87,7 +87,7 @@ export default function Detail() {
         </div>
 
         {/* Product Quantity */}
-        <div>
+        <div className="mt-6 space-y-2">
           <p className="text-2xl font-semibold">Quantity</p>
           <div className="flex items-center gap-2">
             <Button className="w-12 rounded-none cursor-pointer ">
@@ -101,7 +101,7 @@ export default function Detail() {
         </div>
 
         {/* Product Description */}
-        <div>
+        <div className="mt-6">
           <p className="text-lg font-semibold">21225031246</p>
           <p className="text-gray-500">
             Relaxed t-shirt featuring short sleeves with front design printed
@@ -110,7 +110,7 @@ export default function Detail() {
         </div>
 
         {/* Add to Cart */}
-        <div>
+        <div className="mt-6">
           <Button className="w-full rounded-none cursor-pointer text-lg py-6">
             Add to cart
           </Button>
