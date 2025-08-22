@@ -15,10 +15,12 @@ export default function ProductItem({ product }) {
 
       <div className="mt-2.5 flex justify-between">
         <div>
-          <p className="text-pink-500 font-bold text-lg">US {product.price}</p>
-          <p className="text-lg font-medium text-gray-900 dark:text-gray-50">
+          <span className="text-pink-500 font-bold text-lg">
+            US ${product.price}
+          </span>
+          <span className="text-lg font-medium text-gray-900 dark:text-gray-50">
             {product.name}
-          </p>
+          </span>
         </div>
 
         <button className="cursor-pointer flex items-start justify-center">
