@@ -3,6 +3,7 @@ import Logo from "./Logo";
 import { Heart, User } from "lucide-react";
 import { ModeToggle } from "@/components/ModeToggle";
 import CartDrawer from "@/components/CartDrawer";
+import Menu from "@/components/Menu";
 
 export default function Navigation() {
   return (
@@ -14,17 +15,9 @@ export default function Navigation() {
             <Heart />
           </Link>
         </li>
-
         <CartDrawer />
-
-        <li>
-          <Link href="/">
-            <User />
-          </Link>
-        </li>
-        <li>
-          <ModeToggle />
-        </li>
+        <Menu />
+        <ModeToggle />
       </ul>
     </nav>
   );

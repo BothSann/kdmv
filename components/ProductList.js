@@ -47,9 +47,9 @@ const products = [
 
 export default function ProductList() {
   return (
-    <div className="bg-white dark:bg-black">
+    <div className="bg-zinc-50 dark:bg-zinc-950">
       <div className="mx-auto max-w-2xl py-12 lg:max-w-7xl ">
-        <h2 className="text-5xl font-bold tracking-tight text-gray-900 dark:text-gray-50 uppercase">
+        <h2 className="text-5xl font-bold tracking-tight text-zinc-950 dark:text-zinc-50 uppercase">
           Women
         </h2>
 

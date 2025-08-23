@@ -33,7 +33,7 @@ function ProductInfo({ product }) {
         <span className="text-pink-500 font-bold text-lg">
           US ${product.price}
         </span>
-        <span className="text-lg text-gray-900 dark:text-gray-50">
+        <span className="text-lg text-zinc-950 dark:text-zinc-50">
           {product.name}
         </span>
       </div>
