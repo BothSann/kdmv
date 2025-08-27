@@ -1,3 +1,4 @@
+import { notFound } from "next/navigation";
 import supabase from "./supabase";
 
 // Get all products
@@ -45,7 +46,7 @@ export async function getProductById(id) {
 
   if (error) {
     console.log(error);
-    throw new Error("Failed to fetch product");
+    notFound();
   }
 
   return data;
