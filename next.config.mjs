@@ -4,12 +4,11 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "medias.jeanpaulgaultier.com",
-      },
-      {
-        protocol: "https",
-        hostname: "zandokh.com",
+        hostname: "viwhmgjnrbkaehahrquo.supabase.co",
+        pathname: "/storage/v1/object/public/clothes-images/**",
       },
     ],
   },
 };
+
+export default nextConfig;

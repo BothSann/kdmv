@@ -126,3 +126,29 @@
 .scrollbar-hide::-webkit-scrollbar {
   display: none; /* Chrome, Safari, Opera */
 }
+
+.loader {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: inline-block;
+  position: relative;
+  border: 10px solid;
+  box-sizing: border-box;
+  animation: animloader 1s linear infinite alternate;
+}
+
+@keyframes animloader {
+  0% {
+    border-color: currentColor transparent transparent transparent;
+  }
+  33% {
+    border-color: currentColor currentColor transparent transparent;
+  }
+  66% {
+    border-color: currentColor currentColor currentColor transparent;
+  }
+  100% {
+    border-color: currentColor currentColor currentColor currentColor;
+  }
+}
