@@ -2,32 +2,37 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { User, UserPlus } from "lucide-react";
+import { User } from "lucide-react";
+import Link from "next/link";
+import useAuthorization from "@/hooks/useAuthorization";
+import LogoutButton from "@/components/LogoutButton";
 
 export default function Menu() {
+  const { profile } = useAuthorization();
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger>
-        <User />
+      <DropdownMenuTrigger className="flex items-center gap-2">
+        <User className="cursor-pointer" />
+        <span>{profile ? profile.first_name : "Guest"}</span>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-[14rem] ">
-        <DropdownMenuItem>
-          Login
-          <DropdownMenuShortcut>
-            <User size={26} />
-          </DropdownMenuShortcut>
-        </DropdownMenuItem>
-        <DropdownMenuItem>
-          Register
-          <DropdownMenuShortcut>
-            <UserPlus size={26} />
-          </DropdownMenuShortcut>
-        </DropdownMenuItem>
+        {profile ? (
+          <>
+            <DropdownMenuItem>Profile</DropdownMenuItem>
+            <LogoutButton />
+          </>
+        ) : (
+          <>
+            <Link href="/auth/login">
+              <DropdownMenuItem>Login</DropdownMenuItem>
+            </Link>
+            <Link href="/auth/register">
+              <DropdownMenuItem>Register</DropdownMenuItem>
+            </Link>
+          </>
+        )}
       </DropdownMenuContent>
     </DropdownMenu>
   );

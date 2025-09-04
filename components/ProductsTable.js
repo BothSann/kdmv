@@ -5,12 +5,9 @@ import {
   TableHead,
   TableBody,
 } from "@/components/ui/table";
-import { getAllProducts } from "@/services/data-service";
 import ProductRow from "./ProductRow";
 
 export default async function ProductsTable() {
-  const products = await getAllProducts();
-
   // Simulate a delay
   await new Promise((resolve) => setTimeout(resolve, 2000));
 

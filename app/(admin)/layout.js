@@ -1,6 +1,6 @@
+import { poppins } from "@/lib/fonts";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
-import { poppins } from "@/lib/fonts";
 
 export default function AdminLayout({ children }) {
   return (

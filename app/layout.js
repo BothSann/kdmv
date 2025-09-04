@@ -1,6 +1,8 @@
-import { robotoCondensed, poppins } from "@/lib/fonts";
-import Navigation from "@/components/Navigation";
+import { robotoCondensed } from "@/lib/fonts";
 import { ThemeProvider } from "@/components/theme-provider";
+import { Toaster } from "sonner";
+import AuthProvider from "@/components/AuthProvider";
+import ProtectedRoute from "@/components/ProtectedRoute";
 import "./globals.css";
 
 export const metadata = {
@@ -20,7 +22,9 @@ export default function RootLayout({ children }) {
           enableSystem
           disableTransitionOnChange
         >
-          {children}
+          <Toaster richColors position="top-right" expand={true} />
+
+          <AuthProvider>{children}</AuthProvider>
         </ThemeProvider>
       </body>
     </html>

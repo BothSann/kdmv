@@ -1,4 +1,4 @@
-import { getAllProducts, getProductById } from "@/services/data-service";
+import { getAllProducts, getProductById } from "@/lib/data-service";
 
 export async function generateMetadata({ params }) {
   const { name } = await getProductById(params.productId);
