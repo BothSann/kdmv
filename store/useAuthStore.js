@@ -1,0 +1,83 @@
+import { create } from "zustand";
+import { createSupabaseFrontendClient } from "@/utils/supabase/client";
+
+const supabase = createSupabaseFrontendClient();
+
+const useAuthStore = create((set, get) => ({
+  // 1. User State
+  user: null,
+  profile: null,
+  role: null,
+  isLoading: true,
+
+  // 2. User Actions
+  setUser: (user) => set({ user }),
+  setProfile: (profile) => set({ profile, role: profile?.role || null }),
+  setRole: (role) => set({ role }),
+  setIsLoading: (isLoading) => set({ isLoading }),
+
+  initAuth: async () => {
+    console.log("Initializing auth...");
+    // 1. Get the session
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+
+    console.log("Session:", session);
+
+    if (!session) {
+      console.log("No session found");
+      set({ user: null, profile: null, role: null, isLoading: false });
+      return;
+    }
+
+    if (session?.user) {
+      console.log("User found:", session.user.email);
+      set({ user: session.user });
+      await get().fetchUserProfile(session.user.id);
+      set({ isLoading: false });
+    }
+  },
+
+  // 3. Fetch User Profile and Role
+  fetchUserProfile: async (userId) => {
+    console.log("Fetching profile for user:", userId);
+    const { data: profile, error: profileError } = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("id", userId)
+      .single();
+
+    console.log("Profile query result:", { profile, profileError });
+
+    if (!profileError && profile) {
+      console.log("Setting profile:", profile);
+      set({ profile: profile });
+      set({ role: profile.role });
+    } else {
+      console.error("Profile fetch error:", profileError);
+    }
+  },
+
+  logoutUser: async () => {
+    try {
+      const { error } = await supabase.auth.signOut();
+
+      if (error) {
+        console.error("Sign out error:", error);
+        return { error: error.message };
+      }
+
+      get().clearAuth();
+      return { success: true };
+    } catch (err) {
+      console.error("Unexpected error:", err);
+    }
+  },
+
+  // 4. Clear Auth
+  clearAuth: () =>
+    set({ user: null, profile: null, role: null, isLoading: false }),
+}));
+
+export default useAuthStore;
