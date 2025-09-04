@@ -43,3 +43,6 @@ public
 .claude
 .vscode
 .claude
+
+PROJECT_STRUCTURE.md
+supabase-schema.sql
