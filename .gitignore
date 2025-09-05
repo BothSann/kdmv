@@ -46,3 +46,5 @@ public
 
 PROJECT_STRUCTURE.md
 supabase-schema.sql
+supabase-authdata-response.js
+text.md

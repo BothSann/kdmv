@@ -44,7 +44,7 @@ const items = [
   },
 ];
 
-export function AppSidebar() {
+export function AdminSidebar() {
   return (
     <Sidebar>
       <SidebarContent>

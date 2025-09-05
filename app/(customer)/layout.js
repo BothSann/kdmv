@@ -1,10 +1,9 @@
-import ProtectedRoute from "@/components/ProtectedRoute";
-import Navigation from "@/components/Navigation";
-export default function SiteLayout({ children }) {
+import Header from "@/components/Header";
+export default function CustomerLayout({ children }) {
   return (
-    <main className="max-w-7xl min-h-screen mx-auto p-6 text-zinc-950 dark:text-zinc-50">
-      <Navigation />
-      {children}
-    </main>
+    <>
+      <Header />
+      <div className="max-w-7xl mx-auto w-full px-8 py-12">{children}</div>
+    </>
   );
 }
