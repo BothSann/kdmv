@@ -31,12 +31,26 @@ const useAuthStore = create((set, get) => ({
       return;
     }
 
-    if (session?.user) {
-      console.log("User found:", session.user.email);
-      set({ user: session.user });
-      await get().fetchUserProfile(session.user.id);
-      set({ isLoading: false });
-    }
+    //Version 2: Always get the user from the auth getUser()
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    set({ user: user });
+    await get().fetchUserProfile(user.id);
+    set({ isLoading: false });
+
+    //Version 2
+    // const {
+    //   data: { user },
+    // } = await supabase.auth.getUser();
+    // set({ user: user });
+
+    // if (user) {
+    //   await get().fetchUserProfile(user.id);
+    //   set({ isLoading: false });
+    // } else {
+    //   return;
+    // }
   },
 
   // 3. Fetch User Profile and Role
