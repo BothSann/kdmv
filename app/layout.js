@@ -24,9 +24,7 @@ export default function RootLayout({ children }) {
         >
           <Toaster richColors position="top-right" expand={true} />
 
-          <AuthProvider>
-            <main className="max-w-7xl mx-auto">{children}</main>
-          </AuthProvider>
+          <AuthProvider>{children}</AuthProvider>
         </ThemeProvider>
       </body>
     </html>

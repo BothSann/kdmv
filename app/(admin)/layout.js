@@ -7,11 +7,13 @@ export default function AdminLayout({ children }) {
   return (
     <ProtectedRoute allowedRoles={["admin"]} redirectTo="/unauthorized">
       <SidebarProvider>
-        <AdminSidebar />
-        <main className="flex-1 p-6">
-          <SidebarTrigger />
-          {children}
-        </main>
+        <div className="flex h-screen w-full">
+          <AdminSidebar />
+          <main className="flex-1 p-6 overflow-y-auto">
+            <SidebarTrigger />
+            {children}
+          </main>
+        </div>
       </SidebarProvider>
     </ProtectedRoute>
   );
