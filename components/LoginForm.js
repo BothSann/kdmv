@@ -21,7 +21,6 @@ import useAuthStore from "@/store/useAuthStore";
 export default function LoginForm() {
   const router = useRouter();
   const { initAuth } = useAuthStore();
-
   const handleSubmit = async (event) => {
     event.preventDefault();
     const formData = new FormData(event.target);
@@ -32,9 +31,9 @@ export default function LoginForm() {
       return;
     }
 
-    if (success) {
-      await initAuth();
+    await initAuth();
 
+    if (success) {
       toast.success("Logged in successfully!");
       router.push(redirectTo || "/");
     }

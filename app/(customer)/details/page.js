@@ -97,7 +97,7 @@ function ProductSizes() {
           </Button>
         </li>
         <li>
-          <Button className="w-20  rounded-none cursor-pointer text-lg">
+          <Button className="w-20 rounded-none cursor-pointer text-lg">
             L
           </Button>
         </li>

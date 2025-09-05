@@ -1,11 +1,20 @@
-"use client";
-import useAuthorization from "@/hooks/useAuthorization";
-
+import { Button } from "@/components/ui/button";
+import { ArrowBigLeft } from "lucide-react";
+import Link from "next/link";
 export default function UnauthorizedPage() {
-  const { user, profile, role } = useAuthorization();
   return (
     <div className="flex flex-col items-center justify-center h-screen">
-      <h1 className="text-3xl font-bold">Unauthorized</h1>
+      <div className="flex flex-col items-center justify-center gap-4 uppercase">
+        <h1 className="text-3xl font-bold ">
+          You are not authorized to access this page
+        </h1>
+        <Button asChild>
+          <Link href="/">
+            <ArrowBigLeft />
+            <span>Return to Home</span>
+          </Link>
+        </Button>
+      </div>
     </div>
   );
 }

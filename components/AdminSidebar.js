@@ -14,6 +14,7 @@ import {
 import Logo from "./Logo";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import LogoutButton from "@/components/LogoutButton";
 
 // Menu items.
 const items = [
@@ -69,10 +70,7 @@ export function AdminSidebar() {
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
-        <Button variant="destructive" className="w-full">
-          <LogOut />
-          <span>Logout</span>
-        </Button>
+        <LogoutButton />
       </SidebarFooter>
     </Sidebar>
   );

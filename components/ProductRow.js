@@ -11,6 +11,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 export default function ProductRow({ product }) {
+  // const total_stock = product.
   return (
     <TableRow>
       <TableCell>
@@ -27,12 +28,13 @@ export default function ProductRow({ product }) {
           <p>{product.name}</p>
         </div>
       </TableCell>
-      <TableCell>${product.price}</TableCell>
-      <TableCell>{product.categories?.name || "No Category"}</TableCell>
+      <TableCell>${product.base_price}</TableCell>
+      <TableCell>{product.category_name || "No Category"}</TableCell>
+      <TableCell>{product.subcategory_name || "No Subcategory"}</TableCell>
       <TableCell>{product.total_stock}</TableCell>
-      <TableCell>{product.code}</TableCell>
+      <TableCell>{product.product_code || "No Code"}</TableCell>
       <TableCell>
-        {product.in_stock ? (
+        {product.is_active ? (
           <span className="text-green-600">In Stock</span>
         ) : (
           <span className="text-red-600">Out Of Stock</span>

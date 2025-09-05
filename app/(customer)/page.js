@@ -1,6 +1,6 @@
 "use client";
 import ProductList from "@/components/ProductList";
-import Carousel from "@/components/MainCarousel";
+import MainCarousel from "@/components/MainCarousel";
 import Footer from "@/components/Footer";
 import useAuthStore from "@/store/useAuthStore";
 import useAuthorization from "@/hooks/useAuthorization";
@@ -48,7 +48,7 @@ export default function Home() {
 function CustomerHomePage() {
   return (
     <>
-      <Carousel />
+      <MainCarousel />
       <ProductList />
       <Footer />
     </>
