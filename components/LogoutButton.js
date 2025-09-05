@@ -1,7 +1,10 @@
+"use client";
+
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import useAuthStore from "@/store/useAuthStore";
+import { Button } from "@/components/ui/button";
+import { LogOut } from "lucide-react";
 
 export default function LogoutButton() {
   const router = useRouter();
@@ -21,5 +24,13 @@ export default function LogoutButton() {
     }
   }
 
-  return <DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>;
+  return (
+    <Button
+      className="flex items-center w-full cursor-pointer rounded-none"
+      onClick={handleLogout}
+    >
+      <LogOut />
+      <span>Logout</span>
+    </Button>
+  );
 }

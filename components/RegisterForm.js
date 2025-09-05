@@ -31,6 +31,7 @@ export default function RegisterForm() {
   const [country, setCountry] = useState("Cambodia");
   const [cityProvince, setCityProvince] = useState("");
   const router = useRouter();
+  const { initAuth } = useAuthStore();
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -49,6 +50,7 @@ export default function RegisterForm() {
 
     if (success) {
       if (message) {
+        // For email confirmation enabled
         // Email confirmation required
         toast.success(message);
         // Reset form but don't redirect
@@ -56,11 +58,14 @@ export default function RegisterForm() {
         setGender("");
         setCityProvince("");
       } else {
+        // For email confirmation disabled
         // Immediate registration (confirmation disabled)
+        await initAuth();
         toast.success("Account created successfully!");
         event.target.reset();
         setGender("");
         setCityProvince("");
+
         router.push("/");
       }
     }

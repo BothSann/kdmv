@@ -1,17 +1,18 @@
-import { poppins } from "@/lib/fonts";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/app-sidebar";
+import { AdminSidebar } from "@/components/AdminSidebar";
+import ProtectedRoute from "@/components/ProtectedRoute";
+import { SidebarProvider } from "@/components/ui/sidebar";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 
 export default function AdminLayout({ children }) {
   return (
-    <div className={`${poppins.className} p-6`}>
+    <ProtectedRoute allowedRoles={["admin"]} redirectTo="/unauthorized">
       <SidebarProvider>
-        <AppSidebar />
-        <main className="flex-1">
+        <AdminSidebar />
+        <main className="flex-1 p-6">
           <SidebarTrigger />
           {children}
         </main>
       </SidebarProvider>
-    </div>
+    </ProtectedRoute>
   );
 }

@@ -6,7 +6,7 @@ export default function useAuthorization() {
   const isAuthorized = (allowedRoles) => {
     if (isLoading) return false;
     if (!user) return false;
-    if (!allowedRoles) return true;
+    if (!allowedRoles) return true; // If no allowed roles, return true (public access)
     return allowedRoles.includes(role);
   };
 

@@ -1,26 +1,36 @@
 "use client";
 
 import Link from "next/link";
-import Logo from "./Logo";
+import CartDrawer from "@/components/CartDrawer";
+import UserDropdownMenu from "@/components/UserDropdownMenu";
+import useAuthorization from "@/hooks/useAuthorization";
 import { Heart } from "lucide-react";
 import { ModeToggle } from "@/components/ModeToggle";
-import CartDrawer from "@/components/CartDrawer";
-import Menu from "@/components/Menu";
 
 export default function Navigation() {
+  const { isAuthenticated } = useAuthorization();
   return (
-    <nav className="flex items-center justify-between">
-      <Logo />
-      <div className="flex items-center gap-4">
-        <Link href="/">
-          <Heart />
-        </Link>
-
-        <CartDrawer />
-        <Menu />
-
-        <ModeToggle />
-      </div>
+    <nav className="z-10">
+      <ul className="flex items-center gap-4">
+        {isAuthenticated() && (
+          <>
+            <li className="flex items-center">
+              <Link href="/" className="flex items-center">
+                <Heart />
+              </Link>
+            </li>
+            <li className="flex items-center">
+              <CartDrawer />
+            </li>
+          </>
+        )}
+        <li className="flex items-center ">
+          <UserDropdownMenu />
+        </li>
+        <li className="flex items-center">
+          <ModeToggle />
+        </li>
+      </ul>
     </nav>
   );
 }

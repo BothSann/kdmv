@@ -25,7 +25,7 @@ export default function LoginForm() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const formData = new FormData(event.target);
-    const { error, success } = await loginUserAction(formData);
+    const { error, success, redirectTo } = await loginUserAction(formData);
 
     if (error) {
       toast.error(error);
@@ -33,10 +33,10 @@ export default function LoginForm() {
     }
 
     if (success) {
-      toast.success("Logged in successfully!");
-      // Refresh auth state immediately
       await initAuth();
-      router.push("/");
+
+      toast.success("Logged in successfully!");
+      router.push(redirectTo || "/");
     }
   };
   return (
