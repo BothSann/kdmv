@@ -2,25 +2,28 @@
 
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import useAuthStore from "@/store/useAuthStore";
 import { Button } from "@/components/ui/button";
 import { LogOut } from "lucide-react";
+import useAuthStore from "@/store/useAuthStore";
 
 export default function LogoutButton() {
-  const router = useRouter();
   const { logoutUser } = useAuthStore();
+  const router = useRouter();
 
   async function handleLogout() {
-    const { error, success } = await logoutUser();
+    const toastId = toast.loading("Logging out...");
 
-    if (error) {
-      toast.error(error);
-      return;
-    }
+    try {
+      const { error, success, message } = await logoutUser();
 
-    if (success) {
-      toast.success("Logged out successfully!");
-      router.push("/");
+      if (error) toast.error(error, { id: toastId });
+
+      if (success) {
+        toast.success(message, { id: toastId });
+        router.push("/");
+      }
+    } catch (err) {
+      toast.error(err.message, { id: toastId });
     }
   }
 

@@ -18,11 +18,10 @@ const useAuthStore = create((set, get) => ({
 
   initAuth: async () => {
     console.log("Initializing auth...");
-    // 1. Get the session
+    // 1. Get the current session
     const {
       data: { session },
     } = await supabase.auth.getSession();
-
     console.log("Session:", session);
 
     if (!session) {
@@ -83,7 +82,7 @@ const useAuthStore = create((set, get) => ({
       }
 
       get().clearAuth();
-      return { success: true };
+      return { success: true, message: "Logged out successfully!" };
     } catch (err) {
       console.error("Unexpected error:", err);
     }

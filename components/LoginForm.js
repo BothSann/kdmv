@@ -19,23 +19,35 @@ import { useRouter } from "next/navigation";
 import useAuthStore from "@/store/useAuthStore";
 
 export default function LoginForm() {
-  const router = useRouter();
   const { initAuth } = useAuthStore();
+  const router = useRouter();
+
   const handleSubmit = async (event) => {
     event.preventDefault();
+
     const formData = new FormData(event.target);
-    const { error, success, redirectTo } = await loginUserAction(formData);
+    const loginData = {
+      email: formData.get("email"),
+      password: formData.get("password"),
+    };
 
-    if (error) {
-      toast.error(error);
-      return;
-    }
+    const toastId = toast.loading("Logging in...");
+    try {
+      const { error, success, redirectTo, message } = await loginUserAction(
+        loginData
+      );
+      await initAuth();
 
-    await initAuth();
+      if (error) {
+        toast.error(error, { id: toastId });
+      }
 
-    if (success) {
-      toast.success("Logged in successfully!");
-      router.push(redirectTo || "/");
+      if (success) {
+        toast.success(message, { id: toastId });
+        router.push(redirectTo || "/");
+      }
+    } catch (err) {
+      toast.error(err.message, { id: toastId });
     }
   };
   return (
