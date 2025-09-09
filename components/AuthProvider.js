@@ -7,8 +7,8 @@ export default function AuthProvider({ children }) {
   const { initAuth, setUser, setProfile, clearAuth } = useAuthStore();
 
   useEffect(() => {
-    initAuth();
     const supabase = createSupabaseFrontendClient();
+    initAuth();
 
     const {
       data: { subscription },

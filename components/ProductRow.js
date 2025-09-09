@@ -1,16 +1,23 @@
+"use client";
+
 import { TableCell, TableRow } from "@/components/ui/table";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuLabel,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal } from "lucide-react";
+import { MoreHorizontal, Pencil, Trash2, View } from "lucide-react";
+import { useState } from "react";
+import { formatCurrency } from "@/lib/utils";
+
 import Image from "next/image";
 import Link from "next/link";
+import DeleteProductDialog from "./DeleteProductDialog";
 
 export default function ProductRow({ product }) {
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+
   // const total_stock = product.
   return (
     <TableRow>
@@ -28,7 +35,7 @@ export default function ProductRow({ product }) {
           <p>{product.name}</p>
         </div>
       </TableCell>
-      <TableCell>${product.base_price}</TableCell>
+      <TableCell>{formatCurrency(product.base_price)}</TableCell>
       <TableCell>{product.category_name || "No Category"}</TableCell>
       <TableCell>{product.subcategory_name || "No Subcategory"}</TableCell>
       <TableCell>{product.total_stock}</TableCell>
@@ -47,12 +54,30 @@ export default function ProductRow({ product }) {
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             <DropdownMenuItem asChild>
-              <Link href={`/admin/products/${product.id}`}>View Details</Link>
+              <Link href={`/admin/products/${product.id}`}>
+                <View />
+                View Details
+              </Link>
             </DropdownMenuItem>
-            <DropdownMenuItem>Edit</DropdownMenuItem>
-            <DropdownMenuItem variant="destructive">Delete</DropdownMenuItem>
+            <DropdownMenuItem>
+              <Pencil />
+              Edit
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => setIsDeleteDialogOpen(true)}
+              variant="destructive"
+            >
+              <Trash2 />
+              Delete
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
+
+        <DeleteProductDialog
+          isOpen={isDeleteDialogOpen}
+          onClose={() => setIsDeleteDialogOpen(false)}
+          product={product}
+        />
       </TableCell>
     </TableRow>
   );
