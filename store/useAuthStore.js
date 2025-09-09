@@ -30,7 +30,7 @@ const useAuthStore = create((set, get) => ({
       return;
     }
 
-    //Version 2: Always get the user from the auth getUser()
+    //Version 1: Always get the user from the auth getUser()
     const {
       data: { user },
     } = await supabase.auth.getUser();
