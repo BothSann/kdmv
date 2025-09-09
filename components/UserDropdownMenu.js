@@ -12,6 +12,7 @@ import LogoutButton from "@/components/LogoutButton";
 export default function UserDropdownMenu() {
   const { profile } = useAuthorization();
   const fullName = `${profile?.first_name} ${profile?.last_name}`;
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className="flex items-center gap-2 cursor-pointer focus:outline-none">
