@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { CircleDollarSign } from "lucide-react";
+import { CircleDollarSign, LayoutGrid, Package } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { Label } from "@/components/ui/label";
@@ -66,21 +66,40 @@ export default function ProductDetailsWithSelection({ product }) {
 
   return (
     <div>
-      <div className="grid grid-cols-3 gap-4 items-start mb-4">
+      <div className="grid grid-cols-4 gap-4 items-start mb-4">
         {/* Price */}
         <div className="hover:border-primary/30 bg-muted grid auto-cols-max grid-flow-col gap-4 rounded-lg border p-4">
           <CircleDollarSign className="text-muted-foreground" />
           <div className="flex flex-col gap-1">
-            <span className="text-muted-foreground text-sm">Price</span>
+            <span className="text-muted-foreground text-sm">Base Price</span>
             <span className="text-lg text-zinc-800 font-semibold">
               {formatCurrency(product.base_price)}
             </span>
           </div>
         </div>
 
-        {/* Dynamic Stock Display */}
         <div className="hover:border-primary/30 bg-muted grid auto-cols-max grid-flow-col gap-4 rounded-lg border p-4">
           <CircleDollarSign className="text-muted-foreground" />
+          <div className="flex flex-col gap-1">
+            <span className="text-muted-foreground text-sm">Discount</span>
+            <span className="text-lg text-zinc-800 font-semibold">
+              {product.has_discount ? (
+                <>
+                  {formatCurrency(product.discounted_price)}{" "}
+                  <span className="text-muted-foreground font-normal">
+                    (-{product.discount_percentage}%)
+                  </span>
+                </>
+              ) : (
+                "No discount"
+              )}
+            </span>
+          </div>
+        </div>
+
+        {/* Dynamic Stock Display */}
+        <div className="hover:border-primary/30 bg-muted grid auto-cols-max grid-flow-col gap-4 rounded-lg border p-4">
+          <Package className="text-muted-foreground" />
           <div className="flex flex-col gap-1">
             <span className="text-muted-foreground text-sm">{stockLabel}</span>
             <span className="text-lg text-zinc-800 font-semibold">
@@ -91,7 +110,7 @@ export default function ProductDetailsWithSelection({ product }) {
 
         {/* Category / Subcategory */}
         <div className="hover:border-primary/30 bg-muted grid auto-cols-max grid-flow-col gap-4 rounded-lg border p-4">
-          <CircleDollarSign className="text-muted-foreground" />
+          <LayoutGrid className="text-muted-foreground" />
           <div className="flex flex-col gap-1">
             <span className="text-muted-foreground text-sm">
               Category / Subcategory
