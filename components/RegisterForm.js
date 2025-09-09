@@ -7,10 +7,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import Logo from "@/components/Logo";
 import {
   Select,
   SelectContent,
@@ -18,56 +14,55 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import Link from "next/link";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { useFormStatus } from "react-dom";
 import { toast } from "sonner";
 import { registerUserAction } from "@/lib/actions";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
-import useAuthStore from "@/store/useAuthStore";
+
+import Logo from "@/components/Logo";
+import Link from "next/link";
 
 export default function RegisterForm() {
   const [gender, setGender] = useState("");
   const [country, setCountry] = useState("Cambodia");
   const [cityProvince, setCityProvince] = useState("");
-  const router = useRouter();
-  const { initAuth } = useAuthStore();
 
   async function handleSubmit(event) {
     event.preventDefault();
+
     const formData = new FormData(event.target);
 
-    // Add Select values to formData manually
-    if (gender) formData.append("gender", gender);
-    if (country) formData.append("country", country);
-    if (cityProvince) formData.append("city_province", cityProvince);
+    const registerData = {
+      first_name: formData.get("first_name"),
+      last_name: formData.get("last_name"),
+      email: formData.get("email"),
+      password: formData.get("password"),
+      gender: formData.get("gender"),
+      telephone: formData.get("telephone"),
+      country: formData.get("country"),
+      city_province: formData.get("city_province"),
+    };
 
-    const { success, error, message } = await registerUserAction(formData);
-    if (error) {
-      toast.error(error);
-      return;
-    }
+    const toastId = toast.loading("Registering...");
 
-    if (success) {
-      if (message) {
-        // For email confirmation enabled
-        // Email confirmation required
-        toast.success(message);
-        // Reset form but don't redirect
-        event.target.reset();
-        setGender("");
-        setCityProvince("");
-      } else {
-        // For email confirmation disabled
-        // Immediate registration (confirmation disabled)
-        await initAuth();
-        toast.success("Account created successfully!");
-        event.target.reset();
-        setGender("");
-        setCityProvince("");
+    try {
+      const { success, error, message, authData } = await registerUserAction(
+        registerData
+      );
+      console.log("Auth data:", authData);
 
-        router.push("/");
+      if (error) {
+        toast.error(error, { id: toastId });
       }
+      if (success) {
+        toast.success(message, { id: toastId });
+        event.target.reset();
+      }
+    } catch (error) {
+      toast.error(error.message, { id: toastId });
     }
   }
 
@@ -135,7 +130,6 @@ export default function RegisterForm() {
                     </SelectItem>
                   </SelectContent>
                 </Select>
-                <input type="hidden" name="gender" value={gender} />
               </div>
               <div className="grid gap-3">
                 <Label htmlFor="telephone">Telephone</Label>
@@ -163,7 +157,6 @@ export default function RegisterForm() {
                     <SelectItem value="Cambodia">Cambodia</SelectItem>
                   </SelectContent>
                 </Select>
-                <input type="hidden" name="country" value={country} />
               </div>
               <div className="grid gap-3">
                 <Label htmlFor="city_province">City/Province</Label>
@@ -182,18 +175,10 @@ export default function RegisterForm() {
                     <SelectItem value="Battambang">Battambang</SelectItem>
                   </SelectContent>
                 </Select>
-                <input
-                  type="hidden"
-                  name="city_province"
-                  value={cityProvince}
-                />
               </div>
             </div>
             <div className="flex flex-col gap-3">
               <SubmitButton />
-              <Button variant="outline" className="w-full" type="button">
-                Login with Google
-              </Button>
             </div>
           </div>
           <div className="mt-4 text-center text-sm">

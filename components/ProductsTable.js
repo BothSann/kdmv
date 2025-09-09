@@ -10,7 +10,8 @@ import { getAllProducts } from "@/lib/apiProducts";
 
 export default async function ProductsTable() {
   const { products } = await getAllProducts();
-  console.log(products);
+
+  // console.log(products);
 
   // Simulate a delay
   // await new Promise((resolve) => setTimeout(resolve, 2000));
@@ -28,6 +29,7 @@ export default async function ProductsTable() {
           <TableHead>Stock</TableHead>
           <TableHead>Code</TableHead>
           <TableHead>Status</TableHead>
+          <TableHead>Actions</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
