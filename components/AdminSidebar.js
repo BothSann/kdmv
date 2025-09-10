@@ -48,7 +48,7 @@ const items = [
 export function AdminSidebar() {
   return (
     <Sidebar>
-      <SidebarContent>
+      <SidebarContent className="border-r border-zinc-50 dark:border-zinc-800 ">
         <SidebarGroup className="px-4 py-6 gap-y-8">
           <SidebarGroupLabel className="flex justify-start items-center">
             <Logo width="w-32" />
@@ -59,7 +59,7 @@ export function AdminSidebar() {
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton
                     size="lg"
-                    className="text-base gap-2.5"
+                    className="text-base gap-2.5 rounded-none"
                     asChild
                   >
                     <Link href={item.url}>
@@ -73,7 +73,7 @@ export function AdminSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter>
+      <SidebarFooter className="border-r border-zinc-50 dark:border-zinc-800">
         <LogoutButton />
       </SidebarFooter>
     </Sidebar>
