@@ -61,7 +61,7 @@ function Header({ product }) {
       <div className="flex items-center gap-4">
         <Button variant="outline" asChild>
           <Link href="/admin/products">
-            <ChevronLeft className="w-5 h-5" />
+            <ChevronLeft />
           </Link>
         </Button>
         <h2 className="text-2xl font-bold">{product.name}</h2>

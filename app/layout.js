@@ -1,8 +1,7 @@
-import { robotoCondensed } from "@/lib/fonts";
+import { robotoCondensed, inconsolata } from "@/lib/fonts";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "sonner";
 import AuthProvider from "@/components/AuthProvider";
-import ProtectedRoute from "@/components/ProtectedRoute";
 import "./globals.css";
 
 export const metadata = {
