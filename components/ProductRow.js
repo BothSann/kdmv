@@ -20,10 +20,10 @@ export default function ProductRow({ product }) {
 
   // const total_stock = product.
   return (
-    <TableRow>
+    <TableRow className="text-base">
       <TableCell>
         <div className="flex items-center gap-4">
-          <div className="relative w-12 h-12">
+          <div className="relative w-14 h-14">
             <Image
               src={product.banner_image_url}
               alt={product.name}
@@ -36,8 +36,12 @@ export default function ProductRow({ product }) {
         </div>
       </TableCell>
       <TableCell>{formatCurrency(product.base_price)}</TableCell>
+      <TableCell>
+        {product.has_discount
+          ? `${product.discount_percentage}%`
+          : "No Discount"}
+      </TableCell>
       <TableCell>{product.category_name || "No Category"}</TableCell>
-      <TableCell>{product.subcategory_name || "No Subcategory"}</TableCell>
       <TableCell>{product.total_stock}</TableCell>
       <TableCell>{product.product_code || "No Code"}</TableCell>
       <TableCell>
@@ -59,9 +63,11 @@ export default function ProductRow({ product }) {
                 View Details
               </Link>
             </DropdownMenuItem>
-            <DropdownMenuItem>
-              <Pencil />
-              Edit
+            <DropdownMenuItem asChild>
+              <Link href={`/admin/products/${product.id}/edit`}>
+                <Pencil />
+                Edit
+              </Link>
             </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() => setIsDeleteDialogOpen(true)}

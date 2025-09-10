@@ -20,12 +20,12 @@ export default async function ProductsTable() {
 
   return (
     <Table className="mt-6 border rounded-lg">
-      <TableHeader>
+      <TableHeader className="text-base">
         <TableRow>
           <TableHead>Product Name</TableHead>
-          <TableHead>Price</TableHead>
+          <TableHead>Base Price</TableHead>
+          <TableHead>Discount</TableHead>
           <TableHead>Category</TableHead>
-          <TableHead>Subcategory</TableHead>
           <TableHead>Stock</TableHead>
           <TableHead>Code</TableHead>
           <TableHead>Status</TableHead>
