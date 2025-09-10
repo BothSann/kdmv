@@ -6,7 +6,7 @@ export default function Logo({ width = "w-26" }) {
     <Link href="/">
       <div className={`relative aspect-video ${width}`}>
         <Image
-          src="/logo.png"
+          src="/KDMV_LOGO_OG_BLACK.png"
           alt="logo"
           sizes="100vw"
           fill

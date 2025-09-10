@@ -80,7 +80,7 @@ export default function LoginForm() {
                   <Label htmlFor="password">Password</Label>
                   <a
                     href="#"
-                    className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
+                    className="ml-auto inline-block underline-offset-4 hover:underline text-sm"
                   >
                     Forgot your password?
                   </a>
@@ -90,7 +90,7 @@ export default function LoginForm() {
 
               <SubmitButton />
             </div>
-            <div className="mt-4 text-center text-sm">
+            <div className="mt-4 text-sm text-center">
               Don&apos;t have an account?{" "}
               <Link
                 href="/auth/register"

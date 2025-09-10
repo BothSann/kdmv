@@ -30,7 +30,7 @@ export default function MainCarousel() {
               alt="carousel1"
               fill
               quality={100}
-              className="rounded-lg object-cover"
+              className="object-cover"
             />
           </div>
         </CarouselItem>
@@ -41,7 +41,7 @@ export default function MainCarousel() {
               alt="carousel2"
               fill
               quality={100}
-              className="rounded-lg object-cover"
+              className="object-cover"
               // 4:3 ratio (taller)
             />
           </div>
@@ -53,7 +53,7 @@ export default function MainCarousel() {
               alt="carousel3"
               fill
               quality={100}
-              className="rounded-lg object-cover"
+              className="object-cover"
             />
           </div>
         </CarouselItem>
