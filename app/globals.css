@@ -164,6 +164,6 @@ body {
 }
 
 .\[\&_svg\:not\(\[class\*\=\'size-\'\]\)\]\:size-4 svg:not([class*="size-"]) {
-  width: calc(var(--spacing) * 6);
-  height: calc(var(--spacing) * 6);
+  width: calc(var(--spacing) * 5);
+  height: calc(var(--spacing) * 5);
 }
