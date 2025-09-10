@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { CircleDollarSign, LayoutGrid, Package } from "lucide-react";
+import { CircleDollarSign, LayoutGrid, Package, Tag } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { Label } from "@/components/ui/label";
@@ -66,12 +66,12 @@ export default function ProductDetailsWithSelection({ product }) {
 
   return (
     <div>
-      <div className="grid grid-cols-4 gap-4 items-start mb-4">
+      <div className="grid grid-cols-4 gap-4 items-start mb-4 text-base">
         {/* Price */}
         <div className="hover:border-primary/30 bg-muted grid auto-cols-max grid-flow-col gap-4 rounded-lg border p-4">
           <CircleDollarSign className="text-muted-foreground" />
           <div className="flex flex-col gap-1">
-            <span className="text-muted-foreground text-sm">Base Price</span>
+            <span className="text-muted-foreground">Base Price</span>
             <span className="text-lg text-zinc-800 font-semibold">
               {formatCurrency(product.base_price)}
             </span>
@@ -79,9 +79,9 @@ export default function ProductDetailsWithSelection({ product }) {
         </div>
 
         <div className="hover:border-primary/30 bg-muted grid auto-cols-max grid-flow-col gap-4 rounded-lg border p-4">
-          <CircleDollarSign className="text-muted-foreground" />
+          <Tag className="text-muted-foreground" />
           <div className="flex flex-col gap-1">
-            <span className="text-muted-foreground text-sm">Discount</span>
+            <span className="text-muted-foreground">Discount</span>
             <span className="text-lg text-zinc-800 font-semibold">
               {product.has_discount ? (
                 <>
@@ -101,7 +101,7 @@ export default function ProductDetailsWithSelection({ product }) {
         <div className="hover:border-primary/30 bg-muted grid auto-cols-max grid-flow-col gap-4 rounded-lg border p-4">
           <Package className="text-muted-foreground" />
           <div className="flex flex-col gap-1">
-            <span className="text-muted-foreground text-sm">{stockLabel}</span>
+            <span className="text-muted-foreground">{stockLabel}</span>
             <span className="text-lg text-zinc-800 font-semibold">
               {displayStock}
             </span>
@@ -112,7 +112,7 @@ export default function ProductDetailsWithSelection({ product }) {
         <div className="hover:border-primary/30 bg-muted grid auto-cols-max grid-flow-col gap-4 rounded-lg border p-4">
           <LayoutGrid className="text-muted-foreground" />
           <div className="flex flex-col gap-1">
-            <span className="text-muted-foreground text-sm">
+            <span className="text-muted-foreground">
               Category / Subcategory
             </span>
             <span className="text-lg text-zinc-800 font-semibold">
@@ -128,8 +128,8 @@ export default function ProductDetailsWithSelection({ product }) {
           <div className="grid grid-cols-[2fr_1fr] gap-4">
             {/* Product Description */}
             <div className="flex flex-col gap-2">
-              <h2 className="text-lg font-semibold">Product Description:</h2>
-              <p className="text-sm text-muted-foreground">
+              <h3 className="text-xl font-semibold">Product Description:</h3>
+              <p className="text-base text-muted-foreground">
                 {product.description}
               </p>
             </div>
@@ -137,7 +137,7 @@ export default function ProductDetailsWithSelection({ product }) {
             {/* Product Code, Subcategory, Slug using table */}
             <div className="rounded-md border">
               <Table>
-                <TableBody>
+                <TableBody className="text-base">
                   <TableRow>
                     <TableCell className="font-medium">Product Code</TableCell>
                     <TableCell className="text-right text-muted-foreground">
@@ -171,7 +171,7 @@ export default function ProductDetailsWithSelection({ product }) {
           <div className="grid grid-cols-max gap-4 gap-y-8 mt-6">
             {/* Available Colors */}
             <div className="flex flex-col gap-2">
-              <h2 className="text-lg font-semibold">Available Colors:</h2>
+              <h3 className="text-xl font-semibold">Available Colors:</h3>
               <RadioGroup
                 className="flex gap-2"
                 value={selectedColor}
@@ -186,7 +186,7 @@ export default function ProductDetailsWithSelection({ product }) {
                     />
                     <Label
                       htmlFor={color.id}
-                      className="inline-flex items-center justify-center px-4 py-2 border border-gray-300 text-sm font-medium cursor-pointer hover:bg-gray-50 peer-data-[state=checked]:bg-black peer-data-[state=checked]:text-white peer-data-[state=checked]:border-black [&:has([data-state=checked])]:bg-black [&:has([data-state=checked])]:text-white [&:has([data-state=checked])]:border-black transition-colors"
+                      className="inline-flex items-center justify-center px-4 py-2 border border-gray-300 text-base font-medium cursor-pointer hover:bg-gray-50 peer-data-[state=checked]:bg-black peer-data-[state=checked]:text-white peer-data-[state=checked]:border-black [&:has([data-state=checked])]:bg-black [&:has([data-state=checked])]:text-white [&:has([data-state=checked])]:border-black transition-colors "
                     >
                       {color.name}
                     </Label>
@@ -197,7 +197,7 @@ export default function ProductDetailsWithSelection({ product }) {
 
             {/* Available Sizes - Only show sizes for selected color */}
             <div className="flex flex-col gap-2">
-              <h2 className="text-lg font-semibold">Available Sizes:</h2>
+              <h3 className="text-xl font-semibold">Available Sizes:</h3>
               {selectedColor ? (
                 <RadioGroup
                   className="flex gap-2 flex-wrap"
@@ -213,7 +213,7 @@ export default function ProductDetailsWithSelection({ product }) {
                       />
                       <Label
                         htmlFor={size.id}
-                        className="inline-flex items-center justify-center px-4 py-2 border border-gray-300 text-sm font-medium cursor-pointer hover:bg-gray-50 peer-data-[state=checked]:bg-black peer-data-[state=checked]:text-white peer-data-[state=checked]:border-black [&:has([data-state=checked])]:bg-black [&:has([data-state=checked])]:text-white [&:has([data-state=checked])]:border-black transition-colors"
+                        className="inline-flex items-center justify-center px-4 py-2 border border-gray-300 text-base font-medium cursor-pointer hover:bg-gray-50 peer-data-[state=checked]:bg-black peer-data-[state=checked]:text-white peer-data-[state=checked]:border-black [&:has([data-state=checked])]:bg-black [&:has([data-state=checked])]:text-white [&:has([data-state=checked])]:border-black transition-colors"
                       >
                         {size.name}
                       </Label>
@@ -221,7 +221,7 @@ export default function ProductDetailsWithSelection({ product }) {
                   ))}
                 </RadioGroup>
               ) : (
-                <p className="text-sm text-muted-foreground">
+                <p className="text-base text-muted-foreground">
                   Please select a color first to see available sizes
                 </p>
               )}
@@ -230,8 +230,8 @@ export default function ProductDetailsWithSelection({ product }) {
             {/* Selected Variant Info */}
             {selectedColor && selectedSize && (
               <div className="flex flex-col gap-2 p-4 bg-muted">
-                <h3 className="text-md font-semibold">Product Details:</h3>
-                <div className="grid grid-cols-2 text-sm">
+                <h3 className="text-lg font-semibold">Product Details:</h3>
+                <div className="grid grid-cols-2 text-base">
                   <div>
                     <span className="font-medium">Color:</span>{" "}
                     {
@@ -249,7 +249,7 @@ export default function ProductDetailsWithSelection({ product }) {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 text-sm">
+                <div className="grid grid-cols-2 text-base">
                   <div>
                     <span className="font-medium ">Stock Quantity:</span>{" "}
                     {selectedVariantQuantity > 0 ? (

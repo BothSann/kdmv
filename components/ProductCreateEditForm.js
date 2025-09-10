@@ -15,17 +15,21 @@ import { ChevronLeft, Upload, Plus, Trash } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-import { createNewProductAction } from "@/lib/actions";
+import { createNewProductAction, updateProductAction } from "@/lib/actions";
 import { useFormStatus } from "react-dom";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Spinner from "./Spinner";
 
-export default function ProductCreateForm({
+export default function ProductCreateEditForm({
   categories,
   subcategories,
   colors,
   sizes,
+  existingProduct = null,
+  isEditing = false,
 }) {
+  const [isInitialized, setIsInitialized] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedSubcategory, setSelectedSubcategory] = useState("");
   const [isActive, setIsActive] = useState(true);
@@ -33,6 +37,48 @@ export default function ProductCreateForm({
     { color_id: "", size_id: "", quantity: 0, sku: "" },
   ]);
   const router = useRouter();
+
+  // Initialize form data and control loading state
+  useEffect(() => {
+    if (isEditing && existingProduct) {
+      // EDIT MODE: Initialize all data from existing product
+
+      // Find the category ID from the subcategory relationship
+      const categoryId = existingProduct.subcategories?.categories?.id;
+      if (categoryId) {
+        setSelectedCategory(categoryId);
+      }
+
+      // Set subcategory
+      if (existingProduct.subcategory_id) {
+        setSelectedSubcategory(existingProduct.subcategory_id);
+      }
+
+      // Set active status
+      setIsActive(existingProduct.is_active || false);
+
+      // Set variants from existing product
+      if (
+        existingProduct.product_variants &&
+        existingProduct.product_variants.length > 0
+      ) {
+        const formattedVariants = existingProduct.product_variants.map(
+          (variant) => ({
+            color_id: variant.colors?.id || "",
+            size_id: variant.sizes?.id || "",
+            quantity: variant.quantity || 0,
+            sku: variant.sku || "",
+          })
+        );
+        setVariants(formattedVariants);
+      }
+
+      // Mark as initialized AFTER all data is set
+      setIsInitialized(true);
+    }
+
+    if (!isEditing) setIsInitialized(true);
+  }, [isEditing, existingProduct]);
 
   const addVariant = () => {
     setVariants([
@@ -107,6 +153,11 @@ export default function ProductCreateForm({
 
     const formData = new FormData(event.target);
     const productData = {
+      ...(isEditing && { id: existingProduct.id }),
+      ...(isEditing && {
+        existing_banner_image_url: existingProduct.banner_image_url,
+      }),
+
       name: formData.get("name"),
       description: formData.get("description"),
       base_price: formData.get("base_price"),
@@ -117,13 +168,17 @@ export default function ProductCreateForm({
       variants: variants.filter((v) => v.color_id && v.size_id),
     };
 
-    // console.log(productData);
+    const actionToUse = isEditing
+      ? updateProductAction
+      : createNewProductAction;
 
-    const toastId = toast.loading("Creating product...");
+    const loadingMessage = isEditing
+      ? "Updating product..."
+      : "Creating product...";
+
+    const toastId = toast.loading(loadingMessage);
     try {
-      const { success, error, message } = await createNewProductAction(
-        productData
-      );
+      const { success, error, message } = await actionToUse(productData);
 
       if (error) {
         toast.error(error, { id: toastId });
@@ -138,8 +193,13 @@ export default function ProductCreateForm({
     }
   };
 
+  // Loading state - only show form when initialized
+  if (!isInitialized) {
+    return <Spinner message={isEditing ?? "Loading product data..."} />;
+  }
+
   return (
-    <form className="min-h-screen bg-gray-50 p-6" onSubmit={handleSubmit}>
+    <form className="min-h-screen bg-gray-50 text-base" onSubmit={handleSubmit}>
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
@@ -149,9 +209,9 @@ export default function ProductCreateForm({
                 <ChevronLeft className="w-5 h-5" />
               </Link>
             </Button>
-            <h1 className="text-2xl font-semibold text-gray-900">
-              Add Products
-            </h1>
+            <h2 className="text-2xl font-semibold text-gray-900">
+              {isEditing ? "Edit Product" : "Add Products"}
+            </h2>
           </div>
           <div className="flex gap-3">
             <Button
@@ -162,7 +222,7 @@ export default function ProductCreateForm({
             >
               <Link href="/admin/products">Cancel</Link>
             </Button>
-            <SubmitButton />
+            <SubmitButton isEditing={isEditing} />
           </div>
         </div>
 
@@ -171,26 +231,32 @@ export default function ProductCreateForm({
           <div className="lg:col-span-2 space-y-6">
             {/* Product Details */}
             <div className="bg-white rounded-lg p-6 shadow-sm">
-              <h2 className="text-lg font-medium text-gray-900 mb-6">
+              <h3 className="text-xl font-medium text-gray-900 mb-6">
                 Product Details
-              </h2>
+              </h3>
 
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block font-medium text-gray-700 mb-3">
                     Name
                   </label>
-                  <Input type="text" name="name" required />
+                  <Input
+                    type="text"
+                    name="name"
+                    defaultValue={existingProduct?.name || ""}
+                    required
+                  />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block font-medium text-gray-700 mb-3">
                     Description (Optional)
                   </label>
                   <Textarea
                     name="description"
                     rows={4}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md "
+                    defaultValue={existingProduct?.description || ""}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md"
                   />
                 </div>
               </div>
@@ -199,16 +265,16 @@ export default function ProductCreateForm({
             {/* Product Images */}
             <div className="bg-white rounded-lg p-6 shadow-sm">
               <div className="mb-6">
-                <h2 className="text-lg font-medium text-gray-900">
+                <h3 className="text-xl font-medium text-gray-900">
                   Product Images
-                </h2>
+                </h3>
               </div>
 
               <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
                 <Upload className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-700 mb-2">
+                <h4 className="text-lg font-medium text-gray-700 mb-3">
                   Drop your images here
-                </h3>
+                </h4>
                 <p className="text-sm text-gray-500 mb-4">
                   PNG or JPG (max. 5MB)
                 </p>
@@ -217,7 +283,7 @@ export default function ProductCreateForm({
 
               {/* Banner Image URL */}
               <div className="mt-4">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block font-medium text-gray-700 mb-3">
                   Upload Banner Image
                 </label>
                 <Input type="file" name="banner_image_url" />
@@ -227,9 +293,9 @@ export default function ProductCreateForm({
             {/* Variants */}
             <div className="bg-white rounded-lg p-6 shadow-sm">
               <div className="flex justify-between items-center mb-6">
-                <h2 className="text-lg font-medium text-gray-900">
+                <h3 className="text-xl font-medium text-gray-900">
                   Product Variants
-                </h2>
+                </h3>
                 <Button type="button" variant="outline" onClick={addVariant}>
                   <Plus className="w-4 h-4 mr-2" />
                   Add Variant
@@ -238,7 +304,7 @@ export default function ProductCreateForm({
 
               <div className="space-y-4">
                 {/* Header */}
-                <div className="grid grid-cols-5 gap-4 text-sm font-medium text-gray-700">
+                <div className="grid grid-cols-5 gap-4 font-medium text-gray-700">
                   <div>Color</div>
                   <div>Size</div>
                   <div>Quantity</div>
@@ -340,7 +406,7 @@ export default function ProductCreateForm({
 
                 {/* Validation Messages */}
                 {hasDuplicateVariants() && (
-                  <div className="text-red-600 text-sm flex items-center">
+                  <div className="text-red-600 flex items-center">
                     ⚠️ Duplicate color/size combinations detected!
                   </div>
                 )}
@@ -352,13 +418,13 @@ export default function ProductCreateForm({
           <div className="space-y-6">
             {/* Pricing */}
             <div className="bg-white rounded-lg p-6 shadow-sm">
-              <h2 className="text-lg font-medium text-gray-900 mb-6">
+              <h3 className="text-xl font-medium text-gray-900 mb-6">
                 Pricing
-              </h2>
+              </h3>
 
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block font-medium text-gray-700 mb-3">
                     Price ($)
                   </label>
                   <Input
@@ -366,6 +432,7 @@ export default function ProductCreateForm({
                     min="0"
                     step="0.01"
                     name="base_price"
+                    defaultValue={existingProduct?.base_price || ""}
                     required
                     placeholder="0.00"
                     onWheel={handleWheel}
@@ -373,7 +440,7 @@ export default function ProductCreateForm({
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block font-medium text-gray-700 mb-3">
                     Discount Percentage (%)
                   </label>
                   <Input
@@ -381,6 +448,7 @@ export default function ProductCreateForm({
                     min="0"
                     max="100"
                     name="discount_percentage"
+                    defaultValue={existingProduct?.discount_percentage || ""}
                     placeholder="0%"
                     onWheel={handleWheel}
                   />
@@ -400,9 +468,9 @@ export default function ProductCreateForm({
 
             {/* Categories */}
             <div className="bg-white rounded-lg p-6 shadow-sm">
-              <h2 className="text-lg font-medium text-gray-900 mb-6">
+              <h3 className="text-xl font-medium text-gray-900 mb-6">
                 Categories
-              </h2>
+              </h3>
 
               <div className="space-y-4">
                 <div>
@@ -456,12 +524,18 @@ export default function ProductCreateForm({
   );
 }
 
-function SubmitButton() {
+function SubmitButton({ isEditing }) {
   const { pending } = useFormStatus();
 
   return (
     <Button type="submit" className="px-4 py-2" disabled={pending}>
-      {pending ? "Creating..." : "Create"}
+      {pending
+        ? isEditing
+          ? "Updating..."
+          : "Creating..."
+        : isEditing
+        ? "Update Product"
+        : "Create Product"}
     </Button>
   );
 }

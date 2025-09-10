@@ -6,22 +6,22 @@ const navLinks = [
   {
     title: "Profile",
     href: "/account/profile",
-    icon: <User size={20} />,
+    icon: <User size={24} />,
   },
   {
     title: "Orders",
     href: "/account/orders",
-    icon: <FileText size={20} />,
+    icon: <FileText size={24} />,
   },
   {
     title: "Address",
     href: "/account/address",
-    icon: <MapPinHouse size={20} />,
+    icon: <MapPinHouse size={24} />,
   },
   {
     title: "Settings",
     href: "/account/settings",
-    icon: <Settings size={20} />,
+    icon: <Settings size={24} />,
   },
 ];
 
@@ -33,7 +33,7 @@ export function UserSidebar() {
           <li key={link.title}>
             <Link
               href={link.href}
-              className="flex items-center gap-2 hover:bg-zinc-100 dark:hover:bg-zinc-900 px-2 py-4 transition-colors"
+              className="flex items-center gap-4 hover:bg-zinc-100 dark:hover:bg-zinc-900 px-2 py-4 transition-colors"
             >
               {link.icon}
               {link.title}
