@@ -152,3 +152,18 @@
     border-color: currentColor currentColor currentColor currentColor;
   }
 }
+
+body {
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.\[\&\>svg\]\:size-4 > svg {
+  width: calc(var(--spacing) * 5);
+  height: calc(var(--spacing) * 5);
+}
+
+.\[\&_svg\:not\(\[class\*\=\'size-\'\]\)\]\:size-4 svg:not([class*="size-"]) {
+  width: calc(var(--spacing) * 6);
+  height: calc(var(--spacing) * 6);
+}
