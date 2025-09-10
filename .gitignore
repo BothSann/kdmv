@@ -48,3 +48,4 @@ PROJECT_STRUCTURE.md
 supabase-schema.sql
 supabase-authdata-response.js
 text.md
+createEditProductAction-example.js
