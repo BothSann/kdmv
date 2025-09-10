@@ -113,9 +113,7 @@ function PaymentSummary() {
           </div>
         </div>
 
-        <Button className="text-lg py-6 rounded-none w-full cursor-pointer">
-          Checkout
-        </Button>
+        <Button className="text-lg py-6 w-full cursor-pointer">Checkout</Button>
       </SheetFooter>
     </div>
   );

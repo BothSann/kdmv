@@ -87,29 +87,19 @@ function ProductSizes() {
       </div>
       <ul className="flex gap-2">
         <li>
-          <Button className="w-20 rounded-none cursor-pointer text-lg">
-            S
-          </Button>
+          <Button className="w-20 cursor-pointer text-lg">S</Button>
         </li>
         <li>
-          <Button className="w-20 rounded-none cursor-pointer text-lg">
-            M
-          </Button>
+          <Button className="w-20 cursor-pointer text-lg">M</Button>
         </li>
         <li>
-          <Button className="w-20 rounded-none cursor-pointer text-lg">
-            L
-          </Button>
+          <Button className="w-20 cursor-pointer text-lg">L</Button>
         </li>
         <li>
-          <Button className="w-20 rounded-none cursor-pointer text-lg">
-            XL
-          </Button>
+          <Button className="w-20 cursor-pointer text-lg">XL</Button>
         </li>
         <li>
-          <Button className="w-20 rounded-none cursor-pointer text-lg">
-            XXL
-          </Button>
+          <Button className="w-20 cursor-pointer text-lg">XXL</Button>
         </li>
       </ul>
     </div>
@@ -121,11 +111,11 @@ function ProductQuantity() {
     <div className="mt-6 space-y-2">
       <p className="text-2xl font-semibold">Quantity</p>
       <div className="flex items-center gap-2">
-        <Button className="w-12 rounded-none cursor-pointer ">
+        <Button className="w-12 cursor-pointer ">
           <Minus size={28} />
         </Button>
-        <Button className="w-12 rounded-none hover:bg-black">1</Button>
-        <Button className="w-12 rounded-none cursor-pointer ">
+        <Button className="w-12 hover:bg-black">1</Button>
+        <Button className="w-12 cursor-pointer ">
           <Plus size={28} />
         </Button>
       </div>
@@ -148,7 +138,7 @@ function ProductDescription() {
 function ProductAddToCart() {
   return (
     <div className="mt-6">
-      <Button className="w-full rounded-none cursor-pointer text-lg py-6">
+      <Button className="w-full cursor-pointer text-lg py-6">
         Add to cart
       </Button>
     </div>
