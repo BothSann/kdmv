@@ -1,10 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
 
-export default function Logo() {
+export default function Logo({ width = "w-26" }) {
   return (
     <Link href="/">
-      <div className="relative w-26 aspect-video ">
+      <div className={`relative aspect-video ${width}`}>
         <Image
           src="/logo.png"
           alt="logo"
