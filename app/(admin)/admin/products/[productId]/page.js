@@ -14,7 +14,8 @@ import ProductDetailsWithSelection from "@/components/ProductDetailsWithSelectio
 import DeleteProductButton from "@/components/DeleteProductButton";
 
 export async function generateMetadata({ params }) {
-  const { product } = await getProductById(params.productId);
+  const resolvedParams = await params;
+  const { product } = await getProductById(resolvedParams.productId);
 
   return {
     title: `${product.name}`,
@@ -35,10 +36,11 @@ export async function generateMetadata({ params }) {
 // }
 
 export default async function AdminProductDetailsPage({ params }) {
-  const { product } = await getProductById(params.productId);
+  const resolvedParams = await params;
+  const { product } = await getProductById(resolvedParams.productId);
 
   return (
-    <div className="mt-6">
+    <div className="mt-8">
       {/* Header */}
       <Header product={product} />
 
@@ -68,7 +70,7 @@ function Header({ product }) {
       {/* Edit and Delete buttons */}
       <div className="flex gap-2">
         <Button asChild>
-          <Link href={`/admin/products/create?productId=${product.id}`}>
+          <Link href={`/admin/products/${product.id}/edit`}>
             <PenLine />
             Edit
           </Link>

@@ -7,9 +7,9 @@ import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 export default async function AdminProductsPage() {
   return (
-    <div className="mt-6">
+    <div>
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold">Products</h2>
+        <h1 className="text-3xl font-bold">Products</h1>
         <Button asChild>
           <Link href="/admin/products/create">
             <Plus />

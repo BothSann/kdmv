@@ -1,4 +1,4 @@
-import { Calendar, Home, Inbox, LogOut, Search, Settings } from "lucide-react";
+import { Home, Inbox, Search, Settings, Users } from "lucide-react";
 
 import {
   Sidebar,
@@ -29,9 +29,9 @@ const items = [
     icon: Inbox,
   },
   {
-    title: "Calendar",
-    url: "#",
-    icon: Calendar,
+    title: "Users",
+    url: "/admin/users",
+    icon: Users,
   },
   {
     title: "Search",
@@ -49,18 +49,22 @@ export function AdminSidebar() {
   return (
     <Sidebar>
       <SidebarContent>
-        <SidebarGroup className="px-4 py-6">
-          <SidebarGroupLabel>
-            <Logo />
+        <SidebarGroup className="px-4 py-6 gap-y-8">
+          <SidebarGroupLabel className="flex justify-start items-center">
+            <Logo width="w-32" />
           </SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu className="gap-4 mt-6">
+            <SidebarMenu className="gap-4">
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
+                  <SidebarMenuButton
+                    size="lg"
+                    className="text-base gap-2.5"
+                    asChild
+                  >
                     <Link href={item.url}>
-                      <item.icon />
-                      <span>{item.title}</span>
+                      <item.icon size={30} />
+                      {item.title}
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
