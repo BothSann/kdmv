@@ -17,6 +17,7 @@ import DeleteProductDialog from "./DeleteProductDialog";
 
 export default function ProductRow({ product }) {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  console.log(product);
 
   // const total_stock = product.
   return (
@@ -46,9 +47,9 @@ export default function ProductRow({ product }) {
       <TableCell>{product.product_code || "No Code"}</TableCell>
       <TableCell>
         {product.is_active ? (
-          <span className="text-green-600">In Stock</span>
+          <span className="text-success">In Stock</span>
         ) : (
-          <span className="text-red-600">Out Of Stock</span>
+          <span className="text-destructive">Out Of Stock</span>
         )}
       </TableCell>
       <TableCell>

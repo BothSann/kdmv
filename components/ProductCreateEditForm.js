@@ -199,17 +199,18 @@ export default function ProductCreateEditForm({
   }
 
   return (
-    <form className="min-h-screen bg-gray-50 text-base" onSubmit={handleSubmit}>
+    <form className="min-h-screen text-base" onSubmit={handleSubmit}>
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-4">
             <Button variant="outline" asChild>
               <Link href="/admin/products">
-                <ChevronLeft className="w-5 h-5" />
+                <ChevronLeft />
               </Link>
             </Button>
-            <h2 className="text-2xl font-semibold text-gray-900">
+
+            <h2 className="text-2xl font-semibold">
               {isEditing ? "Edit Product" : "Add Products"}
             </h2>
           </div>
@@ -230,16 +231,12 @@ export default function ProductCreateEditForm({
           {/* Left Column */}
           <div className="lg:col-span-2 space-y-6">
             {/* Product Details */}
-            <div className="bg-white rounded-lg p-6 shadow-sm">
-              <h3 className="text-xl font-medium text-gray-900 mb-6">
-                Product Details
-              </h3>
+            <div className="rounded-lg p-6 shadow-sm border border-border bg-card">
+              <h3 className="text-xl font-medium mb-6">Product Details</h3>
 
               <div className="space-y-4">
                 <div>
-                  <label className="block font-medium text-gray-700 mb-3">
-                    Name
-                  </label>
+                  <label className="block font-medium mb-3">Name</label>
                   <Input
                     type="text"
                     name="name"
@@ -249,62 +246,61 @@ export default function ProductCreateEditForm({
                 </div>
 
                 <div>
-                  <label className="block font-medium text-gray-700 mb-3">
+                  <label className="block font-medium mb-3">
                     Description (Optional)
                   </label>
                   <Textarea
                     name="description"
                     rows={4}
                     defaultValue={existingProduct?.description || ""}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md"
                   />
                 </div>
               </div>
             </div>
 
             {/* Product Images */}
-            <div className="bg-white rounded-lg p-6 shadow-sm">
+            <div className="rounded-lg p-6 shadow-sm border border-border bg-card">
               <div className="mb-6">
-                <h3 className="text-xl font-medium text-gray-900">
-                  Product Images
-                </h3>
+                <h3 className="text-xl font-medium">Product Images</h3>
               </div>
 
-              <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
-                <Upload className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                <h4 className="text-lg font-medium text-gray-700 mb-3">
+              <div className="border-2 border-dashed rounded-lg p-8 text-center">
+                <Upload className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                <h4 className="text-lg font-medium mb-3">
                   Drop your images here
                 </h4>
-                <p className="text-sm text-gray-500 mb-4">
+                <p className="text-sm text-muted-foreground mb-4">
                   PNG or JPG (max. 5MB)
                 </p>
-                <Input type="file" multiple />
+                <Input type="file" multiple className="text-muted-foreground" />
               </div>
 
               {/* Banner Image URL */}
               <div className="mt-4">
-                <label className="block font-medium text-gray-700 mb-3">
+                <label className="block font-medium mb-3">
                   Upload Banner Image
                 </label>
-                <Input type="file" name="banner_image_url" />
+                <Input
+                  type="file"
+                  name="banner_image_url"
+                  className="text-muted-foreground"
+                />
               </div>
             </div>
 
             {/* Variants */}
-            <div className="bg-white rounded-lg p-6 shadow-sm">
+            <div className="rounded-lg p-6 shadow-sm border border-border bg-card">
               <div className="flex justify-between items-center mb-6">
-                <h3 className="text-xl font-medium text-gray-900">
-                  Product Variants
-                </h3>
-                <Button type="button" variant="outline" onClick={addVariant}>
-                  <Plus className="w-4 h-4 mr-2" />
+                <h3 className="text-xl font-medium">Product Variants</h3>
+                <Button type="button" onClick={addVariant}>
+                  <Plus />
                   Add Variant
                 </Button>
               </div>
 
               <div className="space-y-4">
                 {/* Header */}
-                <div className="grid grid-cols-5 gap-4 font-medium text-gray-700">
+                <div className="grid grid-cols-5 gap-4 font-medium">
                   <div>Color</div>
                   <div>Size</div>
                   <div>Quantity</div>
@@ -417,16 +413,12 @@ export default function ProductCreateEditForm({
           {/* Right Column */}
           <div className="space-y-6">
             {/* Pricing */}
-            <div className="bg-white rounded-lg p-6 shadow-sm">
-              <h3 className="text-xl font-medium text-gray-900 mb-6">
-                Pricing
-              </h3>
+            <div className="rounded-lg p-6 shadow-sm border border-border bg-card">
+              <h3 className="text-xl font-medium mb-6">Pricing</h3>
 
               <div className="space-y-4">
                 <div>
-                  <label className="block font-medium text-gray-700 mb-3">
-                    Price ($)
-                  </label>
+                  <label className="block font-medium mb-3">Price ($)</label>
                   <Input
                     type="number"
                     min="0"
@@ -440,7 +432,7 @@ export default function ProductCreateEditForm({
                 </div>
 
                 <div>
-                  <label className="block font-medium text-gray-700 mb-3">
+                  <label className="block font-medium mb-3">
                     Discount Percentage (%)
                   </label>
                   <Input
@@ -467,10 +459,8 @@ export default function ProductCreateEditForm({
             </div>
 
             {/* Categories */}
-            <div className="bg-white rounded-lg p-6 shadow-sm">
-              <h3 className="text-xl font-medium text-gray-900 mb-6">
-                Categories
-              </h3>
+            <div className="rounded-lg p-6 shadow-sm border border-border bg-card">
+              <h3 className="text-xl font-medium mb-6">Categories</h3>
 
               <div className="space-y-4">
                 <div>

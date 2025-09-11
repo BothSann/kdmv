@@ -72,7 +72,7 @@ export default function ProductDetailsWithSelection({ product }) {
           <CircleDollarSign className="text-muted-foreground" />
           <div className="flex flex-col gap-1">
             <span className="text-muted-foreground">Base Price</span>
-            <span className="text-lg text-zinc-800 font-semibold">
+            <span className="text-lg font-semibold">
               {formatCurrency(product.base_price)}
             </span>
           </div>
@@ -82,7 +82,7 @@ export default function ProductDetailsWithSelection({ product }) {
           <Tag className="text-muted-foreground" />
           <div className="flex flex-col gap-1">
             <span className="text-muted-foreground">Discount</span>
-            <span className="text-lg text-zinc-800 font-semibold">
+            <span className="text-lg font-semibold">
               {product.has_discount ? (
                 <>
                   {formatCurrency(product.discounted_price)}{" "}
@@ -102,9 +102,7 @@ export default function ProductDetailsWithSelection({ product }) {
           <Package className="text-muted-foreground" />
           <div className="flex flex-col gap-1">
             <span className="text-muted-foreground">{stockLabel}</span>
-            <span className="text-lg text-zinc-800 font-semibold">
-              {displayStock}
-            </span>
+            <span className="text-lg font-semibold">{displayStock}</span>
           </div>
         </div>
 
@@ -115,7 +113,7 @@ export default function ProductDetailsWithSelection({ product }) {
             <span className="text-muted-foreground">
               Category / Subcategory
             </span>
-            <span className="text-lg text-zinc-800 font-semibold">
+            <span className="text-lg font-semibold">
               {product.category_name} / {product.subcategory_name}
             </span>
           </div>
@@ -186,7 +184,11 @@ export default function ProductDetailsWithSelection({ product }) {
                     />
                     <Label
                       htmlFor={color.id}
-                      className="inline-flex items-center justify-center px-4 py-2 border border-gray-300 text-base font-medium cursor-pointer hover:bg-gray-50 peer-data-[state=checked]:bg-black peer-data-[state=checked]:text-white peer-data-[state=checked]:border-black [&:has([data-state=checked])]:bg-black [&:has([data-state=checked])]:text-white [&:has([data-state=checked])]:border-black transition-colors "
+                      className={`flex items-center justify-center px-4 py-2 text-base font-medium cursor-pointer border border-border hover:bg-muted transition-colors ${
+                        selectedColor === color.id
+                          ? "bg-foreground text-background dark:hover:bg-muted-foreground dark:hover:text-background"
+                          : ""
+                      }`}
                     >
                       {color.name}
                     </Label>
@@ -213,7 +215,11 @@ export default function ProductDetailsWithSelection({ product }) {
                       />
                       <Label
                         htmlFor={size.id}
-                        className="inline-flex items-center justify-center px-4 py-2 border border-gray-300 text-base font-medium cursor-pointer hover:bg-gray-50 peer-data-[state=checked]:bg-black peer-data-[state=checked]:text-white peer-data-[state=checked]:border-black [&:has([data-state=checked])]:bg-black [&:has([data-state=checked])]:text-white [&:has([data-state=checked])]:border-black transition-colors"
+                        className={`flex items-center justify-center px-4 py-2 text-base font-medium cursor-pointer border border-border hover:bg-muted transition-colors ${
+                          selectedSize === size.id
+                            ? "bg-foreground text-background dark:hover:bg-muted-foreground dark:hover:text-background"
+                            : ""
+                        }`}
                       >
                         {size.name}
                       </Label>
@@ -233,37 +239,42 @@ export default function ProductDetailsWithSelection({ product }) {
                 <h3 className="text-lg font-semibold">Product Details:</h3>
                 <div className="grid grid-cols-2 text-base">
                   <div>
-                    <span className="font-medium">Color:</span>{" "}
-                    {
-                      product.available_colors.find(
-                        (c) => c.id === selectedColor
-                      )?.name
-                    }
+                    <span className="font-medium">Color: </span>
+                    <span>
+                      {
+                        product.available_colors.find(
+                          (c) => c.id === selectedColor
+                        )?.name
+                      }
+                    </span>
                   </div>
                   <div>
-                    <span className="font-medium">Size:</span>{" "}
-                    {
-                      availableSizesForColor.find((s) => s.id === selectedSize)
-                        ?.name
-                    }
+                    <span className="font-medium">Size: </span>
+                    <span>
+                      {
+                        availableSizesForColor.find(
+                          (s) => s.id === selectedSize
+                        )?.name
+                      }
+                    </span>
                   </div>
                 </div>
 
                 <div className="grid grid-cols-2 text-base">
                   <div>
-                    <span className="font-medium ">Stock Quantity:</span>{" "}
+                    <span className="font-medium ">Stock Quantity: </span>
                     {selectedVariantQuantity > 0 ? (
-                      <span className="text-green-600">
+                      <span className="text-success">
                         {selectedVariantQuantity} available
                       </span>
                     ) : (
-                      <span className="text-red-500">Out of stock</span>
+                      <span className="text-destructive">Out of stock</span>
                     )}
                   </div>
 
                   {/* SKU */}
                   <div>
-                    <span className="font-medium">SKU:</span>{" "}
+                    <span className="font-medium">SKU: </span>
                     <span className="text-muted-foreground font-mono">
                       {selectedVariantSKU || "N/A"}
                     </span>

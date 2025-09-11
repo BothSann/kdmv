@@ -4,7 +4,7 @@ import { Plus } from "lucide-react";
 
 export default function AdminRegisterPage() {
   return (
-    <div className="mt-8">
+    <div>
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold">Users</h1>
       </div>

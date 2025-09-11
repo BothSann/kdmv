@@ -12,7 +12,7 @@ export default function Home() {
   return (
     <>
       <CustomerHomePage />
-      <div className="p-4 bg-gray-100 m-4 rounded">
+      <div className="p-4 m-4 rounded">
         <h2 className="font-bold text-lg mb-2">Auth Debug Info:</h2>
         <p>
           <strong>Loading:</strong> {isLoading ? "Yes" : "No"}

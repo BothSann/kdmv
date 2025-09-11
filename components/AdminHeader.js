@@ -12,11 +12,11 @@ export default function AdminHeader() {
   const fullName = `${profile?.first_name} ${profile?.last_name}`;
 
   return (
-    <header className="flex justify-between items-center py-4 px-8 border-b border-zinc-200 dark:border-zinc-800">
+    <header className="flex justify-between items-center py-4 px-8 border-b border-border">
       <SidebarTrigger />
 
       <div className="flex items-center gap-4">
-        <div className="flex items-center gap-2.5 border-r border-zinc-200 dark:border-zinc-800 pr-4">
+        <div className="flex items-center gap-2.5 border-r border-border pr-4">
           <div className="relative w-10 h-10 aspect-square">
             <Image
               src={profile?.avatar_url}

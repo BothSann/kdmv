@@ -1,4 +1,4 @@
-import { Home, Inbox, Search, Settings, Users } from "lucide-react";
+import { Home, Boxes, Search, Settings, Users, FileCheck } from "lucide-react";
 
 import {
   Sidebar,
@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/sidebar";
 import Logo from "./Logo";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
+
 import LogoutButton from "@/components/LogoutButton";
 
 // Menu items.
@@ -26,7 +26,12 @@ const items = [
   {
     title: "Products",
     url: "/admin/products",
-    icon: Inbox,
+    icon: Boxes,
+  },
+  {
+    title: "Orders",
+    url: "",
+    icon: FileCheck,
   },
   {
     title: "Users",
@@ -48,8 +53,8 @@ const items = [
 export function AdminSidebar() {
   return (
     <Sidebar>
-      <SidebarContent className="border-r border-zinc-50 dark:border-zinc-800 ">
-        <SidebarGroup className="px-4 py-6 gap-y-8">
+      <SidebarContent>
+        <SidebarGroup className="px-4 pt-10 gap-y-8">
           <SidebarGroupLabel className="flex justify-start items-center">
             <Logo width="w-32" />
           </SidebarGroupLabel>
@@ -73,7 +78,7 @@ export function AdminSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter className="border-r border-zinc-50 dark:border-zinc-800">
+      <SidebarFooter>
         <LogoutButton />
       </SidebarFooter>
     </Sidebar>
