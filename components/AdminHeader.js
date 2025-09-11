@@ -12,14 +12,17 @@ export default function AdminHeader() {
   const fullName = `${profile?.first_name} ${profile?.last_name}`;
 
   return (
-    <header className="flex justify-between items-center py-4 px-8 border-b border-border">
+    <header className="flex justify-between items-center py-4 px-8 border-b border-border sticky top-0 z-50 bg-background">
       <SidebarTrigger />
 
       <div className="flex items-center gap-4">
         <div className="flex items-center gap-2.5 border-r border-border pr-4">
           <div className="relative w-10 h-10 aspect-square">
             <Image
-              src={profile?.avatar_url}
+              src={
+                profile?.avatar_url ||
+                "https://rbcppmhhbzilsypviyrg.supabase.co/storage/v1/object/public/clothes-images/Default_pfp%20(1).jpg"
+              }
               alt="Admin Avatar"
               fill
               quality={80}

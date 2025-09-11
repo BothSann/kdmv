@@ -1,0 +1,147 @@
+"use client";
+
+import { ChevronLeft } from "lucide-react";
+import Link from "next/link";
+import { Button } from "./ui/button";
+import { useFormStatus } from "react-dom";
+import { Input } from "./ui/input";
+import Logo from "./Logo";
+import { toast } from "sonner";
+import { useState } from "react";
+import { registerAdminAction } from "@/lib/actions";
+
+export default function AdminCreateForm() {
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    const formData = new FormData(event.target);
+
+    const adminData = {
+      first_name: formData.get("first_name"),
+      last_name: formData.get("last_name"),
+      email: formData.get("email"),
+      password: formData.get("password"),
+    };
+
+    const toastId = toast.loading("Creating admin...");
+
+    if (password !== confirmPassword) {
+      toast.error("Passwords do not match!", { id: toastId });
+      return;
+    }
+
+    try {
+      const { success, error, message } = await registerAdminAction(adminData);
+
+      if (error) {
+        toast.error(error, { id: toastId });
+      }
+
+      if (success) {
+        toast.success(message, { id: toastId });
+        event.target.reset();
+
+        setPassword("");
+        setConfirmPassword("");
+      }
+    } catch (error) {
+      toast.error(error.message, { id: toastId });
+    }
+  };
+
+  return (
+    <form className="text-base" onSubmit={handleSubmit}>
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center gap-4">
+            <Button variant="outline" asChild>
+              <Link href="/admin/users">
+                <ChevronLeft />
+              </Link>
+            </Button>
+
+            <h2 className="text-2xl font-semibold">Create Admin</h2>
+          </div>
+          <div className="flex gap-3">
+            <Button
+              className="px-4 py-2"
+              variant="outline"
+              type="button"
+              asChild
+            >
+              <Link href="/admin/users">Cancel</Link>
+            </Button>
+            <SubmitButton />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1">
+          <div className="rounded-lg p-6 shadow-sm border border-border bg-card">
+            <h3 className="text-xl font-medium mb-6">Admin Information</h3>
+
+            <div className="grid grid-cols-[1fr_1fr] gap-10">
+              <div className="space-y-4">
+                <div>
+                  <label className="block font-medium mb-3">First Name</label>
+                  <Input type="text" name="first_name" required />
+                </div>
+                <div>
+                  <label className="block font-medium mb-3">Last Name</label>
+                  <Input type="text" name="last_name" required />
+                </div>
+                <div>
+                  <label className="block font-medium mb-3">Email</label>
+                  <Input type="email" name="email" required />
+                </div>
+                <div>
+                  <label className="block font-medium mb-3">Password</label>
+                  <Input
+                    type="password"
+                    name="password"
+                    required
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                </div>
+                <div>
+                  <label className="block font-medium mb-3">
+                    Confirm Password
+                  </label>
+                  <Input
+                    type="password"
+                    name="confirm_password"
+                    required
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                  />
+                  {password !== confirmPassword && (
+                    <p className="text-destructive text-sm mt-3">
+                      Passwords do not match!
+                    </p>
+                  )}
+                </div>
+              </div>
+              <div className="flex justify-center items-center">
+                <Logo width="w-64" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  );
+}
+
+function SubmitButton() {
+  const { pending } = useFormStatus();
+
+  return (
+    <Button type="submit" className="px-4 py-2" disabled={pending}>
+      {pending ? "Creating..." : "Create Admin"}
+    </Button>
+  );
+}
