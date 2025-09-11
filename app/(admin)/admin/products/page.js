@@ -1,10 +1,10 @@
 import Link from "next/link";
-import ProductsTable from "@/components/ProductsTable";
-import Loading from "./loading";
+import ProductTable from "@/components/ProductTable";
 
 import { Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
+import Spinner from "@/components/Spinner";
 export default async function AdminProductsPage() {
   return (
     <div>
@@ -18,8 +18,8 @@ export default async function AdminProductsPage() {
         </Button>
       </div>
 
-      <Suspense fallback={<Loading />}>
-        <ProductsTable />
+      <Suspense fallback={<Spinner />}>
+        <ProductTable />
       </Suspense>
     </div>
   );
