@@ -65,29 +65,7 @@ export default function LoginForm() {
         <CardContent>
           <form onSubmit={handleSubmit}>
             <div className="flex flex-col gap-6">
-              <div className="grid gap-3">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  name="email"
-                  type="email"
-                  placeholder="m@example.com"
-                  required
-                />
-              </div>
-              <div className="grid gap-3">
-                <div className="flex items-center">
-                  <Label htmlFor="password">Password</Label>
-                  <a
-                    href="#"
-                    className="ml-auto inline-block underline-offset-4 hover:underline text-sm"
-                  >
-                    Forgot your password?
-                  </a>
-                </div>
-                <Input id="password" name="password" type="password" required />
-              </div>
-
+              <LoginFormField />
               <SubmitButton />
             </div>
             <div className="mt-4 text-sm text-center">
@@ -103,6 +81,44 @@ export default function LoginForm() {
         </CardContent>
       </Card>
     </div>
+  );
+}
+
+function LoginFormField() {
+  const { pending } = useFormStatus();
+
+  return (
+    <>
+      <div className="grid gap-3">
+        <Label htmlFor="email">Email</Label>
+        <Input
+          id="email"
+          name="email"
+          type="email"
+          placeholder="m@example.com"
+          disabled={pending}
+          required
+        />
+      </div>
+      <div className="grid gap-3">
+        <div className="flex items-center">
+          <Label htmlFor="password">Password</Label>
+          <a
+            href="#"
+            className="ml-auto inline-block underline-offset-4 hover:underline text-sm"
+          >
+            Forgot your password?
+          </a>
+        </div>
+        <Input
+          id="password"
+          name="password"
+          type="password"
+          disabled={pending}
+          required
+        />
+      </div>
+    </>
   );
 }
 
