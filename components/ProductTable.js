@@ -8,7 +8,7 @@ import {
 import ProductRow from "./ProductRow";
 import { getAllProducts } from "@/lib/apiProducts";
 
-export default async function ProductsTable() {
+export default async function ProductTable() {
   const { products } = await getAllProducts();
 
   // console.log(products);
