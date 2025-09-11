@@ -5,8 +5,8 @@ import AuthProvider from "@/components/AuthProvider";
 import "./globals.css";
 
 export const metadata = {
-  title: "Zando Cambodia",
-  description: "Zando Cambodia",
+  title: "KDMV Cambodia",
+  description: "KDMV Cambodia",
 };
 
 export default function RootLayout({ children }) {

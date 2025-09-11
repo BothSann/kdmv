@@ -10,6 +10,7 @@ export default function AdminLayout({ children }) {
       <SidebarProvider>
         <div className="flex h-screen w-full">
           <AdminSidebar />
+
           <main className="flex-1">
             <AdminHeader />
 
