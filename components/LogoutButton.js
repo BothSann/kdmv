@@ -32,8 +32,8 @@ export default function LogoutButton() {
       className="flex items-center w-full cursor-pointer py-5"
       onClick={handleLogout}
     >
-      <LogOut />
-      <span>Logout</span>
+      <LogOut className="text-background" />
+      Logout
     </Button>
   );
 }
