@@ -93,14 +93,14 @@ function ProductDetailCarousel({ product }) {
                 alt="carousel1"
                 fill
                 quality={100}
-                className="rounded-lg object-cover object-top"
+                className="rounded-lg object-cover object-center"
               />
             </div>
           </CarouselItem>
           <CarouselItem>
             <div className="relative aspect-[1/1]">
               <Image
-                src="/clothes1.jpg"
+                src="/kdmv-clothes-1.jpg"
                 alt="carousel2"
                 fill
                 quality={100}
@@ -112,7 +112,7 @@ function ProductDetailCarousel({ product }) {
           <CarouselItem>
             <div className="relative aspect-[1/1]">
               <Image
-                src="/clothes1.jpg"
+                src="/kdmv-clothes-1.jpg"
                 alt="carousel3"
                 fill
                 quality={100}
@@ -131,7 +131,7 @@ function ProductDetailCarousel({ product }) {
           <CarouselItem className="basis-1/3">
             <div className="relative aspect-[1/1]">
               <Image
-                src="/clothes1.jpg"
+                src="/kdmv-clothes-1.jpg"
                 alt="carousel1"
                 fill
                 quality={100}
@@ -142,7 +142,7 @@ function ProductDetailCarousel({ product }) {
           <CarouselItem className="basis-1/3">
             <div className="relative aspect-[1/1]">
               <Image
-                src="/clothes1.jpg"
+                src="/kdmv-clothes-1.jpg"
                 alt="carousel1"
                 fill
                 quality={100}
@@ -153,7 +153,7 @@ function ProductDetailCarousel({ product }) {
           <CarouselItem className="basis-1/3">
             <div className="relative aspect-[1/1]">
               <Image
-                src="/clothes1.jpg"
+                src="/kdmv-clothes-1.jpg"
                 alt="carousel1"
                 fill
                 quality={100}

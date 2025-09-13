@@ -15,7 +15,7 @@ export default function AdminRegisterPage() {
         <Button asChild>
           <Link href="/admin/users/create">
             <Plus />
-            <span>Create Admin</span>
+            Create Admin
           </Link>
         </Button>
       </div>

@@ -13,7 +13,7 @@ export default async function AdminProductsPage() {
         <Button asChild>
           <Link href="/admin/products/create">
             <Plus />
-            <span>Add Product</span>
+            Add Product
           </Link>
         </Button>
       </div>
