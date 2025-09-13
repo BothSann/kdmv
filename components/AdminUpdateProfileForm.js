@@ -20,6 +20,7 @@ import Link from "next/link";
 import { toast } from "sonner";
 import { updateCurrentAdminProfileAction } from "@/lib/actions";
 import { Trash, User } from "lucide-react";
+import { sanitizeName } from "@/lib/utils";
 
 // Separate component for form status
 function FormStatus() {
@@ -77,6 +78,11 @@ export default function AdminUpdateProfileForm() {
     } finally {
       setIsPending(false);
     }
+  };
+
+  const handleNameBlur = (setter) => (event) => {
+    const cleaned = sanitizeName(event.target.value);
+    setter(cleaned);
   };
 
   const handleFileChange = (event) => {
@@ -183,8 +189,9 @@ export default function AdminUpdateProfileForm() {
             name="first_name"
             value={first_name}
             onChange={(e) => setFirst_name(e.target.value)}
-            required
+            onBlur={handleNameBlur(setFirst_name)}
             disabled={isPending}
+            required
           />
         </div>
 
@@ -195,8 +202,9 @@ export default function AdminUpdateProfileForm() {
             name="last_name"
             value={last_name}
             onChange={(e) => setLast_name(e.target.value)}
-            required
+            onBlur={handleNameBlur(setLast_name)}
             disabled={isPending}
+            required
           />
         </div>
 
