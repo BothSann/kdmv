@@ -67,6 +67,7 @@ const useAuthStore = create((set, get) => ({
       console.log("Setting profile:", profile);
       set({ profile: profile });
       set({ role: profile.role });
+      console.log("Profile set:", profile);
     } else {
       console.error("Profile fetch error:", profileError);
     }
