@@ -186,7 +186,7 @@ export default function ProductCreateEditForm({
 
       if (success) {
         toast.success(message, { id: toastId });
-        router.push("/admin/products");
+        router.push(`/admin/products/${existingProduct.id}`);
       }
     } catch (err) {
       toast.error(err.message, { id: toastId });
