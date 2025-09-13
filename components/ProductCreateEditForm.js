@@ -272,7 +272,12 @@ export default function ProductCreateEditForm({
                 <p className="text-sm text-muted-foreground mb-4">
                   PNG or JPG (max. 5MB)
                 </p>
-                <Input type="file" multiple className="text-muted-foreground" />
+                <Input
+                  type="file"
+                  multiple
+                  accept="image/*"
+                  className="text-muted-foreground"
+                />
               </div>
 
               {/* Banner Image URL */}
@@ -282,6 +287,7 @@ export default function ProductCreateEditForm({
                 </label>
                 <Input
                   type="file"
+                  accept="image/*"
                   name="banner_image_url"
                   className="text-muted-foreground"
                 />

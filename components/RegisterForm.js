@@ -78,7 +78,7 @@ export default function RegisterForm() {
       <CardContent>
         <form onSubmit={handleSubmit}>
           <div className="flex flex-col gap-6">
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 gap-4">
               <div className="grid gap-3">
                 <Label htmlFor="first_name">First Name</Label>
                 <Input
@@ -101,7 +101,7 @@ export default function RegisterForm() {
               </div>
             </div>
 
-            <div className="grid gap-3">
+            <div className="space-y-4">
               <Label htmlFor="email">Email</Label>
               <Input
                 name="email"
@@ -111,12 +111,12 @@ export default function RegisterForm() {
                 required
               />
             </div>
-            <div className="grid gap-3">
+            <div className="space-y-4">
               <Label htmlFor="password">Password</Label>
               <Input name="password" id="password" type="password" required />
             </div>
-            <div className="grid grid-cols-2 gap-3">
-              <div className="grid gap-3">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-4">
                 <Label htmlFor="gender">Gender</Label>
                 <Select name="gender" value={gender} onValueChange={setGender}>
                   <SelectTrigger className="w-full">
@@ -131,7 +131,7 @@ export default function RegisterForm() {
                   </SelectContent>
                 </Select>
               </div>
-              <div className="grid gap-3">
+              <div className="space-y-4">
                 <Label htmlFor="telephone">Telephone</Label>
                 <Input
                   name="telephone"
@@ -142,8 +142,8 @@ export default function RegisterForm() {
                 />
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-3">
-              <div className="grid gap-3">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-4">
                 <Label htmlFor="country">Country</Label>
                 <Select
                   name="country"
@@ -158,7 +158,7 @@ export default function RegisterForm() {
                   </SelectContent>
                 </Select>
               </div>
-              <div className="grid gap-3">
+              <div className="space-y-4">
                 <Label htmlFor="city_province">City/Province</Label>
                 <Select
                   name="city_province"
