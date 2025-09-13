@@ -3,7 +3,14 @@
 import { useState, useMemo } from "react";
 import { CircleDollarSign, LayoutGrid, Package, Tag } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { formatCurrency } from "@/lib/utils";
@@ -164,9 +171,54 @@ export default function ProductDetailsWithSelection({ product }) {
               </Table>
             </div>
           </div>
+          {/* Product Quantity Details With All Color/Size x Quantity */}
+          <div className="space-y-4 mt-10">
+            <h3 className="text-xl font-semibold">
+              Inventory by Color & Size:
+            </h3>
+
+            <div className="rounded-md border">
+              <Table>
+                <TableHeader>
+                  <TableRow className="bg-muted text-lg">
+                    <TableHead>Color</TableHead>
+                    {product.available_sizes.map((size) => (
+                      <TableHead key={size.id} className="text-center">
+                        {size.name}
+                      </TableHead>
+                    ))}
+                  </TableRow>
+                </TableHeader>
+
+                <TableBody>
+                  {product.available_colors.map((color) => (
+                    <TableRow key={color.id} className="text-base">
+                      <TableCell className="font-medium">
+                        {color.name}
+                      </TableCell>
+                      {product.available_sizes.map((size) => {
+                        const variant = product.variants_lookup.find(
+                          (v) =>
+                            v.colors?.id === color.id && v.sizes?.id === size.id
+                        );
+                        return (
+                          <TableCell
+                            key={`${color.id}-${size.id}`}
+                            className="text-center"
+                          >
+                            {variant ? variant.quantity : "-"}
+                          </TableCell>
+                        );
+                      })}
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          </div>
 
           {/* Variant Selection */}
-          <div className="grid grid-cols-max gap-4 gap-y-8 mt-6">
+          <div className="grid grid-cols-max gap-4 gap-y-8 mt-10">
             {/* Available Colors */}
             <div className="flex flex-col gap-2">
               <h3 className="text-xl font-semibold">Available Colors:</h3>
