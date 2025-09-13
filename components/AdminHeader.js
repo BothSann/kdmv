@@ -6,6 +6,7 @@ import Image from "next/image";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Bell, User } from "lucide-react";
 import { ModeToggle } from "@/components/ModeToggle";
+import Link from "next/link";
 
 export default function AdminHeader() {
   const { profile } = useAuthStore();
@@ -18,28 +19,34 @@ export default function AdminHeader() {
       <div className="flex items-center gap-4">
         <div className="flex items-center gap-2.5 border-r border-border pr-4">
           <div className="relative w-10 h-10 aspect-square">
-            <Image
-              src={
-                profile?.avatar_url ||
-                "https://rbcppmhhbzilsypviyrg.supabase.co/storage/v1/object/public/clothes-images/Default_pfp%20(1).jpg"
-              }
-              alt="Admin Avatar"
-              fill
-              quality={80}
-              sizes="100vw"
-              className="object-cover object-center rounded-full"
-            />
+            {profile?.avatar_url ? (
+              <Image
+                src={profile?.avatar_url}
+                alt="Admin Avatar"
+                fill
+                quality={80}
+                sizes="100vw"
+                className="object-cover object-center rounded-full"
+              />
+            ) : (
+              <div className="w-full h-full bg-secondary rounded-full flex items-center justify-center">
+                <User className="w-2/3 h-2/3 text-ring" />
+              </div>
+            )}
           </div>
           <span>{fullName}</span>
         </div>
-        <ul className="flex items-center gap-4">
-          <li className="cursor-pointer">
-            <User size={20} />
-          </li>
-          <li className="cursor-pointer">
-            <Bell size={20} />
-          </li>
-          <li className="cursor-pointer">
+        <ul className="flex items-center gap-0.5">
+          <Link
+            href="/admin/account/profile"
+            className="cursor-pointer p-2 hover:bg-accent"
+          >
+            <User size={22} />
+          </Link>
+          <Link href="" className="cursor-pointer p-2 hover:bg-accent">
+            <Bell size={22} />
+          </Link>
+          <li className="cursor-pointer p-2">
             <ModeToggle />
           </li>
         </ul>

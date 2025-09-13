@@ -30,7 +30,7 @@ const items = [
   },
   {
     title: "Orders",
-    url: "",
+    url: "/admin/orders",
     icon: FileCheck,
   },
   {
@@ -54,8 +54,8 @@ export function AdminSidebar() {
   return (
     <Sidebar>
       <SidebarContent>
-        <SidebarGroup className="px-4 pt-10 gap-y-8">
-          <SidebarGroupLabel className="flex justify-start items-center">
+        <SidebarGroup className="px-4 pt-10 gap-y-12">
+          <SidebarGroupLabel className="flex justify-start items-center px-10">
             <Logo width="w-32" />
           </SidebarGroupLabel>
           <SidebarGroupContent>
@@ -64,7 +64,7 @@ export function AdminSidebar() {
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton
                     size="lg"
-                    className="text-base gap-2.5 rounded-none"
+                    className="text-lg gap-4 rounded-none px-10"
                     asChild
                   >
                     <Link href={item.url}>

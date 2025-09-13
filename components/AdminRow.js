@@ -1,4 +1,5 @@
 import { TableRow, TableCell } from "@/components/ui/table";
+import { User } from "lucide-react";
 import Image from "next/image";
 
 export default function AdminRow({ admin }) {
@@ -7,19 +8,22 @@ export default function AdminRow({ admin }) {
   return (
     <TableRow className="text-base">
       <TableCell>
-        <div className="flex items-center gap-4">
-          <div className="relative w-12 h-12">
-            <Image
-              src={
-                admin.avatar_url ||
-                "https://rbcppmhhbzilsypviyrg.supabase.co/storage/v1/object/public/clothes-images/Default_pfp%20(1).jpg"
-              }
-              alt={fullName}
-              fill
-              loading="lazy"
-              quality={100}
-              className="object-cover object-center"
-            />
+        <div className="flex items-center gap-2.5">
+          <div className="relative w-10 h-10">
+            {admin.avatar_url ? (
+              <Image
+                src={admin.avatar_url}
+                alt={fullName}
+                fill
+                loading="lazy"
+                quality={100}
+                className="object-cover object-center rounded-full"
+              />
+            ) : (
+              <div className="w-full h-full bg-secondary rounded-full flex items-center justify-center">
+                <User className="w-2/3 h-2/3 text-ring" />
+              </div>
+            )}
           </div>
           <p>{fullName}</p>
         </div>

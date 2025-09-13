@@ -9,6 +9,7 @@ import Logo from "./Logo";
 import { toast } from "sonner";
 import { useState } from "react";
 import { registerAdminAction } from "@/lib/actions";
+import { Label } from "./ui/label";
 
 export default function AdminCreateForm() {
   const [password, setPassword] = useState("");
@@ -81,24 +82,26 @@ export default function AdminCreateForm() {
 
         <div className="grid grid-cols-1">
           <div className="rounded-lg p-6 shadow-sm border border-border bg-card">
-            <h3 className="text-xl font-medium mb-6">Admin Information</h3>
+            <h2 className="text-2xl font-medium">
+              Please fill in the information below
+            </h2>
 
-            <div className="grid grid-cols-[1fr_1fr] gap-10">
+            <div className="grid grid-cols-[1fr_1fr] gap-10 mt-10">
               <div className="space-y-4">
-                <div>
-                  <label className="block font-medium mb-3">First Name</label>
+                <div className="space-y-4">
+                  <Label htmlFor="first_name">First Name</Label>
                   <Input type="text" name="first_name" required />
                 </div>
-                <div>
-                  <label className="block font-medium mb-3">Last Name</label>
+                <div className="space-y-4">
+                  <Label htmlFor="last_name">Last Name</Label>
                   <Input type="text" name="last_name" required />
                 </div>
-                <div>
-                  <label className="block font-medium mb-3">Email</label>
+                <div className="space-y-4">
+                  <Label htmlFor="email">Email</Label>
                   <Input type="email" name="email" required />
                 </div>
-                <div>
-                  <label className="block font-medium mb-3">Password</label>
+                <div className="space-y-4">
+                  <Label htmlFor="password">Password</Label>
                   <Input
                     type="password"
                     name="password"
@@ -107,10 +110,8 @@ export default function AdminCreateForm() {
                     onChange={(e) => setPassword(e.target.value)}
                   />
                 </div>
-                <div>
-                  <label className="block font-medium mb-3">
-                    Confirm Password
-                  </label>
+                <div className="space-y-4">
+                  <Label htmlFor="confirm_password">Confirm Password</Label>
                   <Input
                     type="password"
                     name="confirm_password"
