@@ -11,12 +11,19 @@ import { useState } from "react";
 import { registerAdminAction } from "@/lib/actions";
 import { Label } from "./ui/label";
 
+function FormStatus() {
+  const { pending } = useFormStatus();
+  return pending ? "Creating..." : "Create Admin";
+}
+
 export default function AdminCreateForm() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [isPending, setIsPending] = useState(false);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    setIsPending(true);
 
     const formData = new FormData(event.target);
 
@@ -50,6 +57,8 @@ export default function AdminCreateForm() {
       }
     } catch (error) {
       toast.error(error.message, { id: toastId });
+    } finally {
+      setIsPending(false);
     }
   };
 
@@ -59,24 +68,13 @@ export default function AdminCreateForm() {
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-4">
-            <Button variant="outline" asChild>
+            <Button variant="outline" asChild disabled={isPending}>
               <Link href="/admin/users">
                 <ChevronLeft />
               </Link>
             </Button>
 
             <h2 className="text-2xl font-semibold">Create Admin</h2>
-          </div>
-          <div className="flex gap-3">
-            <Button
-              className="px-4 py-2"
-              variant="outline"
-              type="button"
-              asChild
-            >
-              <Link href="/admin/users">Cancel</Link>
-            </Button>
-            <SubmitButton />
           </div>
         </div>
 
@@ -90,15 +88,30 @@ export default function AdminCreateForm() {
               <div className="space-y-4">
                 <div className="space-y-4">
                   <Label htmlFor="first_name">First Name</Label>
-                  <Input type="text" name="first_name" required />
+                  <Input
+                    type="text"
+                    name="first_name"
+                    required
+                    disabled={isPending}
+                  />
                 </div>
                 <div className="space-y-4">
                   <Label htmlFor="last_name">Last Name</Label>
-                  <Input type="text" name="last_name" required />
+                  <Input
+                    type="text"
+                    name="last_name"
+                    required
+                    disabled={isPending}
+                  />
                 </div>
                 <div className="space-y-4">
                   <Label htmlFor="email">Email</Label>
-                  <Input type="email" name="email" required />
+                  <Input
+                    type="email"
+                    name="email"
+                    required
+                    disabled={isPending}
+                  />
                 </div>
                 <div className="space-y-4">
                   <Label htmlFor="password">Password</Label>
@@ -108,6 +121,7 @@ export default function AdminCreateForm() {
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
+                    disabled={isPending}
                   />
                 </div>
                 <div className="space-y-4">
@@ -118,12 +132,31 @@ export default function AdminCreateForm() {
                     required
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
+                    disabled={isPending}
                   />
                   {password !== confirmPassword && (
                     <p className="text-destructive text-sm mt-3">
                       Passwords do not match!
                     </p>
                   )}
+                </div>
+                <div className="flex justify-end gap-3">
+                  <Button
+                    className="px-4 py-2"
+                    variant="outline"
+                    type="button"
+                    asChild
+                    disabled={isPending}
+                  >
+                    <Link href="/admin/users">Cancel</Link>
+                  </Button>
+                  <Button
+                    type="submit"
+                    className="px-4 py-2"
+                    disabled={isPending}
+                  >
+                    <FormStatus />
+                  </Button>
                 </div>
               </div>
               <div className="flex justify-center items-center">
@@ -134,15 +167,5 @@ export default function AdminCreateForm() {
         </div>
       </div>
     </form>
-  );
-}
-
-function SubmitButton() {
-  const { pending } = useFormStatus();
-
-  return (
-    <Button type="submit" className="px-4 py-2" disabled={pending}>
-      {pending ? "Creating..." : "Create Admin"}
-    </Button>
   );
 }
