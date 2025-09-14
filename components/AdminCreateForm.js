@@ -134,11 +134,13 @@ export default function AdminCreateForm() {
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     disabled={isPending}
                   />
-                  {password !== confirmPassword && (
-                    <p className="text-destructive text-sm mt-3">
-                      Passwords do not match!
-                    </p>
-                  )}
+                  {password !== confirmPassword &&
+                    password &&
+                    confirmPassword && (
+                      <p className="text-destructive text-sm mt-3">
+                        Passwords do not match!
+                      </p>
+                    )}
                 </div>
                 <div className="flex justify-end gap-3">
                   <Button
@@ -153,7 +155,7 @@ export default function AdminCreateForm() {
                   <Button
                     type="submit"
                     className="px-4 py-2"
-                    disabled={isPending}
+                    disabled={isPending || password !== confirmPassword}
                   >
                     <FormStatus />
                   </Button>
