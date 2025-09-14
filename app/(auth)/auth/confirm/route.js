@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { createProfileForConfirmedUser } from "@/lib/apiAuth";
+import { createProfileForConfirmedUser } from "@/lib/helpers";
 import { createSupabaseServerClient } from "@/utils/supabase/server";
 
 // Creating a handler to a GET request to route /auth/confirm
