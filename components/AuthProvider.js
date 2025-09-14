@@ -8,6 +8,8 @@ export default function AuthProvider({ children }) {
 
   useEffect(() => {
     const supabase = createSupabaseFrontendClient();
+
+    // INITIALIZE AUTH
     initAuth();
 
     const {
@@ -42,6 +44,9 @@ export default function AuthProvider({ children }) {
           clearAuth();
           break;
 
+        case "USER_UPDATED":
+          console.log("USER_UPDATED", session);
+          break;
         default:
           break;
       }
