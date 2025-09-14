@@ -1,7 +1,11 @@
+import AdminChangePasswordForm from "@/components/AdminChangePasswordForm";
+
 export default function AccountPasswordPage() {
   return (
     <div>
-      <h1>Account Password</h1>
+      <h2 className="text-2xl font-bold">Change password</h2>
+
+      <AdminChangePasswordForm />
     </div>
   );
 }
