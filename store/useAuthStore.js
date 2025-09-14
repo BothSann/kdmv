@@ -1,8 +1,6 @@
 import { create } from "zustand";
 import { createSupabaseFrontendClient } from "@/utils/supabase/client";
 
-const supabase = createSupabaseFrontendClient();
-
 const useAuthStore = create((set, get) => ({
   // 1. User State
   user: null,
@@ -18,6 +16,7 @@ const useAuthStore = create((set, get) => ({
 
   initAuth: async () => {
     console.log("Initializing auth...");
+    const supabase = createSupabaseFrontendClient();
     // 1. Get the current session
     const {
       data: { session },
@@ -55,6 +54,8 @@ const useAuthStore = create((set, get) => ({
   // 3. Fetch User Profile and Role
   fetchUserProfile: async (userId) => {
     console.log("Fetching profile for user:", userId);
+
+    const supabase = createSupabaseFrontendClient();
     const { data: profile, error: profileError } = await supabase
       .from("profiles")
       .select("*")
@@ -75,6 +76,7 @@ const useAuthStore = create((set, get) => ({
 
   logoutUser: async () => {
     try {
+      const supabase = createSupabaseFrontendClient();
       const { error } = await supabase.auth.signOut();
 
       if (error) {
@@ -86,6 +88,7 @@ const useAuthStore = create((set, get) => ({
       return { success: true, message: "Logged out successfully!" };
     } catch (err) {
       console.error("Unexpected error:", err);
+      return { error: "An unexpected error occurred during logout" };
     }
   },
 
