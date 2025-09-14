@@ -64,7 +64,7 @@ export function AdminSidebar() {
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton
                     size="lg"
-                    className="text-lg gap-4 rounded-none px-10"
+                    className="text-base gap-4 rounded-none px-10"
                     asChild
                   >
                     <Link href={item.url}>

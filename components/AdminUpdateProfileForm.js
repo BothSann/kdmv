@@ -298,15 +298,14 @@ export default function AdminUpdateProfileForm() {
         <div className="grid col-span-2 gap-3">
           <div className="flex justify-end gap-3">
             <Button
-              className="px-4 py-2"
               variant="outline"
               type="button"
               asChild
               disabled={isPending}
             >
-              <Link href="/admin/users">Cancel</Link>
+              <Link href="/admin/account/profile">Cancel</Link>
             </Button>
-            <Button type="submit" className="px-4 py-2" disabled={isPending}>
+            <Button type="submit" disabled={isPending}>
               <FormStatus />
             </Button>
           </div>
