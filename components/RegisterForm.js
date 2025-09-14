@@ -85,7 +85,7 @@ export default function RegisterForm() {
                   name="first_name"
                   id="first_name"
                   type="text"
-                  placeholder="John"
+                  placeholder="KDMV"
                   required
                 />
               </div>
@@ -95,7 +95,7 @@ export default function RegisterForm() {
                   name="last_name"
                   id="last_name"
                   type="text"
-                  placeholder="Doe"
+                  placeholder="Digital"
                   required
                 />
               </div>
@@ -107,7 +107,7 @@ export default function RegisterForm() {
                 name="email"
                 id="email"
                 type="email"
-                placeholder="john@doe.com"
+                placeholder="m@example.com"
                 required
               />
             </div>
@@ -137,7 +137,7 @@ export default function RegisterForm() {
                   name="telephone"
                   id="telephone"
                   type="tel"
-                  placeholder="1234567890"
+                  placeholder="0123456789"
                   required
                 />
               </div>

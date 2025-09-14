@@ -206,7 +206,7 @@ export default function ProductDetailsWithSelection({ product }) {
                             key={`${color.id}-${size.id}`}
                             className="text-center"
                           >
-                            {variant ? variant.quantity : "-"}
+                            {variant ? variant.quantity : "Out of stock"}
                           </TableCell>
                         );
                       })}
