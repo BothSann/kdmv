@@ -73,23 +73,23 @@ export default function ProductDetailsWithSelection({ product }) {
 
   return (
     <div>
-      <div className="grid grid-cols-4 gap-4 items-start mb-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-start mb-4">
         {/* Price */}
-        <div className="hover:border-primary/30 bg-muted grid auto-cols-max grid-flow-col gap-4 rounded-lg border p-4">
-          <CircleDollarSign className="text-muted-foreground" />
+        <div className="hover:border-primary/30 bg-muted border p-4 flex items-center gap-4">
+          <CircleDollarSign className="text-muted-foreground self-start" />
           <div className="flex flex-col gap-1">
             <span className="text-sm text-muted-foreground">Base Price</span>
-            <span className="text-lg font-semibold">
+            <span className="font-semibold">
               {formatCurrency(product.base_price)}
             </span>
           </div>
         </div>
 
-        <div className="hover:border-primary/30 bg-muted grid auto-cols-max grid-flow-col gap-4 rounded-lg border p-4">
-          <Tag className="text-muted-foreground" />
+        <div className="hover:border-primary/30 bg-muted border p-4 flex items-center gap-4">
+          <Tag className="text-muted-foreground self-start" />
           <div className="flex flex-col gap-1">
             <span className="text-sm text-muted-foreground">Discount</span>
-            <span className="text-lg font-semibold">
+            <span className="font-semibold">
               {product.has_discount ? (
                 <>
                   {formatCurrency(product.discounted_price)}{" "}
@@ -105,24 +105,20 @@ export default function ProductDetailsWithSelection({ product }) {
         </div>
 
         {/* Dynamic Stock Display */}
-        <div className="hover:border-primary/30 bg-muted grid auto-cols-max grid-flow-col gap-4 rounded-lg border p-4">
-          <Package className="text-muted-foreground" />
+        <div className="hover:border-primary/30 bg-muted border p-4 flex items-center gap-4">
+          <Package className="text-muted-foreground self-start" />
           <div className="flex flex-col gap-1">
             <span className="text-sm text-muted-foreground">{stockLabel}</span>
-            <span className="text-lg font-semibold">{displayStock}</span>
+            <span className="font-semibold">{displayStock}</span>
           </div>
         </div>
 
-        {/* Category / Subcategory */}
-        <div className="hover:border-primary/30 bg-muted grid auto-cols-max grid-flow-col gap-4 rounded-lg border p-4">
-          <LayoutGrid className="text-muted-foreground" />
+        {/* Category */}
+        <div className="hover:border-primary/30 bg-muted border p-4 flex items-center gap-4">
+          <LayoutGrid className="text-muted-foreground self-start" />
           <div className="flex flex-col gap-1">
-            <span className="text-sm text-muted-foreground">
-              Category / Subcategory
-            </span>
-            <span className="text-lg font-semibold">
-              {product.category_name} / {product.subcategory_name}
-            </span>
+            <span className="text-sm text-muted-foreground">Category</span>
+            <span className="font-semibold">{product.category_name}</span>
           </div>
         </div>
       </div>
@@ -130,7 +126,7 @@ export default function ProductDetailsWithSelection({ product }) {
       {/* Below the grid */}
       <Card>
         <CardContent>
-          <div className="grid grid-cols-[2fr_1fr] gap-4">
+          <div className="grid grid-cols-1 lg:grid-cols-[1.5fr_2fr] gap-8">
             {/* Product Description */}
             <div className="flex flex-col gap-2">
               <h3 className="text-xl font-semibold">Product Description:</h3>
@@ -140,8 +136,8 @@ export default function ProductDetailsWithSelection({ product }) {
             </div>
 
             {/* Product Code, Subcategory, Slug using table */}
-            <div className="rounded-md border">
-              <Table>
+            <div>
+              <Table className="border">
                 <TableBody className="text-sm">
                   <TableRow>
                     <TableCell className="font-medium">Product Code</TableCell>
@@ -177,47 +173,43 @@ export default function ProductDetailsWithSelection({ product }) {
               Inventory by Color & Size:
             </h3>
 
-            <div className="rounded-md border">
-              <Table>
-                <TableHeader>
-                  <TableRow className="bg-muted">
-                    <TableHead className="font-semibold">Color</TableHead>
-                    {product.available_sizes.map((size) => (
-                      <TableHead
-                        key={size.id}
-                        className="text-center font-medium"
-                      >
-                        {size.name}
-                      </TableHead>
-                    ))}
-                  </TableRow>
-                </TableHeader>
-
-                <TableBody>
-                  {product.available_colors.map((color) => (
-                    <TableRow key={color.id} className="text-sm">
-                      <TableCell className="font-medium">
-                        {color.name}
-                      </TableCell>
-                      {product.available_sizes.map((size) => {
-                        const variant = product.variants_lookup.find(
-                          (v) =>
-                            v.colors?.id === color.id && v.sizes?.id === size.id
-                        );
-                        return (
-                          <TableCell
-                            key={`${color.id}-${size.id}`}
-                            className="text-center"
-                          >
-                            {variant ? variant.quantity : "Out of stock"}
-                          </TableCell>
-                        );
-                      })}
-                    </TableRow>
+            <Table className="border">
+              <TableHeader>
+                <TableRow className="bg-muted">
+                  <TableHead className="font-semibold">Color</TableHead>
+                  {product.available_sizes.map((size) => (
+                    <TableHead
+                      key={size.id}
+                      className="text-center font-medium"
+                    >
+                      {size.name}
+                    </TableHead>
                   ))}
-                </TableBody>
-              </Table>
-            </div>
+                </TableRow>
+              </TableHeader>
+
+              <TableBody>
+                {product.available_colors.map((color) => (
+                  <TableRow key={color.id} className="text-sm">
+                    <TableCell className="font-medium">{color.name}</TableCell>
+                    {product.available_sizes.map((size) => {
+                      const variant = product.variants_lookup.find(
+                        (v) =>
+                          v.colors?.id === color.id && v.sizes?.id === size.id
+                      );
+                      return (
+                        <TableCell
+                          key={`${color.id}-${size.id}`}
+                          className="text-center"
+                        >
+                          {variant ? variant.quantity : "Out of stock"}
+                        </TableCell>
+                      );
+                    })}
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
           </div>
 
           {/* Variant Selection */}
@@ -239,7 +231,7 @@ export default function ProductDetailsWithSelection({ product }) {
                     />
                     <Label
                       htmlFor={color.id}
-                      className={`flex items-center justify-center px-4 py-2 text-base font-medium cursor-pointer border border-border transition-colors hover:bg-muted ${
+                      className={`flex items-center justify-center text-base px-4 py-2 font-medium cursor-pointer border border-border transition-colors hover:bg-muted ${
                         selectedColor === color.id
                           ? "bg-foreground text-background hover:bg-primary/90"
                           : ""
