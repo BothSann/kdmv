@@ -5,7 +5,6 @@ import {
   TableHead,
   TableBody,
   TableFooter,
-  TableCell,
 } from "@/components/ui/table";
 import ProductRow from "./ProductRow";
 import Pagination from "./Pagination";
@@ -13,8 +12,13 @@ import Pagination from "./Pagination";
 import { getAllProducts } from "@/lib/apiProducts";
 import { cn } from "@/lib/utils";
 
-export default async function ProductTable() {
-  const { products } = await getAllProducts();
+export default async function ProductTable({ searchParams }) {
+  const resolvedSearchParams = await searchParams;
+
+  const page = Math.max(1, Number(resolvedSearchParams?.page) || 1);
+  const { products, pagination } = await getAllProducts({ page });
+
+  if (!products.length) return null;
 
   const tableHeaders = [
     { label: "Product Name", key: "name" },
@@ -30,8 +34,6 @@ export default async function ProductTable() {
 
   // Simulate a delay
   // await new Promise((resolve) => setTimeout(resolve, 2000));
-
-  if (!products.length) return null;
 
   return (
     <Table className="mt-10 border rounded-lg">
@@ -54,7 +56,7 @@ export default async function ProductTable() {
       </TableBody>
 
       <TableFooter>
-        <Pagination />
+        <Pagination pagination={pagination} />
       </TableFooter>
     </Table>
   );
