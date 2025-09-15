@@ -4,8 +4,8 @@ import ProductTable from "@/components/ProductTable";
 import { Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
-import Spinner from "@/components/Spinner";
-export default async function AdminProductsPage() {
+import ProductTableSkeleton from "@/components/ProductTableSkeleton";
+export default async function AdminProductsPage({ searchParams }) {
   return (
     <div>
       <div className="flex justify-between items-center">
@@ -18,8 +18,8 @@ export default async function AdminProductsPage() {
         </Button>
       </div>
 
-      <Suspense fallback={<Spinner />}>
-        <ProductTable />
+      <Suspense fallback={<ProductTableSkeleton />}>
+        <ProductTable searchParams={searchParams} />
       </Suspense>
     </div>
   );
