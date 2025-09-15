@@ -7,6 +7,7 @@ import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Bell, User } from "lucide-react";
 import { ModeToggle } from "@/components/ModeToggle";
 import Link from "next/link";
+import AdminProfileDropdownMenu from "./AdminProfileDropdownMenu";
 
 export default function AdminHeader() {
   const { profile } = useAuthStore();
@@ -37,12 +38,7 @@ export default function AdminHeader() {
           <span>{fullName}</span>
         </div>
         <ul className="flex items-center gap-0.5">
-          <Link
-            href="/admin/account/profile"
-            className="cursor-pointer p-2 hover:bg-accent"
-          >
-            <User size={22} />
-          </Link>
+          <AdminProfileDropdownMenu />
           <Link href="" className="cursor-pointer p-2 hover:bg-accent">
             <Bell size={22} />
           </Link>

@@ -1,3 +1,5 @@
+"use client";
+
 import { Home, Boxes, Search, Settings, Users, FileCheck } from "lucide-react";
 
 import {
@@ -13,6 +15,8 @@ import {
 } from "@/components/ui/sidebar";
 import Logo from "./Logo";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { cn } from "@/lib/utils";
 
 import LogoutButton from "@/components/LogoutButton";
 
@@ -51,20 +55,26 @@ const items = [
 ];
 
 export function AdminSidebar() {
+  const pathname = usePathname();
   return (
     <Sidebar>
       <SidebarContent>
-        <SidebarGroup className="px-4 pt-10 gap-y-12">
-          <SidebarGroupLabel className="flex justify-start items-center px-10">
+        <SidebarGroup className={cn("px-4 pt-10 gap-y-12")}>
+          <SidebarGroupLabel
+            className={cn("flex justify-start items-center px-10")}
+          >
             <Logo width="w-32" />
           </SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu className="gap-4">
+            <SidebarMenu className={cn("gap-4")}>
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton
                     size="lg"
-                    className="text-base gap-4 rounded-none px-10"
+                    className={cn(
+                      "text-base gap-2.5 rounded-none px-10",
+                      pathname === item.url && "bg-accent"
+                    )}
                     asChild
                   >
                     <Link href={item.url}>
