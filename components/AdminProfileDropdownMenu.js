@@ -51,15 +51,18 @@ export default function AdminProfileDropdownMenu() {
               </div>
             )}
           </div>
+
           <div>
             <p className="font-medium">{fullName}</p>
-            <p className="text-sm text-muted-foreground">{profile?.email}</p>
+            <p className="text-xs font-normal text-muted-foreground">
+              {profile?.email}
+            </p>
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         {navItems.map((item) => (
           <Link href={item.href} key={item.href}>
-            <DropdownMenuItem className={cn("py4")}>
+            <DropdownMenuItem className={cn("py-2.5")}>
               <item.icon size={20} />
               {item.label}
             </DropdownMenuItem>

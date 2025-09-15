@@ -74,13 +74,13 @@ export default function AdminCreateForm() {
               </Link>
             </Button>
 
-            <h2 className="text-2xl font-semibold">Create Admin</h2>
+            <h2 className="text-3xl font-bold">Create Admin</h2>
           </div>
         </div>
 
         <div className="grid grid-cols-1">
           <div className="rounded-lg p-6 shadow-sm border border-border bg-card">
-            <h2 className="text-2xl font-medium">
+            <h2 className="text-xl font-semibold">
               Please fill in the information below
             </h2>
 

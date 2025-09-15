@@ -64,7 +64,7 @@ function Header({ product }) {
             <ChevronLeft />
           </Link>
         </Button>
-        <h2 className="text-2xl font-bold">{product.name}</h2>
+        <h2 className="text-3xl font-bold">{product.name}</h2>
       </div>
 
       {/* Edit and Delete buttons */}

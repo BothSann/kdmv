@@ -21,7 +21,7 @@ export default function ProductRow({ product }) {
 
   // const total_stock = product.
   return (
-    <TableRow className="text-base">
+    <TableRow className="text-sm">
       <TableCell>
         <div className="flex items-center gap-4">
           <div className="relative w-14 h-14">

@@ -73,12 +73,12 @@ export default function ProductDetailsWithSelection({ product }) {
 
   return (
     <div>
-      <div className="grid grid-cols-4 gap-4 items-start mb-4 text-base">
+      <div className="grid grid-cols-4 gap-4 items-start mb-4">
         {/* Price */}
         <div className="hover:border-primary/30 bg-muted grid auto-cols-max grid-flow-col gap-4 rounded-lg border p-4">
           <CircleDollarSign className="text-muted-foreground" />
           <div className="flex flex-col gap-1">
-            <span className="text-muted-foreground">Base Price</span>
+            <span className="text-sm text-muted-foreground">Base Price</span>
             <span className="text-lg font-semibold">
               {formatCurrency(product.base_price)}
             </span>
@@ -88,7 +88,7 @@ export default function ProductDetailsWithSelection({ product }) {
         <div className="hover:border-primary/30 bg-muted grid auto-cols-max grid-flow-col gap-4 rounded-lg border p-4">
           <Tag className="text-muted-foreground" />
           <div className="flex flex-col gap-1">
-            <span className="text-muted-foreground">Discount</span>
+            <span className="text-sm text-muted-foreground">Discount</span>
             <span className="text-lg font-semibold">
               {product.has_discount ? (
                 <>
@@ -108,7 +108,7 @@ export default function ProductDetailsWithSelection({ product }) {
         <div className="hover:border-primary/30 bg-muted grid auto-cols-max grid-flow-col gap-4 rounded-lg border p-4">
           <Package className="text-muted-foreground" />
           <div className="flex flex-col gap-1">
-            <span className="text-muted-foreground">{stockLabel}</span>
+            <span className="text-sm text-muted-foreground">{stockLabel}</span>
             <span className="text-lg font-semibold">{displayStock}</span>
           </div>
         </div>
@@ -117,7 +117,7 @@ export default function ProductDetailsWithSelection({ product }) {
         <div className="hover:border-primary/30 bg-muted grid auto-cols-max grid-flow-col gap-4 rounded-lg border p-4">
           <LayoutGrid className="text-muted-foreground" />
           <div className="flex flex-col gap-1">
-            <span className="text-muted-foreground">
+            <span className="text-sm text-muted-foreground">
               Category / Subcategory
             </span>
             <span className="text-lg font-semibold">
@@ -134,7 +134,7 @@ export default function ProductDetailsWithSelection({ product }) {
             {/* Product Description */}
             <div className="flex flex-col gap-2">
               <h3 className="text-xl font-semibold">Product Description:</h3>
-              <p className="text-base text-muted-foreground">
+              <p className="text-sm text-muted-foreground">
                 {product.description}
               </p>
             </div>
@@ -142,7 +142,7 @@ export default function ProductDetailsWithSelection({ product }) {
             {/* Product Code, Subcategory, Slug using table */}
             <div className="rounded-md border">
               <Table>
-                <TableBody className="text-base">
+                <TableBody className="text-sm">
                   <TableRow>
                     <TableCell className="font-medium">Product Code</TableCell>
                     <TableCell className="text-right text-muted-foreground">
@@ -172,7 +172,7 @@ export default function ProductDetailsWithSelection({ product }) {
             </div>
           </div>
           {/* Product Quantity Details With All Color/Size x Quantity */}
-          <div className="space-y-4 mt-10">
+          <div className="space-y-6 mt-10">
             <h3 className="text-xl font-semibold">
               Inventory by Color & Size:
             </h3>
@@ -181,9 +181,9 @@ export default function ProductDetailsWithSelection({ product }) {
               <Table>
                 <TableHeader>
                   <TableRow className="bg-muted text-lg">
-                    <TableHead>Color</TableHead>
+                    <TableHead className="font-semibold">Color</TableHead>
                     {product.available_sizes.map((size) => (
-                      <TableHead key={size.id} className="text-center">
+                      <TableHead key={size.id} className="text-center font-sem">
                         {size.name}
                       </TableHead>
                     ))}
@@ -192,7 +192,7 @@ export default function ProductDetailsWithSelection({ product }) {
 
                 <TableBody>
                   {product.available_colors.map((color) => (
-                    <TableRow key={color.id} className="text-base">
+                    <TableRow key={color.id} className="text-sm">
                       <TableCell className="font-medium">
                         {color.name}
                       </TableCell>
@@ -220,7 +220,7 @@ export default function ProductDetailsWithSelection({ product }) {
           {/* Variant Selection */}
           <div className="grid grid-cols-max gap-4 gap-y-8 mt-10">
             {/* Available Colors */}
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-6">
               <h3 className="text-xl font-semibold">Available Colors:</h3>
               <RadioGroup
                 className="flex gap-2"
@@ -236,9 +236,9 @@ export default function ProductDetailsWithSelection({ product }) {
                     />
                     <Label
                       htmlFor={color.id}
-                      className={`flex items-center justify-center px-4 py-2 text-base font-medium cursor-pointer border border-border hover:bg-muted transition-colors ${
+                      className={`flex items-center justify-center px-4 py-2 text-base font-medium cursor-pointer border border-border transition-colors hover:bg-muted ${
                         selectedColor === color.id
-                          ? "bg-foreground text-background dark:hover:bg-muted-foreground dark:hover:text-background"
+                          ? "bg-foreground text-background hover:bg-primary/90"
                           : ""
                       }`}
                     >
@@ -250,7 +250,7 @@ export default function ProductDetailsWithSelection({ product }) {
             </div>
 
             {/* Available Sizes - Only show sizes for selected color */}
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-6">
               <h3 className="text-xl font-semibold">Available Sizes:</h3>
               {selectedColor ? (
                 <RadioGroup
@@ -269,7 +269,7 @@ export default function ProductDetailsWithSelection({ product }) {
                         htmlFor={size.id}
                         className={`flex items-center justify-center px-4 py-2 text-base font-medium cursor-pointer border border-border hover:bg-muted transition-colors ${
                           selectedSize === size.id
-                            ? "bg-foreground text-background dark:hover:bg-muted-foreground dark:hover:text-background"
+                            ? "bg-foreground text-background hover:bg-primary/90"
                             : ""
                         }`}
                       >
@@ -287,49 +287,52 @@ export default function ProductDetailsWithSelection({ product }) {
 
             {/* Selected Variant Info */}
             {selectedColor && selectedSize && (
-              <div className="flex flex-col gap-2 p-4 bg-muted">
+              <div className="flex flex-col gap-4 p-4 bg-muted">
                 <h3 className="text-lg font-semibold">Product Details:</h3>
-                <div className="grid grid-cols-2 text-base">
-                  <div>
-                    <span className="font-medium">Color: </span>
-                    <span>
-                      {
-                        product.available_colors.find(
-                          (c) => c.id === selectedColor
-                        )?.name
-                      }
-                    </span>
-                  </div>
-                  <div>
-                    <span className="font-medium">Size: </span>
-                    <span>
-                      {
-                        availableSizesForColor.find(
-                          (s) => s.id === selectedSize
-                        )?.name
-                      }
-                    </span>
-                  </div>
-                </div>
 
-                <div className="grid grid-cols-2 text-base">
-                  <div>
-                    <span className="font-medium ">Stock Quantity: </span>
-                    {selectedVariantQuantity > 0 ? (
-                      <span className="text-success">
-                        {selectedVariantQuantity} available
+                <div className="space-y-2 text-sm">
+                  <div className="grid grid-cols-2">
+                    <div>
+                      <span className="font-semibold">Color: </span>
+                      <span>
+                        {
+                          product.available_colors.find(
+                            (c) => c.id === selectedColor
+                          )?.name
+                        }
                       </span>
-                    ) : (
-                      <span className="text-destructive">Out of stock</span>
-                    )}
+                    </div>
+                    <div>
+                      <span className="font-semibold">Size: </span>
+                      <span>
+                        {
+                          availableSizesForColor.find(
+                            (s) => s.id === selectedSize
+                          )?.name
+                        }
+                      </span>
+                    </div>
                   </div>
 
-                  {/* SKU */}
-                  <div>
-                    <span className="font-medium">SKU: </span>
-                    <span className="text-muted-foreground font-mono">
-                      {selectedVariantSKU || "N/A"}
-                    </span>
+                  <div className="grid grid-cols-2">
+                    <div>
+                      <span className="font-semibold ">Stock Quantity: </span>
+                      {selectedVariantQuantity > 0 ? (
+                        <span className="text-success">
+                          {selectedVariantQuantity} available
+                        </span>
+                      ) : (
+                        <span className="text-destructive">Out of stock</span>
+                      )}
+                    </div>
+
+                    {/* SKU */}
+                    <div>
+                      <span className="font-semibold">SKU: </span>
+                      <span className="text-muted-foreground font-mono">
+                        {selectedVariantSKU || "N/A"}
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>

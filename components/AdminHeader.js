@@ -35,7 +35,7 @@ export default function AdminHeader() {
               </div>
             )}
           </div>
-          <span>{fullName}</span>
+          <span className="font-medium">{fullName}</span>
         </div>
         <ul className="flex items-center gap-0.5">
           <AdminProfileDropdownMenu />

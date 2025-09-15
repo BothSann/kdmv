@@ -21,7 +21,7 @@ export default function AccountPage({ children }) {
   return (
     <div className="max-w-7xl mx-auto">
       <div className="flex justify-between items-center pl-8">
-        <h1 className="text-3xl font-bold">Account</h1>
+        <h1 className="text-4xl font-bold">Account</h1>
       </div>
 
       <div className="grid grid-cols-[1fr_3fr] mt-8 gap-x-2">

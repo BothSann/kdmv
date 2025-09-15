@@ -210,7 +210,7 @@ export default function ProductCreateEditForm({
               </Link>
             </Button>
 
-            <h2 className="text-2xl font-semibold">
+            <h2 className="text-3xl font-bold">
               {isEditing ? "Edit Product" : "Add Products"}
             </h2>
           </div>
@@ -229,14 +229,14 @@ export default function ProductCreateEditForm({
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Left Column */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className="lg:col-span-2 space-y-8">
             {/* Product Details */}
-            <div className="rounded-lg p-6 shadow-sm border border-border bg-card">
-              <h3 className="text-xl font-medium mb-6">Product Details</h3>
+            <div className="rounded-lg space-y-8 p-6 shadow-sm border border-border bg-card">
+              <h3 className="text-xl font-semibold">Product Details</h3>
 
-              <div className="space-y-4">
-                <div>
-                  <label className="block font-medium mb-3">Name</label>
+              <div className="space-y-8">
+                <div className="space-y-3">
+                  <Label>Name</Label>
                   <Input
                     type="text"
                     name="name"
@@ -245,10 +245,8 @@ export default function ProductCreateEditForm({
                   />
                 </div>
 
-                <div>
-                  <label className="block font-medium mb-3">
-                    Description (Optional)
-                  </label>
+                <div className="space-y-3">
+                  <Label>Description (Optional)</Label>
                   <Textarea
                     name="description"
                     rows={4}
@@ -259,14 +257,14 @@ export default function ProductCreateEditForm({
             </div>
 
             {/* Product Images */}
-            <div className="rounded-lg p-6 shadow-sm border border-border bg-card">
-              <div className="mb-6">
-                <h3 className="text-xl font-medium">Product Images</h3>
+            <div className="rounded-lg space-y-8 p-6 shadow-sm border border-border bg-card">
+              <div className="">
+                <h3 className="text-xl font-semibold">Product Images</h3>
               </div>
 
               <div className="border-2 border-dashed rounded-lg p-8 text-center">
                 <Upload className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                <h4 className="text-lg font-medium mb-3">
+                <h4 className="text-lg font-semibold mb-3">
                   Drop your images here
                 </h4>
                 <p className="text-sm text-muted-foreground mb-4">
@@ -281,10 +279,8 @@ export default function ProductCreateEditForm({
               </div>
 
               {/* Banner Image URL */}
-              <div className="mt-4">
-                <label className="block font-medium mb-3">
-                  Upload Banner Image
-                </label>
+              <div className="space-y-3">
+                <Label>Upload Banner Image</Label>
                 <Input
                   type="file"
                   accept="image/*"
@@ -295,9 +291,9 @@ export default function ProductCreateEditForm({
             </div>
 
             {/* Variants */}
-            <div className="rounded-lg p-6 shadow-sm border border-border bg-card">
-              <div className="flex justify-between items-center mb-6">
-                <h3 className="text-xl font-medium">Product Variants</h3>
+            <div className="rounded-lg p-6 shadow-sm border border-border bg-card space-y-8">
+              <div className="flex justify-between items-center">
+                <h3 className="text-xl font-semibold">Product Variants</h3>
                 <Button type="button" onClick={addVariant}>
                   <Plus />
                   Add Variant
@@ -417,14 +413,14 @@ export default function ProductCreateEditForm({
           </div>
 
           {/* Right Column */}
-          <div className="space-y-6">
+          <div className="space-y-8">
             {/* Pricing */}
-            <div className="rounded-lg p-6 shadow-sm border border-border bg-card">
-              <h3 className="text-xl font-medium mb-6">Pricing</h3>
+            <div className="rounded-lg p-6 shadow-sm border border-border bg-card space-y-8">
+              <h3 className="text-xl font-semibold">Pricing</h3>
 
-              <div className="space-y-4">
-                <div>
-                  <label className="block font-medium mb-3">Price ($)</label>
+              <div className="space-y-8">
+                <div className="space-y-3">
+                  <Label>Price ($)</Label>
                   <Input
                     type="number"
                     min="0"
@@ -437,10 +433,8 @@ export default function ProductCreateEditForm({
                   />
                 </div>
 
-                <div>
-                  <label className="block font-medium mb-3">
-                    Discount Percentage (%)
-                  </label>
+                <div className="space-y-3">
+                  <Label>Discount Percentage (%)</Label>
                   <Input
                     type="number"
                     min="0"
@@ -452,7 +446,7 @@ export default function ProductCreateEditForm({
                   />
                 </div>
 
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2">
                   <Checkbox
                     id="is_active"
                     name="is_active"
@@ -465,8 +459,8 @@ export default function ProductCreateEditForm({
             </div>
 
             {/* Categories */}
-            <div className="rounded-lg p-6 shadow-sm border border-border bg-card">
-              <h3 className="text-xl font-medium mb-6">Categories</h3>
+            <div className="rounded-lg p-6 shadow-sm border border-border bg-card space-y-8">
+              <h3 className="text-xl font-semibold">Categories</h3>
 
               <div className="space-y-4">
                 <div>

@@ -6,7 +6,7 @@ export default function AdminRow({ admin }) {
   const fullName = `${admin.first_name} ${admin.last_name}`;
 
   return (
-    <TableRow className="text-base">
+    <TableRow className="text-sm">
       <TableCell>
         <div className="flex items-center gap-2.5">
           <div className="relative w-10 h-10">

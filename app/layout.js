@@ -1,4 +1,4 @@
-import { robotoCondensed, inconsolata } from "@/lib/fonts";
+import { robotoCondensed, inconsolata, poppins } from "@/lib/fonts";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "sonner";
 import AuthProvider from "@/components/AuthProvider";
@@ -13,7 +13,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${robotoCondensed.className} antialiased bg-background text-foreground dark:text-foreground dark:bg-background min-h-screen`}
+        className={`${poppins.className} antialiased bg-background text-foreground dark:text-foreground dark:bg-background min-h-screen`}
       >
         <ThemeProvider
           attribute="class"

@@ -15,7 +15,7 @@ export default async function AdminTable() {
   if (!admins.length) return null;
 
   return (
-    <Table className="mt-6 border rounded-lg">
+    <Table className="mt-10 border rounded-lg">
       <TableHeader className="text-base">
         <TableRow>
           <TableHead>Name</TableHead>

@@ -1,8 +1,8 @@
 import AdminHeader from "@/components/AdminHeader";
-import { AdminSidebar } from "@/components/AdminSidebar";
 import ProtectedRoute from "@/components/ProtectedRoute";
+
+import { AdminSidebar } from "@/components/AdminSidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
-import { SidebarTrigger } from "@/components/ui/sidebar";
 
 export default function AdminLayout({ children }) {
   return (
