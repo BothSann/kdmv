@@ -172,7 +172,7 @@ export default function ProductDetailsWithSelection({ product }) {
             </div>
           </div>
           {/* Product Quantity Details With All Color/Size x Quantity */}
-          <div className="space-y-6 mt-10">
+          <div className="space-y-4 mt-10">
             <h3 className="text-xl font-semibold">
               Inventory by Color & Size:
             </h3>
@@ -180,10 +180,13 @@ export default function ProductDetailsWithSelection({ product }) {
             <div className="rounded-md border">
               <Table>
                 <TableHeader>
-                  <TableRow className="bg-muted text-lg">
+                  <TableRow className="bg-muted">
                     <TableHead className="font-semibold">Color</TableHead>
                     {product.available_sizes.map((size) => (
-                      <TableHead key={size.id} className="text-center font-sem">
+                      <TableHead
+                        key={size.id}
+                        className="text-center font-medium"
+                      >
                         {size.name}
                       </TableHead>
                     ))}
@@ -220,7 +223,7 @@ export default function ProductDetailsWithSelection({ product }) {
           {/* Variant Selection */}
           <div className="grid grid-cols-max gap-4 gap-y-8 mt-10">
             {/* Available Colors */}
-            <div className="flex flex-col gap-6">
+            <div className="flex flex-col gap-4">
               <h3 className="text-xl font-semibold">Available Colors:</h3>
               <RadioGroup
                 className="flex gap-2"
@@ -250,7 +253,7 @@ export default function ProductDetailsWithSelection({ product }) {
             </div>
 
             {/* Available Sizes - Only show sizes for selected color */}
-            <div className="flex flex-col gap-6">
+            <div className="flex flex-col gap-4">
               <h3 className="text-xl font-semibold">Available Sizes:</h3>
               {selectedColor ? (
                 <RadioGroup
@@ -287,13 +290,13 @@ export default function ProductDetailsWithSelection({ product }) {
 
             {/* Selected Variant Info */}
             {selectedColor && selectedSize && (
-              <div className="flex flex-col gap-4 p-4 bg-muted">
+              <div className="flex flex-col gap-2.5 p-4 bg-muted">
                 <h3 className="text-lg font-semibold">Product Details:</h3>
 
                 <div className="space-y-2 text-sm">
                   <div className="grid grid-cols-2">
                     <div>
-                      <span className="font-semibold">Color: </span>
+                      <span className="font-medium">Color: </span>
                       <span>
                         {
                           product.available_colors.find(
@@ -303,7 +306,7 @@ export default function ProductDetailsWithSelection({ product }) {
                       </span>
                     </div>
                     <div>
-                      <span className="font-semibold">Size: </span>
+                      <span className="font-medium">Size: </span>
                       <span>
                         {
                           availableSizesForColor.find(
@@ -316,7 +319,7 @@ export default function ProductDetailsWithSelection({ product }) {
 
                   <div className="grid grid-cols-2">
                     <div>
-                      <span className="font-semibold ">Stock Quantity: </span>
+                      <span className="font-medium ">Stock Quantity: </span>
                       {selectedVariantQuantity > 0 ? (
                         <span className="text-success">
                           {selectedVariantQuantity} available
