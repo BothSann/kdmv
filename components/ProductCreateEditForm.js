@@ -182,14 +182,22 @@ export default function ProductCreateEditForm({
 
       if (error) {
         toast.error(error, { id: toastId });
+        return;
       }
 
       if (success) {
         toast.success(message, { id: toastId });
-        router.push(`/admin/products/${existingProduct.id}`);
+
+        // After editing: redirect to the specific product details page
+        if (isEditing) router.push(`/admin/products/${existingProduct.id}`);
+
+        // Otherwise (After creating): redirect to products list
+        router.push("/admin/products");
       }
     } catch (err) {
-      toast.error(err.message, { id: toastId });
+      toast.error(err.message, {
+        id: toastId,
+      });
     }
   };
 
