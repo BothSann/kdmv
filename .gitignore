@@ -49,3 +49,5 @@ supabase-schema.sql
 supabase-authdata-response.js
 text.md
 createEditProductAction-example.js
+PaginationForced.js
+PaginationStandalone.js
