@@ -41,14 +41,9 @@ export default async function AdminProductDetailsPage({ params }) {
 
   return (
     <div className="mt-8">
-      {/* Header */}
       <Header product={product} />
-
-      <div className="grid grid-cols-[1fr_2fr] gap-6 mt-6">
-        {/* Left Side */}
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_2fr] gap-6 mt-10">
         <ProductDetailCarousel product={product} />
-
-        {/* Right Side - Non-stretching grid */}
         <ProductDetailsWithSelection product={product} />
       </div>
     </div>
