@@ -210,7 +210,7 @@ export default function ProductCreateEditForm({
     <form className="text-base" onSubmit={handleSubmit}>
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Button variant="outline" asChild>
               <Link href="/admin/products">
@@ -235,7 +235,7 @@ export default function ProductCreateEditForm({
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-10">
           {/* Left Column */}
           <div className="lg:col-span-2 space-y-8">
             {/* Product Details */}
