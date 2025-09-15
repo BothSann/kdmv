@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import CartDrawer from "@/components/CartDrawer";
-import UserDropdownMenu from "@/components/UserDropdownMenu";
+import UserProfileDropdownMenu from "@/components/UserProfileDropdownMenu";
 import useAuthorization from "@/hooks/useAuthorization";
 import { Heart } from "lucide-react";
 import { ModeToggle } from "@/components/ModeToggle";
@@ -25,7 +25,7 @@ export default function Navigation() {
           </>
         )}
         <li className="flex items-center ">
-          <UserDropdownMenu />
+          <UserProfileDropdownMenu />
         </li>
         <li className="flex items-center">
           <ModeToggle />
