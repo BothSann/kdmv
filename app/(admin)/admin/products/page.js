@@ -1,13 +1,16 @@
 import Link from "next/link";
 import ProductTable from "@/components/ProductTable";
+import PaginationStateManager from "@/components/PaginationStateManager";
 
 import { Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
-import ProductTableSkeleton from "@/components/ProductTableSkeleton";
+import ProductTableSkeleton from "@/components/TableSkeleton";
+
 export default async function AdminProductsPage({ searchParams }) {
   return (
-    <div>
+    <>
+      <PaginationStateManager />
       <div className="flex justify-between items-center">
         <h1 className="text-4xl font-bold">Products</h1>
         <Button asChild>
@@ -21,6 +24,6 @@ export default async function AdminProductsPage({ searchParams }) {
       <Suspense fallback={<ProductTableSkeleton />}>
         <ProductTable searchParams={searchParams} />
       </Suspense>
-    </div>
+    </>
   );
 }

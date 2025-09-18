@@ -4,11 +4,13 @@ import { TableCell, TableRow } from "./ui/table";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "./ui/button";
 import { useRouter, useSearchParams } from "next/navigation";
+import useUIStore from "@/store/useUIStore";
 
 // Pagination.js - Add page numbers display
 export default function Pagination({ pagination }) {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const setPaginating = useUIStore((state) => state.setPaginating);
 
   if (!pagination) return null;
 
@@ -16,6 +18,12 @@ export default function Pagination({ pagination }) {
     const params = new URLSearchParams(searchParams);
     params.set("page", pageNumber.toString());
     return `?${params.toString()}`;
+  };
+
+  const handlePageChange = (pageNumber) => {
+    // Only set paginating if we're actually changing pages
+    if (pageNumber !== pagination.page) setPaginating(true);
+    router.push(createPageURL(pageNumber));
   };
 
   const startItem = (pagination.page - 1) * pagination.perPage + 1;
@@ -77,12 +85,12 @@ export default function Pagination({ pagination }) {
             results
           </div>
 
-          <div className="flex items-center space-x-1">
+          <div className="flex items-center space-x-2">
             <Button
               variant="ghost"
               size="sm"
               disabled={!pagination.hasPreviousPage}
-              onClick={() => router.push(createPageURL(pagination.page - 1))}
+              onClick={() => handlePageChange(pagination.page - 1)}
             >
               <ChevronLeft />
               Previous
@@ -95,8 +103,7 @@ export default function Pagination({ pagination }) {
                 size="sm"
                 disabled={pageNum === "..."}
                 onClick={() =>
-                  typeof pageNum === "number" &&
-                  router.push(createPageURL(pageNum))
+                  typeof pageNum === "number" && handlePageChange(pageNum)
                 }
                 className={pageNum === "..." ? "cursor-default" : ""}
               >
@@ -108,7 +115,7 @@ export default function Pagination({ pagination }) {
               variant="ghost"
               size="sm"
               disabled={!pagination.hasNextPage}
-              onClick={() => router.push(createPageURL(pagination.page + 1))}
+              onClick={() => handlePageChange(pagination.page + 1)}
             >
               Next
               <ChevronRight />
