@@ -51,3 +51,7 @@ text.md
 createEditProductAction-example.js
 PaginationForced.js
 PaginationStandalone.js
+coupon_auto_deactivate_trigger.sql
+coupon_constraints.sql
+use_coupon_transaction.sql
+couponCleanupJob.js
