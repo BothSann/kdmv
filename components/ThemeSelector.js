@@ -26,7 +26,7 @@ export default function ThemeSelector() {
           <RadioGroupItem value="light" id="light" className="sr-only" />
           <Label
             htmlFor="light"
-            className={`flex flex-col items-center rounded-lg border-2 p-4 cursor-pointer ${
+            className={`flex flex-col items-center border-2 p-4 cursor-pointer ${
               theme === "light" ? "border-primary" : "border-muted"
             }`}
           >
@@ -54,7 +54,7 @@ export default function ThemeSelector() {
           <RadioGroupItem value="dark" id="dark" className="sr-only" />
           <Label
             htmlFor="dark"
-            className={`flex flex-col items-center rounded-lg border-2 p-4 cursor-pointer ${
+            className={`flex flex-col items-center border-2 p-4 cursor-pointer ${
               theme === "dark" ? "border-primary" : "border-muted"
             }`}
           >
