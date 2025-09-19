@@ -72,8 +72,8 @@ export default function ProductDetailsWithSelection({ product }) {
       : "Total Available Stock";
 
   return (
-    <div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-start mb-4">
+    <div className="space-y-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-start">
         {/* Price */}
         <div className="hover:border-primary/30 bg-muted border p-4 flex items-center gap-4">
           <CircleDollarSign className="text-muted-foreground self-start" />
@@ -140,8 +140,8 @@ export default function ProductDetailsWithSelection({ product }) {
               <Table className="border">
                 <TableBody className="text-sm">
                   <TableRow>
-                    <TableCell className="font-medium">Product Code</TableCell>
-                    <TableCell className="text-right text-muted-foreground">
+                    <TableCell className="font-medium ">Product Code</TableCell>
+                    <TableCell className="text-right font-mono text-muted-foreground">
                       {product.product_code}
                     </TableCell>
                   </TableRow>
@@ -168,7 +168,7 @@ export default function ProductDetailsWithSelection({ product }) {
             </div>
           </div>
           {/* Product Quantity Details With All Color/Size x Quantity */}
-          <div className="space-y-4 mt-10">
+          <div className="space-y-2 mt-10">
             <h3 className="text-xl font-semibold">
               Inventory by Color & Size:
             </h3>
@@ -215,7 +215,7 @@ export default function ProductDetailsWithSelection({ product }) {
           {/* Variant Selection */}
           <div className="grid grid-cols-max gap-4 gap-y-8 mt-10">
             {/* Available Colors */}
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-2">
               <h3 className="text-xl font-semibold">Available Colors:</h3>
               <RadioGroup
                 className="flex gap-2"
@@ -245,7 +245,7 @@ export default function ProductDetailsWithSelection({ product }) {
             </div>
 
             {/* Available Sizes - Only show sizes for selected color */}
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-2">
               <h3 className="text-xl font-semibold">Available Sizes:</h3>
               {selectedColor ? (
                 <RadioGroup
@@ -274,7 +274,7 @@ export default function ProductDetailsWithSelection({ product }) {
                   ))}
                 </RadioGroup>
               ) : (
-                <p className="text-base text-muted-foreground">
+                <p className="text-sm text-muted-foreground">
                   Please select a color first to see available sizes
                 </p>
               )}
@@ -288,7 +288,7 @@ export default function ProductDetailsWithSelection({ product }) {
                 <div className="space-y-2 text-sm">
                   <div className="grid grid-cols-2">
                     <div>
-                      <span className="font-medium">Color: </span>
+                      <span className="font-semibold">Color: </span>
                       <span>
                         {
                           product.available_colors.find(
@@ -298,7 +298,7 @@ export default function ProductDetailsWithSelection({ product }) {
                       </span>
                     </div>
                     <div>
-                      <span className="font-medium">Size: </span>
+                      <span className="font-semibold">Size: </span>
                       <span>
                         {
                           availableSizesForColor.find(
@@ -311,7 +311,7 @@ export default function ProductDetailsWithSelection({ product }) {
 
                   <div className="grid grid-cols-2">
                     <div>
-                      <span className="font-medium ">Stock Quantity: </span>
+                      <span className="font-semibold">Stock Quantity: </span>
                       {selectedVariantQuantity > 0 ? (
                         <span className="text-success">
                           {selectedVariantQuantity} available
@@ -324,7 +324,7 @@ export default function ProductDetailsWithSelection({ product }) {
                     {/* SKU */}
                     <div>
                       <span className="font-semibold">SKU: </span>
-                      <span className="text-muted-foreground font-mono">
+                      <span className=" px-2 py-0.5 font-mono bg-muted-foreground/20">
                         {selectedVariantSKU || "N/A"}
                       </span>
                     </div>

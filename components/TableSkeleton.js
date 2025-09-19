@@ -8,7 +8,7 @@ import {
   TableCell,
 } from "@/components/ui/table";
 
-export default function ProductTableSkeleton() {
+export default function TableSkeleton() {
   return (
     <div className="space-y-6">
       {/* Table skeleton */}

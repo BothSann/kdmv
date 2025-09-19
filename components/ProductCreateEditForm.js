@@ -190,9 +190,8 @@ export default function ProductCreateEditForm({
 
         // After editing: redirect to the specific product details page
         if (isEditing) router.push(`/admin/products/${existingProduct.id}`);
-
         // Otherwise (After creating): redirect to products list
-        router.push("/admin/products");
+        else router.push("/admin/products");
       }
     } catch (err) {
       toast.error(err.message, {
@@ -207,8 +206,8 @@ export default function ProductCreateEditForm({
   }
 
   return (
-    <form className="text-base" onSubmit={handleSubmit}>
-      <div className="max-w-7xl mx-auto">
+    <form className="mt-10" onSubmit={handleSubmit}>
+      <div className="max-w-7xl mx-auto space-y-10">
         {/* Header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
@@ -217,11 +216,11 @@ export default function ProductCreateEditForm({
                 <ChevronLeft />
               </Link>
             </Button>
-
-            <h2 className="text-3xl font-bold">
+            <h1 className="text-4xl font-bold">
               {isEditing ? "Edit Product" : "Add Products"}
-            </h2>
+            </h1>
           </div>
+
           <div className="flex gap-3">
             <Button
               className="px-4 py-2"
@@ -235,7 +234,7 @@ export default function ProductCreateEditForm({
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-10">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Left Column */}
           <div className="lg:col-span-2 space-y-8">
             {/* Product Details */}
@@ -431,7 +430,7 @@ export default function ProductCreateEditForm({
                   <Label>Price ($)</Label>
                   <Input
                     type="number"
-                    min="0"
+                    min="0.01"
                     step="0.01"
                     name="base_price"
                     defaultValue={existingProduct?.base_price || ""}

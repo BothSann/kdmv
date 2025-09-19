@@ -56,7 +56,7 @@ export default function ProductRow({ product }) {
       <TableCell>
         <DropdownMenu>
           <DropdownMenuTrigger>
-            <MoreHorizontal className="w-4 h-4" />
+            <MoreHorizontal />
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             <DropdownMenuItem asChild>

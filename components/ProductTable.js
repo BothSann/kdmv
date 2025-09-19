@@ -18,7 +18,7 @@ export default async function ProductTable({ searchParams }) {
   const page = Math.max(1, Number(resolvedSearchParams?.page) || 1);
   const { products, pagination } = await getAllProducts({ page });
 
-  if (!products.length) return null;
+  if (!products || !products.length) return null;
 
   const tableHeaders = [
     { label: "Product Name", key: "name" },
