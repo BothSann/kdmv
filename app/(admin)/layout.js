@@ -3,6 +3,7 @@ import ProtectedRoute from "@/components/ProtectedRoute";
 
 import { AdminSidebar } from "@/components/AdminSidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
+import PageOverlay from "@/components/PageOverlay";
 
 export default function AdminLayout({ children }) {
   return (
@@ -14,7 +15,10 @@ export default function AdminLayout({ children }) {
           <main className="flex-1">
             <AdminHeader />
 
-            <div className="p-6">{children}</div>
+            <div className="p-6">
+              {children}
+              <PageOverlay />
+            </div>
           </main>
         </div>
       </SidebarProvider>

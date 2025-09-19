@@ -5,11 +5,11 @@ import AdminTable from "@/components/AdminTable";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 
-import Spinner from "@/components/Spinner";
+import TableSkeleton from "@/components/TableSkeleton";
 
 export default function AdminRegisterPage() {
   return (
-    <div>
+    <>
       <div className="flex justify-between items-center">
         <h1 className="text-4xl font-bold">Users</h1>
         <Button asChild>
@@ -20,9 +20,9 @@ export default function AdminRegisterPage() {
         </Button>
       </div>
 
-      <Suspense fallback={<Spinner />}>
+      <Suspense fallback={<TableSkeleton />}>
         <AdminTable />
       </Suspense>
-    </div>
+    </>
   );
 }
