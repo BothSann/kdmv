@@ -12,10 +12,17 @@ import Image from "next/image";
 import Link from "next/link";
 import ProductDetailsWithSelection from "@/components/ProductDetailsWithSelection";
 import DeleteProductButton from "@/components/DeleteProductButton";
+import ProductNotFound from "@/components/ProductNotFound";
 
 export async function generateMetadata({ params }) {
   const resolvedParams = await params;
-  const { product } = await getProductById(resolvedParams.productId);
+  const { product, error } = await getProductById(resolvedParams.productId);
+
+  if (error || !product) {
+    return {
+      title: "Product Not Found",
+    };
+  }
 
   return {
     title: `${product.name}`,
@@ -35,18 +42,20 @@ export async function generateMetadata({ params }) {
 //   return productIds;
 // }
 
-export default async function AdminProductDetailsPage({ params }) {
+export default async function AdminProductDetailPage({ params }) {
   const resolvedParams = await params;
-  const { product } = await getProductById(resolvedParams.productId);
+  const { product, error } = await getProductById(resolvedParams.productId);
+
+  if (error || !product) return <ProductNotFound />;
 
   return (
-    <div className="mt-8">
+    <>
       <Header product={product} />
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_2fr] gap-6 mt-10">
+      <div className="grid grid-cols-1 xl:grid-cols-[1fr_2fr] gap-6 mt-10">
         <ProductDetailCarousel product={product} />
         <ProductDetailsWithSelection product={product} />
       </div>
-    </div>
+    </>
   );
 }
 
