@@ -3,17 +3,11 @@
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
-import { useFormStatus } from "react-dom";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useState } from "react";
 import { verifyAndUpdateAdminPasswordAction } from "@/lib/actions";
 import { toast } from "sonner";
-
-function FormStatus() {
-  const { pending } = useFormStatus();
-  return pending ? "Updating..." : "Update Password";
-}
 
 export default function AdminChangePasswordForm() {
   const [currentPassword, setCurrentPassword] = useState("");
@@ -125,7 +119,7 @@ export default function AdminChangePasswordForm() {
               isPending || newPassword !== confirmPassword || !currentPassword
             }
           >
-            <FormStatus />
+            {isPending ? "Updating..." : "Update Password"}
           </Button>
         </div>
       </div>

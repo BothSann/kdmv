@@ -1,6 +1,13 @@
 "use client";
 
-import { Home, Boxes, Search, Settings, Users, FileCheck } from "lucide-react";
+import {
+  Home,
+  Boxes,
+  Settings,
+  Users,
+  FileCheck,
+  TicketPercent,
+} from "lucide-react";
 
 import {
   Sidebar,
@@ -33,6 +40,11 @@ const items = [
     icon: Boxes,
   },
   {
+    title: "Coupons",
+    url: "/admin/coupons",
+    icon: TicketPercent,
+  },
+  {
     title: "Orders",
     url: "/admin/orders",
     icon: FileCheck,
@@ -43,13 +55,8 @@ const items = [
     icon: Users,
   },
   {
-    title: "Search",
-    url: "#",
-    icon: Search,
-  },
-  {
     title: "Settings",
-    url: "#",
+    url: "/admin/settings",
     icon: Settings,
   },
 ];

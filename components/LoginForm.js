@@ -52,21 +52,22 @@ export default function LoginForm() {
   };
   return (
     <div className="flex flex-col gap-6">
-      <Card>
-        <CardHeader className="flex flex-col items-center">
+      <Card className="space-y-4">
+        <CardHeader className="flex flex-col items-center gap-2">
           <Logo />
-          <CardTitle className="text-2xl font-bold">
-            Login to your account
-          </CardTitle>
-          <CardDescription>
-            Enter your email below to login to your account
-          </CardDescription>
+
+          <div className="flex flex-col items-center gap-1">
+            <CardTitle>Login to your account</CardTitle>
+            <CardDescription>
+              Enter your email below to login to your account
+            </CardDescription>
+          </div>
         </CardHeader>
+
         <CardContent>
           <form onSubmit={handleSubmit}>
             <div className="flex flex-col gap-6">
               <LoginFormField />
-              <SubmitButton />
             </div>
             <div className="mt-4 text-sm text-center">
               Don&apos;t have an account?{" "}
@@ -118,15 +119,10 @@ function LoginFormField() {
           required
         />
       </div>
-    </>
-  );
-}
 
-function SubmitButton() {
-  const { pending } = useFormStatus();
-  return (
-    <Button type="submit" className="w-full" disabled={pending}>
-      {pending ? "Logging in..." : "Login"}
-    </Button>
+      <Button type="submit" className="w-full" disabled={pending}>
+        {pending ? "Logging in..." : "Login"}
+      </Button>
+    </>
   );
 }

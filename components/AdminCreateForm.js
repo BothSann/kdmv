@@ -3,18 +3,12 @@
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { Button } from "./ui/button";
-import { useFormStatus } from "react-dom";
 import { Input } from "./ui/input";
 import Logo from "./Logo";
 import { toast } from "sonner";
 import { useState } from "react";
 import { registerAdminAction } from "@/lib/actions";
 import { Label } from "./ui/label";
-
-function FormStatus() {
-  const { pending } = useFormStatus();
-  return pending ? "Creating..." : "Create Admin";
-}
 
 export default function AdminCreateForm() {
   const [password, setPassword] = useState("");
@@ -63,7 +57,7 @@ export default function AdminCreateForm() {
   };
 
   return (
-    <form className="text-base" onSubmit={handleSubmit}>
+    <form className="mt-10" onSubmit={handleSubmit}>
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
@@ -74,7 +68,7 @@ export default function AdminCreateForm() {
               </Link>
             </Button>
 
-            <h2 className="text-3xl font-bold">Create Admin</h2>
+            <h1 className="text-4xl font-bold">Create Admin</h1>
           </div>
         </div>
 
@@ -84,8 +78,8 @@ export default function AdminCreateForm() {
               Please fill in the information below
             </h2>
 
-            <div className="grid grid-cols-[1fr_1fr] gap-10 mt-10">
-              <div className="space-y-4">
+            <div className="grid grid-cols-1 lg:grid-cols-[1fr_1fr] gap-10 mt-10">
+              <div className="space-y-4 order-last lg:order-first">
                 <div className="space-y-4">
                   <Label htmlFor="first_name">First Name</Label>
                   <Input
@@ -157,10 +151,11 @@ export default function AdminCreateForm() {
                     className="px-4 py-2"
                     disabled={isPending || password !== confirmPassword}
                   >
-                    <FormStatus />
+                    {isPending ? "Creating..." : "Create Admin"}
                   </Button>
                 </div>
               </div>
+
               <div className="flex justify-center items-center">
                 <Logo width="w-64" />
               </div>

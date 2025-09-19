@@ -21,7 +21,7 @@ export default function AdminRow({ admin }) {
               />
             ) : (
               <div className="w-full h-full bg-secondary rounded-full flex items-center justify-center">
-                <User className="w-2/3 h-2/3 text-ring" />
+                <User size={24} className="text-ring" />
               </div>
             )}
           </div>

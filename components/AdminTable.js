@@ -16,7 +16,7 @@ export default async function AdminTable() {
 
   return (
     <Table className="mt-10 border rounded-lg">
-      <TableHeader className="text-base">
+      <TableHeader>
         <TableRow>
           <TableHead>Name</TableHead>
           <TableHead>Email</TableHead>

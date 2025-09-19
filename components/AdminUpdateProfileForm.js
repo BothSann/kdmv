@@ -14,19 +14,12 @@ import { Button } from "@/components/ui/button";
 import useAuthStore from "@/store/useAuthStore";
 
 import { useRef, useState, useEffect } from "react";
-import { useFormStatus } from "react-dom";
 import Image from "next/image";
 import Link from "next/link";
 import { toast } from "sonner";
 import { updateCurrentAdminProfileAction } from "@/lib/actions";
 import { Trash, User } from "lucide-react";
 import { sanitizeName } from "@/lib/utils";
-
-// Separate component for form status
-function FormStatus() {
-  const { pending } = useFormStatus();
-  return pending ? "Updating..." : "Update Profile";
-}
 
 export default function AdminUpdateProfileForm() {
   const { profile, setProfile } = useAuthStore();
@@ -306,7 +299,7 @@ export default function AdminUpdateProfileForm() {
               <Link href="/admin/account/profile">Cancel</Link>
             </Button>
             <Button type="submit" disabled={isPending}>
-              <FormStatus />
+              {isPending ? "Updating..." : "Update Profile"}
             </Button>
           </div>
         </div>
