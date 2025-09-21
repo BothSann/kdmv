@@ -141,7 +141,7 @@ export default function ProductDetailsWithSelection({ product }) {
                 <TableBody className="text-sm">
                   <TableRow>
                     <TableCell className="font-medium ">Product Code</TableCell>
-                    <TableCell className="text-right font-mono text-muted-foreground">
+                    <TableCell className="text-right text-base font-mono text-muted-foreground">
                       {product.product_code}
                     </TableCell>
                   </TableRow>
@@ -151,6 +151,15 @@ export default function ProductDetailsWithSelection({ product }) {
                       {product.subcategory_name}
                     </TableCell>
                   </TableRow>
+                  {/* Collection - Only show if product belongs to a collection */}
+                  {product.collection_name && (
+                    <TableRow>
+                      <TableCell className="font-medium">Collection</TableCell>
+                      <TableCell className="text-right text-muted-foreground">
+                        {product.collection_name}
+                      </TableCell>
+                    </TableRow>
+                  )}
                   <TableRow>
                     <TableCell className="font-medium">Total Stock</TableCell>
                     <TableCell className="text-right text-muted-foreground">
@@ -231,7 +240,7 @@ export default function ProductDetailsWithSelection({ product }) {
                     />
                     <Label
                       htmlFor={color.id}
-                      className={`flex items-center justify-center text-base px-4 py-2 font-medium cursor-pointer border border-border transition-colors hover:bg-muted ${
+                      className={`flex items-center justify-center px-3 py-2.5 font-medium cursor-pointer border border-border transition-colors hover:bg-muted ${
                         selectedColor === color.id
                           ? "bg-foreground text-background hover:bg-primary/90"
                           : ""
@@ -262,7 +271,7 @@ export default function ProductDetailsWithSelection({ product }) {
                       />
                       <Label
                         htmlFor={size.id}
-                        className={`flex items-center justify-center px-4 py-2 text-base font-medium cursor-pointer border border-border hover:bg-muted transition-colors ${
+                        className={`flex items-center justify-center px-3 py-2.5  font-medium cursor-pointer border border-border hover:bg-muted transition-colors ${
                           selectedSize === size.id
                             ? "bg-foreground text-background hover:bg-primary/90"
                             : ""

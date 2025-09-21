@@ -26,6 +26,7 @@ export default function ProductCreateEditForm({
   subcategories,
   colors,
   sizes,
+  collections,
   existingProduct = null,
   isEditing = false,
 }) {
@@ -36,6 +37,7 @@ export default function ProductCreateEditForm({
   const [variants, setVariants] = useState([
     { color_id: "", size_id: "", quantity: 0, sku: "" },
   ]);
+  const [selectedCollection, setSelectedCollection] = useState("");
   const router = useRouter();
 
   // Initialize form data and control loading state
@@ -49,9 +51,14 @@ export default function ProductCreateEditForm({
         setSelectedCategory(categoryId);
       }
 
-      // Set subcategory
+      // Set Subcategory
       if (existingProduct.subcategory_id) {
         setSelectedSubcategory(existingProduct.subcategory_id);
+      }
+
+      // Set Collection (if product belongs to a collection)
+      if (existingProduct.collection_id) {
+        setSelectedCollection(existingProduct.collection_id);
       }
 
       // Set active status
@@ -79,6 +86,28 @@ export default function ProductCreateEditForm({
 
     if (!isEditing) setIsInitialized(true);
   }, [isEditing, existingProduct]);
+
+  useEffect(() => {
+    if (selectedCategory && subcategories) {
+      // Find category by ID to get its slug
+      const selectedCategoryData = categories?.find(
+        (cat) => cat.id === selectedCategory
+      );
+
+      if (selectedCategoryData?.slug === "unisex") {
+        // Find subcategory by slug (more reliable than ID)
+        const allGendersSub = subcategories.find(
+          (sub) =>
+            sub.category_id === selectedCategory && sub.slug === "all-genders"
+        );
+
+        if (allGendersSub && !selectedSubcategory) {
+          // Only if nothing selected
+          setSelectedSubcategory(allGendersSub.id);
+        }
+      }
+    }
+  }, [selectedCategory, subcategories, categories, selectedSubcategory]);
 
   const addVariant = () => {
     setVariants([
@@ -165,6 +194,7 @@ export default function ProductCreateEditForm({
       subcategory_id: selectedSubcategory,
       banner_image_url: formData.get("banner_image_url"),
       is_active: isActive,
+      collection_id: selectedCollection || null,
       variants: variants.filter((v) => v.color_id && v.size_id),
     };
 
@@ -177,6 +207,7 @@ export default function ProductCreateEditForm({
       : "Creating product...";
 
     const toastId = toast.loading(loadingMessage);
+
     try {
       const { success, error, message } = await actionToUse(productData);
 
@@ -493,6 +524,7 @@ export default function ProductCreateEditForm({
                   </Select>
                 </div>
 
+                {/* Subcategories */}
                 <div>
                   <Select
                     value={selectedSubcategory}
@@ -514,6 +546,33 @@ export default function ProductCreateEditForm({
                 </div>
               </div>
             </div>
+
+            {/* Collections */}
+            {collections && collections.length > 0 && (
+              <div className="rounded-lg p-6 shadow-sm border border-border bg-card space-y-8">
+                <h3 className="text-xl font-semibold">Collection (Optional)</h3>
+
+                <div className="space-y-4">
+                  <div>
+                    <Select
+                      value={selectedCollection}
+                      onValueChange={setSelectedCollection}
+                    >
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select a collection (optional)" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {collections.map((collection) => (
+                          <SelectItem key={collection.id} value={collection.id}>
+                            {collection.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
