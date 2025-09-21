@@ -22,7 +22,7 @@ export default function UserProfileDropdownMenu() {
         )}
       >
         <User className="cursor-pointer" />
-        <span>{profile ? fullName : "Guest"}</span>
+        <span className="font-medium">{profile ? fullName : "Guest"}</span>
       </DropdownMenuTrigger>
       <DropdownMenuContent className={cn("w-[16rem]")}>
         {profile ? (
