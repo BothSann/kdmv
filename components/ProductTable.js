@@ -56,7 +56,10 @@ export default async function ProductTable({ searchParams }) {
       </TableBody>
 
       <TableFooter>
-        <Pagination pagination={pagination} />
+        <Pagination
+          pagination={pagination}
+          totalColumns={tableHeaders.length}
+        />
       </TableFooter>
     </Table>
   );
