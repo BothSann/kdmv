@@ -10,6 +10,11 @@ const nextConfig = {
       {
         protocol: "https",
         hostname: "rbcppmhhbzilsypviyrg.supabase.co",
+        pathname: "/storage/v1/object/public/product-images/**",
+      },
+      {
+        protocol: "https",
+        hostname: "rbcppmhhbzilsypviyrg.supabase.co",
         pathname: "/storage/v1/object/public/avatars/**",
       },
       {
@@ -18,6 +23,11 @@ const nextConfig = {
         pathname: "/storage/v1/object/public/collection-images/**",
       },
     ],
+  },
+  experimental: {
+    serverActions: {
+      bodySizeLimit: "5mb",
+    },
   },
 };
 
