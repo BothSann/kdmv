@@ -1,9 +1,19 @@
 "use client";
 
-import { useState, useEffect } from "react";
-
-import { ChevronLeft } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
+import { ChevronLeft, Upload, Plus, Trash } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import {
   createNewProductAction,
@@ -13,13 +23,10 @@ import { useFormStatus } from "react-dom";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Spinner from "../Spinner";
-import { hasDuplicateVariants } from "@/lib/utils";
-import ProductDetails from "./ProductDetails";
-import ProductPricing from "./ProductPricing";
-import ProductCategories from "./ProductCategories";
-import ProductCollection from "./ProductCollection";
-import ProductVariantsEditor from "./ProductVariantsEditor";
-import ProductImages from "./ProductImages";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import Image from "next/image";
+import { formatCurrency } from "@/lib/utils";
+import { Badge } from "@/components/ui/badge";
 
 export default function ProductCreateEditFormV1({
   categories,
@@ -30,6 +37,9 @@ export default function ProductCreateEditFormV1({
   existingProduct = null,
   isEditing = false,
 }) {
+  const fileInputRef = useRef(null);
+  const additionalImagesInputRef = useRef(null);
+
   const [name, setName] = useState(existingProduct?.name || "");
   const [description, setDescription] = useState(
     existingProduct?.description || ""
@@ -47,11 +57,14 @@ export default function ProductCreateEditFormV1({
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedSubcategory, setSelectedSubcategory] = useState("");
   const [bannerFile, setBannerFile] = useState(null);
+  const [additionalImages, setAdditionalImages] = useState([]);
   const [imageFiles, setImageFiles] = useState([]);
   const [existingImages, setExistingImages] = useState(
     existingProduct?.product_images || []
   );
-
+  const [previewUrl, setPreviewUrl] = useState(
+    existingProduct?.banner_image_url || null
+  );
   const [variants, setVariants] = useState([
     { color_id: "", size_id: "", quantity: 0, sku: "" },
   ]);
@@ -105,7 +118,7 @@ export default function ProductCreateEditFormV1({
   }, [isEditing, existingProduct]);
 
   useEffect(() => {
-    if (selectedCategory && subcategories && categories) {
+    if (selectedCategory && subcategories) {
       // Find category by ID to get its slug
       const selectedCategoryData = categories?.find(
         (cat) => cat.id === selectedCategory
@@ -125,6 +138,14 @@ export default function ProductCreateEditFormV1({
       }
     }
   }, [selectedCategory, subcategories, categories, selectedSubcategory]);
+
+  useEffect(() => {
+    return () => {
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+      }
+    };
+  }, [previewUrl]);
 
   const addVariant = () => {
     setVariants([
@@ -153,6 +174,106 @@ export default function ProductCreateEditFormV1({
     );
   };
 
+  const hasDuplicateVariants = () => {
+    const combinations = variants.map((v) => `${v.color_id}-${v.size_id}`);
+    return combinations.length !== new Set(combinations).size;
+  };
+
+  // Validation functions
+  const validatePricing = () => {
+    const price = parseFloat(basePrice);
+    const discount = parseInt(discountPercentage) || 0;
+
+    return {
+      isValid: price > 0 && discount >= 0 && discount <= 100,
+      errors: {
+        basePrice: !price || price <= 0 ? "Price must be greater than 0" : null,
+        discountPercentage:
+          discount < 0 || discount > 100
+            ? "Discount must be between 0-100%"
+            : null,
+      },
+    };
+  };
+
+  // Calculate discounted price for preview
+  const getDiscountedPrice = () => {
+    const price = parseFloat(basePrice) || 0;
+    const discount = parseInt(discountPercentage) || 0;
+    return discount > 0 ? price * (1 - discount / 100) : price;
+  };
+
+  const validation = validatePricing();
+  const discountedPrice = getDiscountedPrice();
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) {
+      setBannerFile(null);
+      setPreviewUrl(null);
+      return;
+    }
+
+    setBannerFile(file);
+
+    const objectUrl = URL.createObjectURL(file);
+    setPreviewUrl(objectUrl);
+  };
+
+  const handleAdditionalImagesChange = (e) => {
+    const files = Array.from(e.target.files);
+
+    // Create preview URLs and store files
+    const newImages = files.map((file, index) => ({
+      id: Date.now() + index, // temporary ID
+      file,
+      preview: URL.createObjectURL(file),
+      display_order: additionalImages.length + index,
+    }));
+
+    setAdditionalImages((prev) => [...prev, ...newImages]);
+    setImageFiles((prev) => [...prev, ...files]);
+  };
+
+  const handleRemoveAdditionalImage = (imageId) => {
+    setAdditionalImages((prev) => prev.filter((image) => image.id !== imageId));
+    // Also update imageFiles state to remove the corresponding file
+    setImageFiles((prev) => {
+      const imageToRemove = additionalImages.find((img) => img.id === imageId);
+      if (imageToRemove) {
+        return prev.filter((file) => file !== imageToRemove.file);
+      }
+      return prev;
+    });
+
+    // Clear the file input if no images remain
+    if (additionalImages.length <= 1) {
+      // <= 1 because we're filtering out one item
+      if (additionalImagesInputRef.current) {
+        additionalImagesInputRef.current.value = "";
+      }
+    }
+  };
+
+  const handleClearAllAdditionalImages = () => {
+    setAdditionalImages([]);
+    setImageFiles([]);
+
+    if (additionalImagesInputRef.current) {
+      additionalImagesInputRef.current.value = "";
+    }
+  };
+
+  const handleRemoveImage = () => {
+    setPreviewUrl(null);
+    setBannerFile(null);
+
+    // Reset the file input fields
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
+
   const handleRemoveExistingImage = (imageId) => {
     setExistingImages(existingImages.filter((image) => image.id !== imageId));
   };
@@ -160,6 +281,10 @@ export default function ProductCreateEditFormV1({
   const handleWheel = (e) => {
     e.target.blur();
   };
+
+  // Filter subcategories based on selected category
+  const filteredSubcategories =
+    subcategories?.filter((sub) => sub.category_id === selectedCategory) || [];
 
   // Reset subcategory when category changes
   const handleCategoryChange = (categoryId) => {
@@ -193,7 +318,7 @@ export default function ProductCreateEditFormV1({
       return;
     }
 
-    if (hasDuplicateVariants(variants)) {
+    if (hasDuplicateVariants()) {
       toast.warning("Duplicate color/size combinations are not allowed");
       return;
     }
@@ -291,80 +416,491 @@ export default function ProductCreateEditFormV1({
           {/* Left Column */}
           <div className="space-y-8">
             {/* Product Details */}
-            <ProductDetails
-              name={name}
-              description={description}
-              onNameChange={setName}
-              onDescriptionChange={setDescription}
-            />
+            <Card>
+              <CardHeader>
+                <CardTitle>Product Details</CardTitle>
+              </CardHeader>
+
+              <CardContent className="space-y-8">
+                <div className="space-y-3">
+                  <Label>Name</Label>
+                  <Input
+                    type="text"
+                    name="name"
+                    value={name}
+                    required
+                    onChange={(e) => setName(e.target.value)}
+                  />
+                </div>
+
+                <div className="space-y-3">
+                  <Label>Description (Optional)</Label>
+                  <Textarea
+                    name="description"
+                    rows={4}
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                  />
+                </div>
+              </CardContent>
+            </Card>
 
             {/* Product Images */}
-            <ProductImages
-              bannerPreviewUrl={
-                isEditing ? existingProduct?.banner_image_url : null
-              }
-              bannerFile={bannerFile}
-              existingImages={existingImages}
-              isEditing={isEditing}
-              onBannerFileChange={setBannerFile}
-              onAdditionalImagesChange={(files) => {
-                setImageFiles((prev) => [...prev, ...files]);
-              }}
-              onRemoveBanner={() => {
-                setBannerFile(null);
-              }}
-              onRemoveAdditionalImage={(fileToRemove) => {
-                setImageFiles((prev) =>
-                  prev.filter((file) => file !== fileToRemove)
-                );
-              }}
-              onClearAllAdditionalImages={() => {
-                setImageFiles([]);
-              }}
-              onRemoveExistingImage={handleRemoveExistingImage}
-            />
+            <Card>
+              <CardHeader>
+                <CardTitle>Product Images</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-8">
+                {/* Banner Image URL */}
+                <div className="border-2 border-dashed p-8 text-center">
+                  <Upload className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                  <h4 className="text-lg font-semibold mb-3">
+                    Upload your banner image here
+                  </h4>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    PNG or JPG (max. 5MB)
+                  </p>
+                  <Input
+                    type="file"
+                    accept="image/*"
+                    name="banner_image_url"
+                    className="text-muted-foreground"
+                    onChange={handleFileChange}
+                    ref={fileInputRef}
+                  />
+
+                  {previewUrl && (
+                    <div className="flex items-end justify-between mt-4">
+                      <div className="relative w-26 h-26 aspect-square border border-border">
+                        <Image
+                          src={previewUrl}
+                          alt="Product Banner Image Preview"
+                          fill
+                          sizes="100vw"
+                          className="object-cover object-center"
+                        />
+                      </div>
+                      {!isEditing && (
+                        <div>
+                          <Button
+                            variant="destructive"
+                            onClick={handleRemoveImage}
+                            size="icon"
+                          >
+                            <Trash />
+                          </Button>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+
+                {/* Additional Images with Preview */}
+                <div className="space-y-4">
+                  <Label>Additional Images for Slider</Label>
+
+                  {/* Upload Input */}
+                  <Input
+                    className={`text-muted-foreground ${
+                      additionalImages.length > 0 ? "hidden" : ""
+                    }`}
+                    type="file"
+                    multiple
+                    accept="image/*"
+                    onChange={handleAdditionalImagesChange}
+                    ref={additionalImagesInputRef}
+                  />
+
+                  {/* Image Previews */}
+                  {additionalImages.length > 0 && (
+                    <>
+                      <div className="flex items-center justify-between">
+                        <p className="text-sm text-muted-foreground font-medium">
+                          {additionalImages.length} file
+                          {additionalImages.length !== 1 ? "s" : ""} selected
+                        </p>
+                        <Button
+                          variant="destructive"
+                          onClick={handleClearAllAdditionalImages}
+                          size="sm"
+                        >
+                          Clear All
+                        </Button>
+                      </div>
+                      <div className="grid grid-cols-6 gap-4">
+                        {additionalImages.map((image, index) => (
+                          <div key={image.id} className="relative group">
+                            <div className="relative aspect-square border border-border">
+                              <Image
+                                src={image.preview}
+                                alt={`Additional image ${index + 1}`}
+                                fill
+                                className="object-cover object-center"
+                              />
+                            </div>
+
+                            {/* Controls */}
+                            <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                              <Button
+                                type="button"
+                                size="icon"
+                                variant="destructive"
+                                onClick={() =>
+                                  handleRemoveAdditionalImage(image.id)
+                                }
+                              >
+                                <Trash />
+                              </Button>
+                            </div>
+
+                            {/* Order indicator */}
+                            <div className="absolute bottom-2 left-2 bg-background/80 px-3 py-1.5 text-xs">
+                              {index + 1}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </>
+                  )}
+                </div>
+
+                {/* Existing Images (Edit Mode Only) */}
+                {isEditing && existingImages.length > 0 && (
+                  <div className="space-y-4">
+                    <Label>Current Gallery Images</Label>
+                    <div className="grid grid-cols-6 gap-4">
+                      {existingImages.map((image, index) => (
+                        <div key={image.id} className="relative group">
+                          <div className="relative aspect-square border border-border">
+                            <Image
+                              src={image.image_url}
+                              alt={`Existing image ${index + 1}`}
+                              fill
+                              className="object-cover object-center"
+                            />
+                          </div>
+
+                          {/* Delete existing image button */}
+                          <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <Button
+                              type="button"
+                              size="icon"
+                              variant="destructive"
+                              onClick={() =>
+                                handleRemoveExistingImage(image.id)
+                              }
+                            >
+                              <Trash />
+                            </Button>
+                          </div>
+
+                          {/* Existing indicator */}
+                          <div className="absolute bottom-2 left-2 bg-chart-3/80 px-2 py-1 text-xs text-background">
+                            Current
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
 
             {/* Variants */}
-            <ProductVariantsEditor
-              variants={variants}
-              colors={colors}
-              sizes={sizes}
-              onAddVariant={addVariant}
-              onRemoveVariant={removeVariant}
-              onUpdateVariant={updateVariant}
-            />
+            <Card>
+              <CardHeader className="grid-cols-2">
+                <CardTitle>Product Variants</CardTitle>
+
+                <Button
+                  className="justify-self-end"
+                  type="button"
+                  onClick={addVariant}
+                >
+                  <Plus />
+                  Add Variant
+                </Button>
+              </CardHeader>
+
+              <CardContent className="space-y-4">
+                {/* Header */}
+                <div className="grid grid-cols-5">
+                  <Label>Color</Label>
+                  <Label>Size</Label>
+                  <Label>Quantity</Label>
+                  <Label>SKU</Label>
+                  <Label className="justify-self-end">Action</Label>
+                </div>
+
+                {/* Variant Rows */}
+                {variants.map((variant, index) => (
+                  <div key={index} className="grid grid-cols-5">
+                    {/* Color Select */}
+
+                    <Select
+                      value={variant.color_id}
+                      onValueChange={(value) =>
+                        updateVariant(index, "color_id", value)
+                      }
+                      required
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select color" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {colors?.map((color) => (
+                          <SelectItem key={color.id} value={color.id}>
+                            {color.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+
+                    {/* Size Select */}
+
+                    <Select
+                      value={variant.size_id}
+                      onValueChange={(value) =>
+                        updateVariant(index, "size_id", value)
+                      }
+                      required
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select size" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {sizes?.map((size) => (
+                          <SelectItem key={size.id} value={size.id}>
+                            {size.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+
+                    {/* Quantity Input */}
+                    <Input
+                      className="max-w-24"
+                      min="0"
+                      value={variant.quantity}
+                      onChange={(e) =>
+                        updateVariant(
+                          index,
+                          "quantity",
+                          parseInt(e.target.value) || 0
+                        )
+                      }
+                      required
+                      disabled={hasDuplicateVariants()}
+                    />
+
+                    {/* SKU Input */}
+                    <Input
+                      type="text"
+                      value={variant.sku}
+                      onChange={(e) =>
+                        updateVariant(index, "sku", e.target.value)
+                      }
+                      placeholder="Auto-generated"
+                      disabled
+                    />
+
+                    {/* Remove Button */}
+                    <Button
+                      className="justify-self-end"
+                      type="button"
+                      variant="destructive"
+                      size="sm"
+                      onClick={() => removeVariant(index)}
+                      disabled={variants.length === 1}
+                    >
+                      <Trash />
+                    </Button>
+                  </div>
+                ))}
+
+                {/* Validation Messages */}
+                {hasDuplicateVariants() && (
+                  <div className="text-destructive flex items-center">
+                    ⚠️ Duplicate color/size combinations detected!
+                  </div>
+                )}
+              </CardContent>
+            </Card>
           </div>
 
           {/* Right Column */}
           <div className="space-y-8">
             {/* Pricing */}
-            <ProductPricing
-              basePrice={basePrice}
-              discountPercentage={discountPercentage}
-              isActive={isActive}
-              onBasePriceChange={setBasePrice}
-              onDiscountPercentageChange={setDiscountPercentage}
-              onIsActiveChange={setIsActive}
-              onWheel={handleWheel}
-            />
+            <Card>
+              <CardHeader>
+                <CardTitle>Pricing</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-8">
+                <div className="space-y-3">
+                  <Label>Price ($)</Label>
+                  <Input
+                    type="number"
+                    min="0.01"
+                    step="0.01"
+                    name="base_price"
+                    value={basePrice}
+                    onChange={(e) => setBasePrice(e.target.value)}
+                    required
+                    placeholder="0.00"
+                    onWheel={handleWheel}
+                  />
+                  {validation.errors.basePrice && (
+                    <p className="text-sm text-warning">
+                      {validation.errors.basePrice}
+                    </p>
+                  )}
+                </div>
+
+                <div className="space-y-3">
+                  <Label>Discount Percentage (%)</Label>
+                  <Input
+                    type="number"
+                    min="0"
+                    max="100"
+                    name="discount_percentage"
+                    value={discountPercentage}
+                    onChange={(e) => setDiscountPercentage(e.target.value)}
+                    placeholder="0%"
+                    onWheel={handleWheel}
+                  />
+                  {validation.errors.discountPercentage && (
+                    <p className="text-sm text-destructive">
+                      {validation.errors.discountPercentage}
+                    </p>
+                  )}
+
+                  {/* Price Preview */}
+                  {basePrice &&
+                    discountPercentage &&
+                    parseFloat(basePrice) > 0 &&
+                    parseInt(discountPercentage) > 0 && (
+                      <div className="bg-muted border border-border p-4 space-y-3 my-6">
+                        <Label className="text-muted-foreground">
+                          Price Preview:
+                        </Label>
+                        <div className="flex items-center gap-2">
+                          <span className="line-through text-muted-foreground">
+                            {formatCurrency(parseFloat(basePrice))}
+                          </span>
+
+                          <span>&rarr;</span>
+
+                          <span className="font-semibold">
+                            {formatCurrency(discountedPrice)}
+                          </span>
+
+                          <Badge
+                            variant={"destructive"}
+                            className="text-sm ml-auto"
+                          >
+                            -{discountPercentage}%
+                          </Badge>
+                        </div>
+                      </div>
+                    )}
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <Checkbox
+                    id="is_active"
+                    name="is_active"
+                    checked={isActive}
+                    onCheckedChange={setIsActive}
+                  />
+                  <Label htmlFor="is_active">Active Product</Label>
+                  {!isActive && (
+                    <span className="text-xs text-muted-foreground">
+                      (Product will be hidden from customers)
+                    </span>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
 
             {/* Categories */}
-            <ProductCategories
-              categories={categories}
-              subcategories={subcategories}
-              selectedCategory={selectedCategory}
-              selectedSubcategory={selectedSubcategory}
-              onCategoryChange={handleCategoryChange}
-              onSubcategoryChange={setSelectedSubcategory}
-            />
+            <Card>
+              <CardHeader>
+                <CardTitle>Categories</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <Select
+                  value={selectedCategory}
+                  onValueChange={handleCategoryChange}
+                  required
+                >
+                  <SelectTrigger className="w-full" required>
+                    <SelectValue placeholder="Select a category" />
+                  </SelectTrigger>
+                  <SelectContent required>
+                    {categories?.map((category) => (
+                      <SelectItem
+                        key={category.id}
+                        value={category.id}
+                        required
+                      >
+                        {category.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+
+                {/* Subcategories */}
+                <Select
+                  value={selectedSubcategory}
+                  onValueChange={setSelectedSubcategory}
+                  disabled={!selectedCategory}
+                  required
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select a sub category" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {filteredSubcategories.map((subcategory) => (
+                      <SelectItem key={subcategory.id} value={subcategory.id}>
+                        {subcategory.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </CardContent>
+            </Card>
 
             {/* Collections */}
-            <ProductCollection
-              collections={collections}
-              selectedCollection={selectedCollection}
-              onCollectionChange={setSelectedCollection}
-              isEditing={isEditing}
-            />
+            {collections && collections.length > 0 && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Collection (Optional)</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <Select
+                    value={selectedCollection}
+                    onValueChange={setSelectedCollection}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Select a collection (optional)" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {collections.map((collection) => (
+                        <SelectItem key={collection.id} value={collection.id}>
+                          {collection.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  {isEditing && selectedCollection && (
+                    <p className="text-sm text-warning">
+                      <span className="font-bold">Note: </span>Removing this
+                      product from the collection must be done inside the
+                      collection itself.
+                    </p>
+                  )}
+                </CardContent>
+              </Card>
+            )}
           </div>
         </div>
       </div>
