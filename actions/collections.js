@@ -195,7 +195,6 @@ export async function updateCollectionAction(formData) {
           (productId) => ({
             collection_id: collectionId,
             product_id: productId,
-            display_order: 0,
           })
         );
 
