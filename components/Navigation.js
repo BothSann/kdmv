@@ -7,7 +7,7 @@ import useAuthorization from "@/hooks/useAuthorization";
 import { Heart } from "lucide-react";
 import { ModeToggle } from "@/components/ModeToggle";
 
-export default function Navigation() {
+export default function Navigation({ modeToggleClassName }) {
   const { isAuthenticated } = useAuthorization();
   return (
     <nav className="z-10">
@@ -28,7 +28,7 @@ export default function Navigation() {
           <UserProfileDropdownMenu />
         </li>
         <li className="flex items-center">
-          <ModeToggle />
+          <ModeToggle className={`${modeToggleClassName}`} />
         </li>
       </ul>
     </nav>

@@ -40,8 +40,7 @@ export default function HeroCarousel() {
   return (
     <div className="w-full aspect-[16/9] md:aspect-[26/9] overflow-hidden relative">
       <Swiper
-        modules={[Autoplay, Pagination, Keyboard, EffectFade]}
-        effect="fade"
+        modules={[Autoplay, Pagination, Keyboard]}
         grabCursor={true}
         spaceBetween={0}
         slidesPerView={1}
@@ -58,7 +57,7 @@ export default function HeroCarousel() {
         className="w-full h-full"
       >
         {slides.map((slide) => (
-          <SwiperSlide key={slide.id} className="relative">
+          <SwiperSlide key={slide.id}>
             <div className="relative w-full h-full">
               <Image
                 src={slide.image}
