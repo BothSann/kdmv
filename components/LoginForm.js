@@ -13,7 +13,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { loginUserAction } from "@/lib/actions";
+import { loginUserAction } from "@/actions/users";
 import { useFormStatus } from "react-dom";
 import { useRouter } from "next/navigation";
 import useAuthStore from "@/store/useAuthStore";

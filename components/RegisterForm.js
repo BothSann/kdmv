@@ -17,9 +17,9 @@ import {
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useFormStatus } from "react-dom";
+
 import { toast } from "sonner";
-import { registerUserAction } from "@/lib/actions";
+import { registerUserAction } from "@/actions/users";
 import { useState } from "react";
 
 import Logo from "@/components/Logo";
