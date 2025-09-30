@@ -8,6 +8,8 @@ import {
   generateUniqueProductCode,
   generateSKU,
   uploadProductGalleryImages,
+  deleteUnselectedProductImages,
+  deleteAllProductImages,
 } from "@/lib/apiProducts";
 import { getCurrentUser, getUserProfile } from "@/lib/apiUsers";
 import {
@@ -17,27 +19,24 @@ import {
 
 export async function createNewProductAction(formData) {
   try {
-    if (!formData.banner_file) {
-      return { error: "Please upload a banner image" };
-    }
-
-    // 1. Get authenticated user
+    // AUTHENTICATION: Verify user has permission to create products
     const { user, error: getCurrentUserError } = await getCurrentUser();
     if (getCurrentUserError) {
       console.error("Get current user error:", getCurrentUserError);
       return { error: getCurrentUserError };
     }
 
-    // 2. Generate unique product code first
+    // PRODUCT CODE GENERATION: Create unique identifier before product creation
     const productCode = await generateUniqueProductCode();
 
     let createdProductId = null;
 
+    // FILE PREPARATION: Prepare banner image path before creating product record
     const imageName = generateUniqueImageName(formData.banner_file);
     const bannerImagePath = `banners/${imageName}`;
     const imagePath = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/product-images/${bannerImagePath}`;
 
-    // 3. Insert product to products table
+    // PRODUCT RECORD CREATION: Create main product record first (get product ID)
     const { data: product, error: productError } = await supabaseAdmin
       .from("products")
       .insert({
@@ -61,7 +60,7 @@ export async function createNewProductAction(formData) {
 
     createdProductId = product.id;
 
-    // 4. Insert product to collection_products table if collection_id is provided
+    // COLLECTION ASSIGNMENT: Link product to collection if specified
     if (formData.collection_id) {
       const { error: collectionProductsError } = await supabaseAdmin
         .from("collection_products")
@@ -77,7 +76,7 @@ export async function createNewProductAction(formData) {
       }
     }
 
-    // 5. Upload banner image to storage
+    // BANNER IMAGE UPLOAD: Upload banner image to storage after product exists
     const { error: storageError } = await supabaseAdmin.storage
       .from("product-images")
       .upload(bannerImagePath, formData.banner_file);
@@ -88,7 +87,7 @@ export async function createNewProductAction(formData) {
       return { error: storageError.message };
     }
 
-    // 6. Upload gallery images to product_images table if provided
+    // GALLERY IMAGES UPLOAD: Upload additional gallery images if provided
     if (formData.image_files && formData.image_files.length > 0) {
       const galleryResult = await uploadProductGalleryImages(
         product.id,
@@ -102,7 +101,7 @@ export async function createNewProductAction(formData) {
       }
     }
 
-    // 7. Insert product variants to product_variants table
+    // VARIANTS CREATION: Create product variants after all other data is ready
     const variantsToInsert = await Promise.all(
       formData.variants.map(async (variant) => ({
         product_id: product.id,
@@ -125,6 +124,7 @@ export async function createNewProductAction(formData) {
       return { error: variantsError.message };
     }
 
+    // CACHE INVALIDATION: Clear cached pages to show new product
     revalidatePath("/admin/products");
     return {
       success: true,
@@ -142,7 +142,7 @@ export async function createNewProductAction(formData) {
 
 export async function updateProductAction(formData) {
   try {
-    // Get authenticated user
+    // AUTHENTICATION: Verify user has permission to update products
     const { error: getCurrentUserError } = await getCurrentUser();
     if (getCurrentUserError) {
       console.error("Get current user error:", getCurrentUserError);
@@ -151,7 +151,7 @@ export async function updateProductAction(formData) {
 
     const productId = formData.id;
 
-    // Handle image upload if new image provided
+    // BANNER IMAGE HANDLING: Upload new banner image if provided, otherwise keep existing
     let imagePath = formData.existing_banner_image_url; // Keep existing image by default
 
     if (formData.banner_file && formData.banner_file.size > 0) {
@@ -159,7 +159,7 @@ export async function updateProductAction(formData) {
       const bannerImagePath = `banners/${imageName}`;
       imagePath = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/product-images/${bannerImagePath}`;
 
-      // Upload new image to storage
+      // Upload new banner image to storage
       const { error: storageError } = await supabaseAdmin.storage
         .from("product-images")
         .upload(bannerImagePath, formData.banner_file);
@@ -170,7 +170,7 @@ export async function updateProductAction(formData) {
       }
     }
 
-    // Handle collection assignment changes
+    // COLLECTION MANAGEMENT: Handle product collection assignments
     if (formData.collection_id !== undefined) {
       // First, remove product from any existing collections
       const removeResult = await removeProductFromCollection(productId);
@@ -193,7 +193,7 @@ export async function updateProductAction(formData) {
       }
     }
 
-    // 1. Update product
+    // PRODUCT CORE DATA UPDATE: Update main product information
     const { data: product, error: productError } = await supabaseAdmin
       .from("products")
       .update({
@@ -215,7 +215,49 @@ export async function updateProductAction(formData) {
       return { error: productError.message };
     }
 
-    // 2. Delete existing variants and insert new ones
+    // GALLERY IMAGE MANAGEMENT: Delete unselected existing images and upload new ones
+    // Delete images that are no longer selected by the user
+    if (formData.existing_image_ids !== undefined) {
+      // User wants to keep some images - delete the rest
+      if (formData.existing_image_ids.length > 0) {
+        const deleteImagesResult = await deleteUnselectedProductImages(
+          productId,
+          formData.existing_image_ids
+        );
+
+        if (!deleteImagesResult.success) {
+          console.error("Delete images error:", deleteImagesResult.error);
+          return { error: deleteImagesResult.error };
+        }
+      } else {
+        // User wants to delete ALL existing images (empty array means delete all)
+        const deleteAllImagesResult = await deleteAllProductImages(productId);
+
+        if (!deleteAllImagesResult.success) {
+          console.error(
+            "Delete all images error:",
+            deleteAllImagesResult.error
+          );
+          return { error: deleteAllImagesResult.error };
+        }
+      }
+    }
+
+    // Upload new gallery images if any were added during edit
+    if (formData.image_files && formData.image_files.length > 0) {
+      const galleryResult = await uploadProductGalleryImages(
+        productId,
+        formData.image_files
+      );
+
+      if (!galleryResult.success) {
+        console.error("Gallery upload error:", galleryResult.error);
+        return { error: galleryResult.error };
+      }
+    }
+
+    // VARIANTS MANAGEMENT: Replace all existing variants with new ones
+    // Delete all existing variants first
     const { error: deleteVariantsError } = await supabaseAdmin
       .from("product_variants")
       .delete()
@@ -226,7 +268,7 @@ export async function updateProductAction(formData) {
       return { error: deleteVariantsError.message };
     }
 
-    // 3. Insert updated variants
+    // Insert new variants with proper SKUs
     const variantsToInsert = await Promise.all(
       formData.variants.map(async (variant) => ({
         product_id: productId,
@@ -252,6 +294,7 @@ export async function updateProductAction(formData) {
       return { error: variantsError.message };
     }
 
+    // CACHE INVALIDATION: Clear cached pages to show updated data
     revalidatePath("/admin/products");
     revalidatePath(`/admin/products/${productId}`);
     revalidatePath(`/admin/products/${productId}/edit`);
@@ -269,7 +312,7 @@ export async function updateProductAction(formData) {
 
 export async function deleteProductByIdAction(productId) {
   try {
-    // Get authenticated user
+    // AUTHENTICATION: Verify user is logged in and retrieve user information
     const { user, error: getCurrentUserError } = await getCurrentUser();
 
     if (getCurrentUserError) {
@@ -277,6 +320,7 @@ export async function deleteProductByIdAction(productId) {
       return { error: getCurrentUserError };
     }
 
+    // AUTHORIZATION: Verify user has admin privileges to delete products
     const { profile, error: profileError } = await getUserProfile(user?.id);
     if (profileError) {
       console.error("Profile error:", profileError);
@@ -290,6 +334,7 @@ export async function deleteProductByIdAction(productId) {
       };
     }
 
+    // PRODUCT DELETION: Remove the product from the database
     const { error: deleteProductError } = await supabaseAdmin
       .from("products")
       .delete()
@@ -300,6 +345,7 @@ export async function deleteProductByIdAction(productId) {
       return { error: "Failed to delete product" };
     }
 
+    // CACHE INVALIDATION: Clear cached pages to reflect deletion
     revalidatePath("/admin/products");
     return { success: true, message: "Product deleted successfully" };
   } catch (err) {
