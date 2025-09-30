@@ -4,12 +4,8 @@ import {
   PenLine,
   Calendar,
   Users,
-  Percent,
-  Hash,
   FileText,
-  Clock,
   CheckCircle,
-  XCircle,
   TicketPercent,
   Code,
   CalendarX2,
@@ -32,8 +28,8 @@ import {
   formatISODateToDayDateMonthYearWithAtTime,
   formatISODateToDayMonthNameYear,
 } from "@/lib/utils";
-import DeleteCouponButton from "@/components/DeleteCouponButton";
-import CouponNotFound from "@/components/CouponNotFound";
+import DeleteCouponButton from "@/components/coupon/DeleteCouponButton";
+import NotFound from "@/components/NotFound";
 
 export async function generateMetadata({ params }) {
   const resolvedParams = await params;
@@ -55,7 +51,7 @@ export default async function AdminCouponDetailPage({ params }) {
   const { coupon, error } = await getCouponById(resolvedParams.couponId);
 
   if (error || !coupon) {
-    return <CouponNotFound />;
+    return <NotFound href="/admin/coupons" title="Coupon" />;
   }
 
   return (
@@ -240,7 +236,7 @@ function CouponDetailsSection({ coupon }) {
       {/* Basic Information */}
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-xl">
+          <CardTitle className="flex items-center gap-2">
             <FileText />
             Coupon Information
           </CardTitle>

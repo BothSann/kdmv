@@ -1,18 +1,12 @@
 import { getProductById } from "@/lib/apiProducts";
 import { Button } from "@/components/ui/button";
 import { PenLine, ChevronLeft } from "lucide-react";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselPrevious,
-  CarouselNext,
-} from "@/components/ui/carousel";
-import Image from "next/image";
+
 import Link from "next/link";
-import ProductDetailsWithSelection from "@/components/ProductDetailsWithSelection";
-import DeleteProductButton from "@/components/DeleteProductButton";
-import ProductNotFound from "@/components/ProductNotFound";
+import ProductDetailsWithSelection from "@/components/product/ProductDetailsWithSelection";
+import DeleteProductButton from "@/components/product/DeleteProductButton";
+import NotFound from "@/components/NotFound";
+import ProductImageSlider from "@/components/product/ProductImageSlider";
 
 export async function generateMetadata({ params }) {
   const resolvedParams = await params;
@@ -46,13 +40,14 @@ export default async function AdminProductDetailPage({ params }) {
   const resolvedParams = await params;
   const { product, error } = await getProductById(resolvedParams.productId);
 
-  if (error || !product) return <ProductNotFound />;
+  if (error || !product)
+    return <NotFound href="/admin/products" title="Product" />;
 
   return (
     <>
       <Header product={product} />
       <div className="grid grid-cols-1 xl:grid-cols-[1fr_2fr] gap-6 mt-10">
-        <ProductDetailCarousel product={product} />
+        <ProductImageSlider product={product} />
         <ProductDetailsWithSelection product={product} />
       </div>
     </>
@@ -81,92 +76,6 @@ function Header({ product }) {
         </Button>
         <DeleteProductButton product={product} redirectTo="/admin/products" />
       </div>
-    </div>
-  );
-}
-
-function ProductDetailCarousel({ product }) {
-  return (
-    <div className="space-y-4">
-      <Carousel>
-        <CarouselContent>
-          <CarouselItem>
-            <div className="relative aspect-[1/1]">
-              <Image
-                src={product.banner_image_url}
-                alt="carousel1"
-                fill
-                quality={100}
-                className="rounded-lg object-cover object-center"
-              />
-            </div>
-          </CarouselItem>
-          <CarouselItem>
-            <div className="relative aspect-[1/1]">
-              <Image
-                src="/kdmv-clothes-1.jpg"
-                alt="carousel2"
-                fill
-                quality={100}
-                className="rounded-lg object-cover object-top"
-                // 4:3 ratio (taller)
-              />
-            </div>
-          </CarouselItem>
-          <CarouselItem>
-            <div className="relative aspect-[1/1]">
-              <Image
-                src="/kdmv-clothes-1.jpg"
-                alt="carousel3"
-                fill
-                quality={100}
-                className="rounded-lg object-cover object-top"
-              />
-            </div>
-          </CarouselItem>
-          {/* ... other items */}
-        </CarouselContent>
-        <CarouselPrevious className="absolute top-1/2 -translate-y-1/2 left-4" />
-        <CarouselNext className="absolute top-1/2 -translate-y-1/2 right-4" />
-      </Carousel>
-
-      <Carousel>
-        <CarouselContent>
-          <CarouselItem className="basis-1/3">
-            <div className="relative aspect-[1/1]">
-              <Image
-                src="/kdmv-clothes-1.jpg"
-                alt="carousel1"
-                fill
-                quality={100}
-                className="rounded-lg object-cover object-top"
-              />
-            </div>
-          </CarouselItem>
-          <CarouselItem className="basis-1/3">
-            <div className="relative aspect-[1/1]">
-              <Image
-                src="/kdmv-clothes-1.jpg"
-                alt="carousel1"
-                fill
-                quality={100}
-                className="rounded-lg object-cover object-top"
-              />
-            </div>
-          </CarouselItem>
-          <CarouselItem className="basis-1/3">
-            <div className="relative aspect-[1/1]">
-              <Image
-                src="/kdmv-clothes-1.jpg"
-                alt="carousel1"
-                fill
-                quality={100}
-                className="rounded-lg object-cover object-top"
-              />
-            </div>
-          </CarouselItem>
-        </CarouselContent>
-      </Carousel>
     </div>
   );
 }

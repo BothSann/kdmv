@@ -1,5 +1,5 @@
 import Spinner from "@/components/Spinner";
 
-export default function CouponIdLoading() {
+export default function Loading() {
   return <Spinner message="Loading coupon details..." />;
 }

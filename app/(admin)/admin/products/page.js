@@ -1,5 +1,5 @@
 import Link from "next/link";
-import ProductTable from "@/components/ProductTable";
+import ProductTable from "@/components/product/ProductTable";
 import PaginationStateManager from "@/components/PaginationStateManager";
 
 import { Suspense } from "react";

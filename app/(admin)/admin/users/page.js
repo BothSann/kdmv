@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Suspense } from "react";
 
-import AdminTable from "@/components/AdminTable";
+import AdminTable from "@/components/admin/AdminTable";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 

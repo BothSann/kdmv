@@ -1,4 +1,4 @@
-import CouponCreateEditForm from "@/components/CouponCreateEditForm";
+import CouponCreateEditForm from "@/components/coupon/CouponCreateEditForm";
 import { getCouponById } from "@/lib/apiCoupons";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft } from "lucide-react";

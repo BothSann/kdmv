@@ -1,4 +1,4 @@
-import AdminUpdateProfileForm from "@/components/AdminUpdateProfileForm";
+import AdminUpdateProfileForm from "@/components/admin/AdminUpdateProfileForm";
 
 export default function AccountProfilePage() {
   return (

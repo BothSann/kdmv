@@ -1,4 +1,4 @@
-import AdminChangePasswordForm from "@/components/AdminChangePasswordForm";
+import AdminChangePasswordForm from "@/components/admin/AdminChangePasswordForm";
 
 export default function AccountPasswordPage() {
   return (

@@ -1,5 +1,5 @@
 import Spinner from "@/components/Spinner";
 
 export default function Loading() {
-  return <Spinner message="Loading product details..." />;
+  return <Spinner message="Loading collection details..." />;
 }

@@ -1,7 +1,7 @@
-import AdminHeader from "@/components/AdminHeader";
+import AdminHeader from "@/components/admin/AdminHeader";
 import ProtectedRoute from "@/components/ProtectedRoute";
 
-import { AdminSidebar } from "@/components/AdminSidebar";
+import { AdminSidebar } from "@/components/admin/AdminSidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import PageOverlay from "@/components/PageOverlay";
 

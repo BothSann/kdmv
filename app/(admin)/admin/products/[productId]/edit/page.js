@@ -5,7 +5,8 @@ import {
   getAllSubcategories,
   getProductById,
 } from "@/lib/apiProducts";
-import ProductCreateEditForm from "@/components/ProductCreateEditForm";
+import { getAllCollections } from "@/lib/apiCollections";
+import ProductCreateEditForm from "@/components/product/ProductCreateEditForm";
 
 export async function generateMetadata({ params }) {
   const resolvedParams = await params;
@@ -24,6 +25,7 @@ export default async function AdminEditProductPage({ params }) {
   const { sizes } = await getAllSizes();
   const { categories } = await getAllCategories();
   const { subcategories } = await getAllSubcategories();
+  const { collections } = await getAllCollections();
 
   // Fetch the product for editing
   const { product } = await getProductById(productId);
@@ -34,6 +36,7 @@ export default async function AdminEditProductPage({ params }) {
       sizes={sizes}
       categories={categories}
       subcategories={subcategories}
+      collections={collections}
       existingProduct={product}
       isEditing={true}
     />

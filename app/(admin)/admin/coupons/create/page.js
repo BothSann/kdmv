@@ -1,4 +1,4 @@
-import CouponCreateEditForm from "@/components/CouponCreateEditForm";
+import CouponCreateEditForm from "@/components/coupon/CouponCreateEditForm";
 
 export default function AdminCreateCouponPage() {
   return <CouponCreateEditForm />;
