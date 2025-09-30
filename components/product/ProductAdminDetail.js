@@ -172,7 +172,7 @@ export default function ProductAdminDetail({ product }) {
                           key={`${color.id}-${size.id}`}
                           className="text-center"
                         >
-                          {variant ? variant.quantity : "Out of stock"}
+                          {variant ? variant.quantity : "N/A"}
                         </TableCell>
                       );
                     })}
