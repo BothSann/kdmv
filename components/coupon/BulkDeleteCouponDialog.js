@@ -10,27 +10,31 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { deleteCouponByIdAction } from "@/actions/coupons";
+import { bulkDeleteCouponsAction } from "@/actions/coupons";
 import { toast } from "sonner";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-export default function DeleteCouponDialog({
+export default function BulkDeleteCouponDialog({
   isOpen,
   onClose,
-  coupon,
+  couponIds,
   redirectTo,
 }) {
   const router = useRouter();
   const [isDeleting, setIsDeleting] = useState(false);
 
-  const handleDelete = async () => {
+  // const actionToUse = deleteProductByIdAction;
+
+  const handleBulkDelete = async () => {
     setIsDeleting(true);
-    const toastId = toast.loading("Deleting coupon...");
+    const toastId = toast.loading("Deleting coupons...");
 
     try {
-      const { success, error, message } = await deleteCouponByIdAction(
-        coupon.id
+      const selectedIds = Array.from(couponIds);
+
+      const { success, error, message } = await bulkDeleteCouponsAction(
+        selectedIds
       );
 
       if (error) {
@@ -43,29 +47,38 @@ export default function DeleteCouponDialog({
         onClose();
       }
     } catch (err) {
-      toast.error("Failed to delete coupon", { id: toastId });
+      toast.error("Failed to delete coupons", { id: toastId });
     } finally {
       setIsDeleting(false);
       redirectTo && router.push(redirectTo);
     }
   };
 
+  if (!couponIds || couponIds.size === 0) return null;
+
   return (
     <AlertDialog open={isOpen} onOpenChange={onClose}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Deleting Coupon</AlertDialogTitle>
+          <AlertDialogTitle>
+            Deleting {couponIds.size} Coupon{couponIds.size > 1 ? "s" : ""}
+          </AlertDialogTitle>
           <AlertDialogDescription>
             Are you sure you want to delete
-            <span className="font-bold"> &quot;{coupon?.code}&quot;? </span>
+            <span className="font-bold">
+              {" "}
+              {couponIds.size} coupon{couponIds.size > 1 ? "s" : ""}?{" "}
+            </span>
             This action cannot be undone. This will permanently delete the
-            coupon.
+            coupons.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={handleDelete} disabled={isDeleting}>
-            Delete
+          <AlertDialogCancel disabled={isDeleting} onClick={onClose}>
+            Cancel
+          </AlertDialogCancel>
+          <AlertDialogAction onClick={handleBulkDelete} disabled={isDeleting}>
+            {isDeleting ? "Deleting..." : "Delete"}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

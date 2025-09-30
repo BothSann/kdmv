@@ -13,12 +13,22 @@ import { Pencil, Trash2, View } from "lucide-react";
 import { useState } from "react";
 import { cn, formatISODateToDayDateMonthYear } from "@/lib/utils";
 import DeleteCouponDialog from "./DeleteCouponDialog";
+import { useCouponTableStore } from "@/store/useTableSelectionStore";
+import { Checkbox } from "../ui/checkbox";
 
 export default function CouponRow({ coupon }) {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const { toggleItem, isSelected } = useCouponTableStore();
 
   return (
     <TableRow className="text-sm">
+      <TableCell>
+        <Checkbox
+          checked={isSelected(coupon.id)}
+          onCheckedChange={() => toggleItem(coupon.id)}
+          aria-label={`Select ${coupon.code}`}
+        />
+      </TableCell>
       <TableCell className="flex items-center gap-2.5">
         <div className="bg-success/80 rounded-full p-2">
           <TicketPercent

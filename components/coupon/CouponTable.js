@@ -1,37 +1,13 @@
-import {
-  Table,
-  TableHeader,
-  TableRow,
-  TableHead,
-  TableBody,
-} from "@/components/ui/table";
-
-import CouponRow from "./CouponRow";
 import { getAllCoupons } from "@/lib/apiCoupons";
+import CouponTableClient from "./CouponTableClient";
 
-export default async function CouponTable() {
-  const { coupons } = await getAllCoupons();
+export default async function CouponTable({ searchParams }) {
+  const resolvedSearchParams = await searchParams;
+
+  const page = Math.max(1, Number(resolvedSearchParams?.page) || 1);
+  const { coupons, pagination } = await getAllCoupons({ page, perPage: 10 });
 
   if (!coupons.length) return null;
 
-  return (
-    <Table className="mt-10 border rounded-lg">
-      <TableHeader>
-        <TableRow>
-          <TableHead>Code</TableHead>
-          <TableHead>Discount</TableHead>
-          <TableHead>Total Uses</TableHead>
-          <TableHead>Max Uses</TableHead>
-          <TableHead>Expiry Date</TableHead>
-          <TableHead>Status</TableHead>
-          <TableHead>Actions</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {coupons.map((coupon) => (
-          <CouponRow key={coupon.id} coupon={coupon} />
-        ))}
-      </TableBody>
-    </Table>
-  );
+  return <CouponTableClient coupons={coupons} pagination={pagination} />;
 }
