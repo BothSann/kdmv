@@ -11,18 +11,18 @@ import { Textarea } from "../ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
-import useProductTableStore from "@/store/useProductTableStore";
+
 import { toast } from "sonner";
 import {
   createNewCollectionAction,
   updateCollectionAction,
-} from "@/lib/actions";
+} from "@/actions/collections";
 import { useRouter } from "next/navigation";
+import { useProductTableStore } from "@/store/useTableSelectionStore";
 
 export default function CollectionCreateEditForm({
   children,
   existingCollection = null,
-  existingProductIds = [],
 }) {
   const isEditMode = !!existingCollection;
 
@@ -218,7 +218,7 @@ export default function CollectionCreateEditForm({
                     />
                     {previewUrl && (
                       <div className="flex items-end justify-between">
-                        <div className="relative w-14 h-14 aspect-square border border-border">
+                        <div className="relative w-24 h-24 aspect-square border border-border">
                           <Image
                             src={previewUrl}
                             alt="Collection Banner Image Preview"
@@ -263,6 +263,7 @@ export default function CollectionCreateEditForm({
             <CardContent>
               <div className="space-y-3">
                 <Label>Add Existing Products</Label>
+                {/* children is the CollectionProductSelector component */}
                 <div className="max-h-96 overflow-y-auto">{children}</div>
               </div>
             </CardContent>

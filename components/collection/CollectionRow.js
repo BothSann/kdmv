@@ -7,21 +7,52 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal, Shapes, TicketPercent } from "lucide-react";
+import { MoreHorizontal, Shapes } from "lucide-react";
 import Link from "next/link";
 import { Pencil, Trash2, View } from "lucide-react";
 import { useState } from "react";
-import DeleteCouponDialog from "../coupon/DeleteCouponDialog";
+
 import { cn } from "@/lib/utils";
+import DeleteCollectionDialog from "./DeleteCollectionDialog";
+
+import { Checkbox } from "../ui/checkbox";
+import { useCollectionTableStore } from "@/store/useTableSelectionStore";
+import Image from "next/image";
 
 export default function CollectionRow({ collection }) {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const { toggleItem, isSelected } = useCollectionTableStore();
+  console.log(collection);
+  console.log(collection.banner_image_url);
 
   return (
     <TableRow className="text-sm">
+      <TableCell>
+        <Checkbox
+          checked={isSelected(collection.id)}
+          onCheckedChange={() => toggleItem(collection.id)}
+          aria-label={`Select ${collection.name}`}
+        />
+      </TableCell>
       <TableCell className="flex items-center gap-2.5">
-        <div className="bg-chart-4 rounded-full p-2">
-          <Shapes size={22} className="text-background dark:text-foreground" />
+        <div className="relative w-10 h-10">
+          {collection.banner_image_url ? (
+            <Image
+              src={collection.banner_image_url}
+              alt={collection.name}
+              fill
+              loading="lazy"
+              quality={100}
+              className="object-cover object-top rounded-full"
+            />
+          ) : (
+            <div className="w-full h-full bg-chart-4 rounded-full flex items-center justify-center">
+              <Shapes
+                size={22}
+                className="text-background dark:text-foreground"
+              />
+            </div>
+          )}
         </div>
         <span>{collection.name}</span>
       </TableCell>
@@ -61,10 +92,11 @@ export default function CollectionRow({ collection }) {
           </DropdownMenuContent>
         </DropdownMenu>
 
-        <DeleteCouponDialog
+        <DeleteCollectionDialog
           isOpen={isDeleteDialogOpen}
           onClose={() => setIsDeleteDialogOpen(false)}
           collection={collection}
+          redirectTo="/admin/collections"
         />
       </TableCell>
     </TableRow>
