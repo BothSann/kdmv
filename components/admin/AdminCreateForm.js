@@ -7,7 +7,7 @@ import { Input } from "../ui/input";
 import Logo from "../Logo";
 import { toast } from "sonner";
 import { useState } from "react";
-import { registerAdminAction } from "@/lib/actions";
+import { registerAdminAction } from "@/actions/users";
 import { Label } from "../ui/label";
 
 export default function AdminCreateForm() {
