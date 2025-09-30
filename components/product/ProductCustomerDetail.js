@@ -71,14 +71,14 @@ export default function ProductCustomerDetail({ product }) {
           variant="outline"
           disabled={!selectedVariant || selectedVariant.quantity <= 0}
         >
-          <Handbag className="mr-2 h-5 w-5" />
+          <Handbag />
           {selectedVariant?.quantity <= 0 ? "Out of Stock" : "Add to Bag"}
         </Button>
 
         {/* Shop more */}
         <Button className="w-full py-6 font-semibold font-poppins" asChild>
           <Link href="/">
-            <ShoppingCart className="mr-2 h-5 w-5" />
+            <ShoppingCart />
             Shop more
           </Link>
         </Button>
