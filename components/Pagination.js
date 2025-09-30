@@ -7,7 +7,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import useUIStore from "@/store/useUIStore";
 
 // Pagination.js - Add page numbers display
-export default function Pagination({ pagination }) {
+export default function Pagination({ pagination, totalColumns }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const setPaginating = useUIStore((state) => state.setPaginating);
@@ -72,7 +72,7 @@ export default function Pagination({ pagination }) {
 
   return (
     <TableRow>
-      <TableCell colSpan={8} className="px-4">
+      <TableCell colSpan={totalColumns} className="px-4">
         <div className="flex items-center justify-between">
           <div className="text-sm text-muted-foreground">
             Showing{" "}
