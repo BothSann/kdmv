@@ -10,23 +10,27 @@ import {
 import { MoreHorizontal, Pencil, Trash2, View } from "lucide-react";
 import { useState } from "react";
 import { formatCurrency } from "@/lib/utils";
-import useProductTableStore from "@/store/useProductTableStore";
 
 import Image from "next/image";
 import Link from "next/link";
 import DeleteProductDialog from "./DeleteProductDialog";
 import { Checkbox } from "../ui/checkbox";
+import { useProductTableStore } from "@/store/useTableSelectionStore";
 
 export default function ProductRow({ product }) {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const { toggleItem, isSelected } = useProductTableStore();
+
+  const handleSelect = () => {
+    toggleItem(product.id);
+  };
 
   return (
     <TableRow className="text-sm">
       <TableCell>
         <Checkbox
           checked={isSelected(product.id)}
-          onCheckedChange={() => toggleItem(product.id)}
+          onCheckedChange={handleSelect}
           aria-label={`Select ${product.name}`}
         />
       </TableCell>
@@ -38,7 +42,6 @@ export default function ProductRow({ product }) {
               alt={product.name}
               fill
               loading="lazy"
-              quality={100}
               className="object-cover object-top"
             />
           </div>

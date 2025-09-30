@@ -10,10 +10,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import {
-  bulkDeleteProductsAction,
-  deleteProductByIdAction,
-} from "@/lib/actions";
+import { bulkDeleteProductsAction } from "@/actions/products";
 import { toast } from "sonner";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -42,6 +39,7 @@ export default function BulkDeleteProductDialog({
 
       if (error) {
         toast.error(error, { id: toastId });
+        return;
       }
 
       if (success) {
@@ -62,10 +60,15 @@ export default function BulkDeleteProductDialog({
     <AlertDialog open={isOpen} onOpenChange={onClose}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Delete {productIds.size} Products</AlertDialogTitle>
+          <AlertDialogTitle>
+            Deleting {productIds.size} Product{productIds.size > 1 ? "s" : ""}
+          </AlertDialogTitle>
           <AlertDialogDescription>
             Are you sure you want to delete
-            <span className="font-bold"> {productIds.size} products? </span>
+            <span className="font-bold">
+              {" "}
+              {productIds.size} product{productIds.size > 1 ? "s" : ""}?{" "}
+            </span>
             This action cannot be undone. This will permanently delete the
             products and all their variants.
           </AlertDialogDescription>

@@ -4,8 +4,8 @@ import Link from "next/link";
 
 export default function ProductItem({ product }) {
   return (
-    <li key={product.id} className="">
-      <Link href="/details">
+    <li key={product.id}>
+      <Link href={`/products/${product.id}`}>
         <ProductImage product={product} />
         <ProductInfo product={product} />
       </Link>

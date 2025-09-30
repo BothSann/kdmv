@@ -3,8 +3,7 @@
 import { useEffect, useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
-import { FolderPlus, MoreVertical, Trash2, X } from "lucide-react";
-import useProductTableStore from "@/store/useProductTableStore";
+import { MoreVertical, Trash2, X } from "lucide-react";
 
 import {
   Table,
@@ -23,6 +22,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import BulkDeleteProductDialog from "./BulkDeleteProductDialog";
+import { useProductTableStore } from "@/store/useTableSelectionStore";
 
 export default function ProductTableClient({ products, pagination }) {
   const [isBulkDeleteDialogOpen, setIsBulkDeleteDialogOpen] = useState(false);
@@ -37,7 +37,8 @@ export default function ProductTableClient({ products, pagination }) {
   // Clear selections when products change (page navigation)
   useEffect(() => {
     clearSelection();
-  }, [products, clearSelection]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [products]);
 
   // Get product IDs for toggle all functionality
   const productIds = products.map((product) => product.id);
@@ -67,7 +68,7 @@ export default function ProductTableClient({ products, pagination }) {
         <div className="px-4 py-2 bg-muted/50 border border-border mt-10">
           <div className="flex items-center justify-between">
             <span className="text-sm font-medium">
-              {selectedCount} item{selectedCount !== 1 ? "s" : ""} selected
+              {selectedCount} product{selectedCount !== 1 ? "s" : ""} selected
             </span>
 
             <div className="flex gap-4 items-center">
@@ -90,11 +91,6 @@ export default function ProductTableClient({ products, pagination }) {
                   >
                     <Trash2 />
                     Delete Selected
-                  </DropdownMenuItem>
-
-                  <DropdownMenuItem>
-                    <FolderPlus />
-                    Add to Collection
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>

@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { formatCurrency } from "@/lib/utils";
+import { TriangleAlert } from "lucide-react";
 
 export default function ProductPricing({
   basePrice,
@@ -36,6 +37,7 @@ export default function ProductPricing({
     price > 0 &&
     discount > 0 &&
     discount <= 100;
+
   return (
     <Card>
       <CardHeader>
@@ -56,7 +58,10 @@ export default function ProductPricing({
             onWheel={onWheel}
           />
           {basePriceError && (
-            <p className="text-sm text-warning">{basePriceError}</p>
+            <div className="flex items-center gap-2 text-warning">
+              <TriangleAlert size={18} className="" />
+              <p className="text-sm">{basePriceError}</p>
+            </div>
           )}
         </div>
 
@@ -74,13 +79,17 @@ export default function ProductPricing({
             onWheel={onWheel}
           />
           {discountError && (
-            <p className="text-sm text-destructive">{discountError}</p>
+            <div className="flex items-center gap-2 text-warning">
+              <TriangleAlert size={18} className="" />
+              <p className="text-sm">{discountError}</p>
+            </div>
           )}
 
           {/* Price Preview */}
           {showPreview && (
-            <div className="bg-muted border border-border p-4 space-y-3 my-6">
+            <div className="bg-muted border border-border p-4 space-y-4 my-6">
               <Label className="text-muted-foreground">Price Preview:</Label>
+
               <div className="flex items-center gap-2">
                 <span className="line-through text-muted-foreground">
                   {formatCurrency(parseFloat(basePrice))}

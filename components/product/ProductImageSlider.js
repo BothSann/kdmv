@@ -9,6 +9,7 @@ import {
   CarouselNext,
 } from "@/components/ui/carousel";
 import Image from "next/image";
+import Autoplay from "embla-carousel-autoplay";
 
 import { PhotoProvider, PhotoView } from "react-photo-view";
 
@@ -53,9 +54,11 @@ export default function ProductImageSlider({ product }) {
         <Carousel
           setApi={setMainApi}
           opts={{
-            align: "start",
+            align: "center",
             loop: true,
+            duration: 50,
           }}
+          plugins={[Autoplay({ delay: 2500, stopOnMouseEnter: true })]}
         >
           <CarouselContent>
             {imagesToUse.map((image, index) => (
@@ -82,21 +85,24 @@ export default function ProductImageSlider({ product }) {
         <Carousel
           setApi={setGalleryApi}
           opts={{
-            align: "start",
+            align: "center",
             loop: true,
             dragFree: true, // Makes thumbnails snap without momentum
+            duration: 50,
           }}
         >
           <CarouselContent>
             {imagesToUse.map((image, index) => (
               <CarouselItem
                 key={index}
-                className="basis-1/3"
+                className="basis-1/5"
                 onClick={() => handleGalleryClick(index)}
               >
                 <div
-                  className={`relative aspect-[1/1] border-2 ${
-                    current === index ? "border-primary" : "border-transparent"
+                  className={`relative aspect-square border-2 dark:border-3 ${
+                    current === index
+                      ? "border-primary dark:border-chart-3"
+                      : "border-transparent"
                   }`}
                 >
                   <Image
@@ -104,7 +110,7 @@ export default function ProductImageSlider({ product }) {
                     alt={image.image_url}
                     fill
                     quality={100}
-                    className="object-cover object-center cursor-grab active:cursor-grabbing"
+                    className="object-cover object-center cursor-pointer active:cursor-grabbing"
                   />
                 </div>
               </CarouselItem>

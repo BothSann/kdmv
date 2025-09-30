@@ -10,7 +10,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { deleteProductByIdAction } from "@/lib/actions";
+import { deleteProductByIdAction } from "@/actions/products";
 import { toast } from "sonner";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -23,8 +23,6 @@ export default function DeleteProductDialog({
 }) {
   const router = useRouter();
   const [isDeleting, setIsDeleting] = useState(false);
-
-  const actionToUse = deleteProductByIdAction;
 
   const handleDelete = async () => {
     setIsDeleting(true);
@@ -54,7 +52,7 @@ export default function DeleteProductDialog({
     <AlertDialog open={isOpen} onOpenChange={onClose}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Delete Product</AlertDialogTitle>
+          <AlertDialogTitle>Deleting Product</AlertDialogTitle>
           <AlertDialogDescription>
             Are you sure you want to delete
             <span className="font-bold"> &quot;{product?.name}&quot;? </span>

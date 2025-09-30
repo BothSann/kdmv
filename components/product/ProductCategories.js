@@ -8,6 +8,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { TriangleAlert } from "lucide-react";
+import { Label } from "../ui/label";
+import { Badge } from "../ui/badge";
 
 export default function ProductCategories({
   categories = [],
@@ -20,6 +23,8 @@ export default function ProductCategories({
   // Filter subcategories based on selected category
   const filteredSubcategories =
     subcategories?.filter((sub) => sub.category_id === selectedCategory) || [];
+
+  const showPreview = selectedCategory && selectedSubcategory;
 
   return (
     <Card>
@@ -63,6 +68,41 @@ export default function ProductCategories({
             ))}
           </SelectContent>
         </Select>
+        {selectedCategory && !selectedSubcategory && (
+          <div className="flex items-center gap-2 text-warning">
+            <TriangleAlert size={18} className="" />
+            <span className="text-sm">Please select a subcategory</span>
+          </div>
+        )}
+
+        {/* Preview */}
+        {showPreview && (
+          <div className="bg-muted border border-border p-4 space-y-4 my-6">
+            <Label className="text-muted-foreground">Current Selection:</Label>
+
+            <div className="space-y-1">
+              <div className="flex items-center gap-2 text-sm">
+                <span className="text-muted-foreground">Category</span>
+                <span>&rarr;</span>
+                <span className="font-medium">
+                  {categories.find((cat) => cat.id === selectedCategory)?.name}
+                </span>
+              </div>
+
+              <div className="flex items-center gap-2 text-sm">
+                <span className="text-muted-foreground">Subcategory</span>
+                <span>&rarr;</span>
+                <span className="font-medium">
+                  {
+                    filteredSubcategories.find(
+                      (sub) => sub.id === selectedSubcategory
+                    )?.name
+                  }
+                </span>
+              </div>
+            </div>
+          </div>
+        )}
       </CardContent>
     </Card>
   );

@@ -1,25 +1,25 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
-import { ChevronLeft, Upload, Plus, Trash } from "lucide-react";
+
+import { ChevronLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-import { createNewProductAction, updateProductAction } from "@/lib/actions";
+import {
+  createNewProductAction,
+  updateProductAction,
+} from "@/actions/products";
 import { useFormStatus } from "react-dom";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Spinner from "../Spinner";
+import { hasDuplicateVariants } from "@/lib/utils";
+import ProductDetails from "./ProductDetails";
+import ProductPricing from "./ProductPricing";
+import ProductCategories from "./ProductCategories";
+import ProductCollection from "./ProductCollection";
+import ProductVariantsEditor from "./ProductVariantsEditor";
+import ProductImages from "./ProductImages";
 
 export default function ProductCreateEditForm({
   categories,
@@ -30,14 +30,31 @@ export default function ProductCreateEditForm({
   existingProduct = null,
   isEditing = false,
 }) {
+  const [name, setName] = useState(existingProduct?.name || "");
+  const [description, setDescription] = useState(
+    existingProduct?.description || ""
+  );
+  const [basePrice, setBasePrice] = useState(existingProduct?.base_price || "");
+  const [discountPercentage, setDiscountPercentage] = useState(
+    existingProduct?.discount_percentage || ""
+  );
+  const [isActive, setIsActive] = useState(existingProduct?.is_active || true);
+  const [selectedCollection, setSelectedCollection] = useState(
+    existingProduct?.collection_id || ""
+  );
+
   const [isInitialized, setIsInitialized] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedSubcategory, setSelectedSubcategory] = useState("");
-  const [isActive, setIsActive] = useState(true);
+  const [bannerFile, setBannerFile] = useState(null);
+  const [imageFiles, setImageFiles] = useState([]);
+  const [existingImages, setExistingImages] = useState(
+    existingProduct?.product_images || []
+  );
+
   const [variants, setVariants] = useState([
     { color_id: "", size_id: "", quantity: 0, sku: "" },
   ]);
-  const [selectedCollection, setSelectedCollection] = useState("");
   const router = useRouter();
 
   // Initialize form data and control loading state
@@ -88,7 +105,7 @@ export default function ProductCreateEditForm({
   }, [isEditing, existingProduct]);
 
   useEffect(() => {
-    if (selectedCategory && subcategories) {
+    if (selectedCategory && subcategories && categories) {
       // Find category by ID to get its slug
       const selectedCategoryData = categories?.find(
         (cat) => cat.id === selectedCategory
@@ -136,18 +153,13 @@ export default function ProductCreateEditForm({
     );
   };
 
-  const hasDuplicateVariants = () => {
-    const combinations = variants.map((v) => `${v.color_id}-${v.size_id}`);
-    return combinations.length !== new Set(combinations).size;
+  const handleRemoveExistingImage = (imageId) => {
+    setExistingImages(existingImages.filter((image) => image.id !== imageId));
   };
 
   const handleWheel = (e) => {
     e.target.blur();
   };
-
-  // Filter subcategories based on selected category
-  const filteredSubcategories =
-    subcategories?.filter((sub) => sub.category_id === selectedCategory) || [];
 
   // Reset subcategory when category changes
   const handleCategoryChange = (categoryId) => {
@@ -158,25 +170,31 @@ export default function ProductCreateEditForm({
   const handleSubmit = async (event) => {
     event.preventDefault();
 
+    // Image validation - required for new products, optional for edits
+    if (!isEditing && !bannerFile) {
+      toast.warning("Please upload a banner image");
+      return;
+    }
+
     // Add category/subcategory validation
     if (!selectedCategory) {
-      toast.error("Please select a category");
+      toast.warning("Please select a category");
       return;
     }
 
     if (!selectedSubcategory) {
-      toast.error("Please select a subcategory");
+      toast.warning("Please select a subcategory");
       return;
     }
 
     // Validate variants
     if (!validateVariants()) {
-      toast.error("Please fill in all variant fields");
+      toast.warning("Please fill in all variant fields");
       return;
     }
 
-    if (hasDuplicateVariants()) {
-      toast.error("Duplicate color/size combinations are not allowed");
+    if (hasDuplicateVariants(variants)) {
+      toast.warning("Duplicate color/size combinations are not allowed");
       return;
     }
 
@@ -186,13 +204,17 @@ export default function ProductCreateEditForm({
       ...(isEditing && {
         existing_banner_image_url: existingProduct.banner_image_url,
       }),
+      ...(isEditing && {
+        existing_image_ids: existingImages.map((image) => image.id),
+      }),
 
       name: formData.get("name"),
       description: formData.get("description"),
       base_price: formData.get("base_price"),
       discount_percentage: formData.get("discount_percentage"),
       subcategory_id: selectedSubcategory,
-      banner_file: formData.get("banner_image_url"),
+      banner_file: bannerFile,
+      image_files: imageFiles,
       is_active: isActive,
       collection_id: selectedCollection || null,
       variants: variants.filter((v) => v.color_id && v.size_id),
@@ -248,7 +270,7 @@ export default function ProductCreateEditForm({
               </Link>
             </Button>
             <h1 className="text-4xl font-bold">
-              {isEditing ? `Editing ${existingProduct.name}` : "Add Products"}
+              {isEditing ? `Editing ${name}` : "Add Products"}
             </h1>
           </div>
 
@@ -265,314 +287,84 @@ export default function ProductCreateEditForm({
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-[1.75fr_1fr] gap-6">
           {/* Left Column */}
-          <div className="lg:col-span-2 space-y-8">
+          <div className="space-y-8">
             {/* Product Details */}
-            <div className="rounded-lg space-y-8 p-6 shadow-sm border border-border bg-card">
-              <h3 className="text-xl font-semibold">Product Details</h3>
-
-              <div className="space-y-8">
-                <div className="space-y-3">
-                  <Label>Name</Label>
-                  <Input
-                    type="text"
-                    name="name"
-                    defaultValue={existingProduct?.name || ""}
-                    required
-                  />
-                </div>
-
-                <div className="space-y-3">
-                  <Label>Description (Optional)</Label>
-                  <Textarea
-                    name="description"
-                    rows={4}
-                    defaultValue={existingProduct?.description || ""}
-                  />
-                </div>
-              </div>
-            </div>
+            <ProductDetails
+              name={name}
+              description={description}
+              onNameChange={setName}
+              onDescriptionChange={setDescription}
+            />
 
             {/* Product Images */}
-            <div className="rounded-lg space-y-8 p-6 shadow-sm border border-border bg-card">
-              <div className="">
-                <h3 className="text-xl font-semibold">Product Images</h3>
-              </div>
-
-              <div className="border-2 border-dashed rounded-lg p-8 text-center">
-                <Upload className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                <h4 className="text-lg font-semibold mb-3">
-                  Drop your images here
-                </h4>
-                <p className="text-sm text-muted-foreground mb-4">
-                  PNG or JPG (max. 5MB)
-                </p>
-                <Input
-                  type="file"
-                  multiple
-                  accept="image/*"
-                  className="text-muted-foreground"
-                />
-              </div>
-
-              {/* Banner Image URL */}
-              <div className="space-y-3">
-                <Label>Upload Banner Image</Label>
-                <Input
-                  type="file"
-                  accept="image/*"
-                  name="banner_image_url"
-                  className="text-muted-foreground"
-                />
-              </div>
-            </div>
+            <ProductImages
+              bannerPreviewUrl={
+                isEditing ? existingProduct?.banner_image_url : null
+              }
+              bannerFile={bannerFile}
+              existingImages={existingImages}
+              isEditing={isEditing}
+              onBannerFileChange={setBannerFile}
+              onAdditionalImagesChange={(files) => {
+                setImageFiles((prev) => [...prev, ...files]);
+              }}
+              onRemoveBanner={() => {
+                setBannerFile(null);
+              }}
+              onRemoveAdditionalImage={(fileToRemove) => {
+                setImageFiles((prev) =>
+                  prev.filter((file) => file !== fileToRemove)
+                );
+              }}
+              onClearAllAdditionalImages={() => {
+                setImageFiles([]);
+              }}
+              onRemoveExistingImage={handleRemoveExistingImage}
+            />
 
             {/* Variants */}
-            <div className="rounded-lg p-6 shadow-sm border border-border bg-card space-y-8">
-              <div className="flex justify-between items-center">
-                <h3 className="text-xl font-semibold">Product Variants</h3>
-                <Button type="button" onClick={addVariant}>
-                  <Plus />
-                  Add Variant
-                </Button>
-              </div>
-
-              <div className="space-y-4">
-                {/* Header */}
-                <div className="grid grid-cols-5 gap-4 font-medium">
-                  <div>Color</div>
-                  <div>Size</div>
-                  <div>Quantity</div>
-                  <div>SKU (Optional)</div>
-                  <div>Actions</div>
-                </div>
-
-                {/* Variant Rows */}
-                {variants.map((variant, index) => (
-                  <div key={index} className="grid grid-cols-5 gap-4 items-end">
-                    {/* Color Select */}
-                    <div>
-                      <Select
-                        value={variant.color_id}
-                        onValueChange={(value) =>
-                          updateVariant(index, "color_id", value)
-                        }
-                        required
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select color" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {colors?.map((color) => (
-                            <SelectItem key={color.id} value={color.id}>
-                              {color.name}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-
-                    {/* Size Select */}
-                    <div>
-                      <Select
-                        value={variant.size_id}
-                        onValueChange={(value) =>
-                          updateVariant(index, "size_id", value)
-                        }
-                        required
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select size" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {sizes?.map((size) => (
-                            <SelectItem key={size.id} value={size.id}>
-                              {size.name}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-
-                    {/* Quantity Input */}
-                    <div>
-                      <Input
-                        min="0"
-                        value={variant.quantity}
-                        onChange={(e) =>
-                          updateVariant(
-                            index,
-                            "quantity",
-                            parseInt(e.target.value) || 0
-                          )
-                        }
-                        required
-                        disabled={hasDuplicateVariants()}
-                      />
-                    </div>
-
-                    {/* SKU Input */}
-                    <div>
-                      <Input
-                        type="text"
-                        value={variant.sku}
-                        onChange={(e) =>
-                          updateVariant(index, "sku", e.target.value)
-                        }
-                        placeholder="Auto-generated"
-                        disabled
-                      />
-                    </div>
-
-                    {/* Remove Button */}
-                    <div>
-                      <Button
-                        type="button"
-                        variant="destructive"
-                        size="sm"
-                        onClick={() => removeVariant(index)}
-                        disabled={variants.length === 1}
-                      >
-                        <Trash />
-                      </Button>
-                    </div>
-                  </div>
-                ))}
-
-                {/* Validation Messages */}
-                {hasDuplicateVariants() && (
-                  <div className="text-red-600 flex items-center">
-                    ⚠️ Duplicate color/size combinations detected!
-                  </div>
-                )}
-              </div>
-            </div>
+            <ProductVariantsEditor
+              variants={variants}
+              colors={colors}
+              sizes={sizes}
+              onAddVariant={addVariant}
+              onRemoveVariant={removeVariant}
+              onUpdateVariant={updateVariant}
+            />
           </div>
 
           {/* Right Column */}
           <div className="space-y-8">
             {/* Pricing */}
-            <div className="rounded-lg p-6 shadow-sm border border-border bg-card space-y-8">
-              <h3 className="text-xl font-semibold">Pricing</h3>
-
-              <div className="space-y-8">
-                <div className="space-y-3">
-                  <Label>Price ($)</Label>
-                  <Input
-                    type="number"
-                    min="0.01"
-                    step="0.01"
-                    name="base_price"
-                    defaultValue={existingProduct?.base_price || ""}
-                    required
-                    placeholder="0.00"
-                    onWheel={handleWheel}
-                  />
-                </div>
-
-                <div className="space-y-3">
-                  <Label>Discount Percentage (%)</Label>
-                  <Input
-                    type="number"
-                    min="0"
-                    max="100"
-                    name="discount_percentage"
-                    defaultValue={existingProduct?.discount_percentage || ""}
-                    placeholder="0%"
-                    onWheel={handleWheel}
-                  />
-                </div>
-
-                <div className="flex items-center gap-2">
-                  <Checkbox
-                    id="is_active"
-                    name="is_active"
-                    checked={isActive}
-                    onCheckedChange={setIsActive}
-                  />
-                  <Label htmlFor="is_active">Active Product</Label>
-                </div>
-              </div>
-            </div>
+            <ProductPricing
+              basePrice={basePrice}
+              discountPercentage={discountPercentage}
+              isActive={isActive}
+              onBasePriceChange={setBasePrice}
+              onDiscountPercentageChange={setDiscountPercentage}
+              onIsActiveChange={setIsActive}
+              onWheel={handleWheel}
+            />
 
             {/* Categories */}
-            <div className="rounded-lg p-6 shadow-sm border border-border bg-card space-y-8">
-              <h3 className="text-xl font-semibold">Categories</h3>
-
-              <div className="space-y-4">
-                <div>
-                  <Select
-                    value={selectedCategory}
-                    onValueChange={handleCategoryChange}
-                    required
-                  >
-                    <SelectTrigger className="w-full" required>
-                      <SelectValue placeholder="Select a category" />
-                    </SelectTrigger>
-                    <SelectContent required>
-                      {categories?.map((category) => (
-                        <SelectItem
-                          key={category.id}
-                          value={category.id}
-                          required
-                        >
-                          {category.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {/* Subcategories */}
-                <div>
-                  <Select
-                    value={selectedSubcategory}
-                    onValueChange={setSelectedSubcategory}
-                    disabled={!selectedCategory}
-                    required
-                  >
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Select a sub category" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {filteredSubcategories.map((subcategory) => (
-                        <SelectItem key={subcategory.id} value={subcategory.id}>
-                          {subcategory.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-            </div>
+            <ProductCategories
+              categories={categories}
+              subcategories={subcategories}
+              selectedCategory={selectedCategory}
+              selectedSubcategory={selectedSubcategory}
+              onCategoryChange={handleCategoryChange}
+              onSubcategoryChange={setSelectedSubcategory}
+            />
 
             {/* Collections */}
-            {collections && collections.length > 0 && (
-              <div className="rounded-lg p-6 shadow-sm border border-border bg-card space-y-8">
-                <h3 className="text-xl font-semibold">Collection (Optional)</h3>
-
-                <div className="space-y-4">
-                  <div>
-                    <Select
-                      value={selectedCollection}
-                      onValueChange={setSelectedCollection}
-                    >
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select a collection (optional)" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {collections.map((collection) => (
-                          <SelectItem key={collection.id} value={collection.id}>
-                            {collection.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-              </div>
-            )}
+            <ProductCollection
+              collections={collections}
+              selectedCollection={selectedCollection}
+              onCollectionChange={setSelectedCollection}
+              isEditing={isEditing}
+            />
           </div>
         </div>
       </div>

@@ -271,7 +271,7 @@ export default function ProductDetailsWithSelection({ product }) {
                       />
                       <Label
                         htmlFor={size.id}
-                        className={`flex items-center justify-center px-3 py-2.5  font-medium cursor-pointer border border-border hover:bg-muted transition-colors ${
+                        className={`flex items-center justify-center px-4 py-2.5 font-medium cursor-pointer border border-border hover:bg-muted transition-colors ${
                           selectedSize === size.id
                             ? "bg-foreground text-background hover:bg-primary/90"
                             : ""
@@ -296,8 +296,8 @@ export default function ProductDetailsWithSelection({ product }) {
 
                 <div className="space-y-2 text-sm">
                   <div className="grid grid-cols-2">
-                    <div>
-                      <span className="font-semibold">Color: </span>
+                    <div className="flex items-center gap-2">
+                      <span className="font-medium">Color: </span>
                       <span>
                         {
                           product.available_colors.find(
@@ -306,8 +306,8 @@ export default function ProductDetailsWithSelection({ product }) {
                         }
                       </span>
                     </div>
-                    <div>
-                      <span className="font-semibold">Size: </span>
+                    <div className="flex items-center gap-2">
+                      <span className="font-medium">Size: </span>
                       <span>
                         {
                           availableSizesForColor.find(
@@ -319,8 +319,8 @@ export default function ProductDetailsWithSelection({ product }) {
                   </div>
 
                   <div className="grid grid-cols-2">
-                    <div>
-                      <span className="font-semibold">Stock Quantity: </span>
+                    <div className="flex items-center gap-2">
+                      <span className="font-medium">Stock Quantity: </span>
                       {selectedVariantQuantity > 0 ? (
                         <span className="text-success">
                           {selectedVariantQuantity} available
@@ -331,9 +331,9 @@ export default function ProductDetailsWithSelection({ product }) {
                     </div>
 
                     {/* SKU */}
-                    <div>
-                      <span className="font-semibold">SKU: </span>
-                      <span className=" px-2 py-0.5 font-mono bg-muted-foreground/20">
+                    <div className="flex items-center gap-2">
+                      <span className="font-medium">SKU: </span>
+                      <span className=" px-2 py-0.5 font-mono bg-muted-foreground/10">
                         {selectedVariantSKU || "N/A"}
                       </span>
                     </div>
