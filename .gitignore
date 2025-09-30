@@ -55,3 +55,5 @@ coupon_auto_deactivate_trigger.sql
 coupon_constraints.sql
 use_coupon_transaction.sql
 couponCleanupJob.js
+
+temp/
