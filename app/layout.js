@@ -15,7 +15,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${poppins.className} ${poppins.variable} ${jost.variable} antialiased bg-background text-foreground dark:text-foreground dark:bg-background min-h-screen`}
+        className={`${poppins.className} ${poppins.variable} ${jost.variable} bg-background text-foreground/90 dark:text-foreground/90 dark:bg-background antialiased min-h-screen`}
       >
         <ThemeProvider
           attribute="class"
