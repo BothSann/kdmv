@@ -1,5 +1,5 @@
 import NotFound from "@/app/not-found";
-import ProductCustomerDetails from "@/components/product/ProductCustomerDetails";
+import ProductCustomerDetail from "@/components/product/ProductCustomerDetail";
 import ProductImageSlider from "@/components/product/ProductImageSlider";
 import { getProductById } from "@/lib/apiProducts";
 
@@ -30,7 +30,7 @@ export default async function ProductDetailPage({ params }) {
   return (
     <div className="grid grid-cols-2 gap-20 items-start">
       <ProductImageSlider product={product} />
-      <ProductCustomerDetails product={product} />
+      <ProductCustomerDetail product={product} />
     </div>
   );
 }

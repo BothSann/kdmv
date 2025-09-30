@@ -15,7 +15,7 @@ import { Plus, Trash } from "lucide-react";
 
 import { hasDuplicateVariants } from "@/lib/utils";
 
-export default function ProductVariantsEditor({
+export default function ProductVariantEditor({
   variants,
   colors = [],
   sizes = [],

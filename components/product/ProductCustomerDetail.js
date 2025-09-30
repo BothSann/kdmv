@@ -9,7 +9,7 @@ import { Button } from "../ui/button";
 import { Handbag, ShoppingCart } from "lucide-react";
 import Link from "next/link";
 
-export default function ProductCustomerDetails({ product }) {
+export default function ProductCustomerDetail({ product }) {
   const [selectedColor, setSelectedColor] = useState(null);
   const [selectedSize, setSelectedSize] = useState(null);
 

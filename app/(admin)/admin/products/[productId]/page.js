@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { PenLine, ChevronLeft } from "lucide-react";
 
 import Link from "next/link";
-import ProductDetailsWithSelection from "@/components/product/ProductDetailsWithSelection";
+import ProductDetailWithSelection from "@/components/product/ProductDetailWithSelection";
 import DeleteProductButton from "@/components/product/DeleteProductButton";
 import NotFound from "@/components/NotFound";
 import ProductImageSlider from "@/components/product/ProductImageSlider";
@@ -48,7 +48,7 @@ export default async function AdminProductDetailPage({ params }) {
       <Header product={product} />
       <div className="grid grid-cols-1 xl:grid-cols-[1fr_2fr] gap-6 mt-10">
         <ProductImageSlider product={product} />
-        <ProductDetailsWithSelection product={product} />
+        <ProductDetailWithSelection product={product} />
       </div>
     </>
   );

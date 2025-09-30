@@ -14,11 +14,11 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Spinner from "../Spinner";
 import { hasDuplicateVariants } from "@/lib/utils";
-import ProductDetails from "./ProductDetails";
+import ProductDetail from "./ProductDetail";
 import ProductPricing from "./ProductPricing";
 import ProductCategories from "./ProductCategories";
 import ProductCollection from "./ProductCollection";
-import ProductVariantsEditor from "./ProductVariantsEditor";
+import ProductVariantEditor from "./ProductVariantEditor";
 import ProductImages from "./ProductImages";
 
 export default function ProductCreateEditForm({
@@ -291,7 +291,7 @@ export default function ProductCreateEditForm({
           {/* Left Column */}
           <div className="space-y-8">
             {/* Product Details */}
-            <ProductDetails
+            <ProductDetail
               name={name}
               description={description}
               onNameChange={setName}
@@ -325,7 +325,7 @@ export default function ProductCreateEditForm({
             />
 
             {/* Variants */}
-            <ProductVariantsEditor
+            <ProductVariantEditor
               variants={variants}
               colors={colors}
               sizes={sizes}
