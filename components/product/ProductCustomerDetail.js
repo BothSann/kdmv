@@ -1,7 +1,7 @@
 "use client";
 
 import { Label } from "../ui/label";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect, useCallback } from "react";
 import { Button } from "../ui/button";
 import { Handbag, ShoppingCart } from "lucide-react";
 import Link from "next/link";
@@ -9,29 +9,77 @@ import { FaFacebookF, FaInstagram } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 import { formatCurrency } from "@/lib/utils";
 import ProductVariantSelector from "./ProductVariantSelector";
+import { useSearchParams, useRouter, usePathname } from "next/navigation";
 
 export default function ProductCustomerDetail({ product }) {
-  const [selectedColor, setSelectedColor] = useState(null);
-  const [selectedSize, setSelectedSize] = useState(null);
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
 
-  // Optional: derive selected variant info if needed for buttons/disabled state
+  const [selectedVariantId, setSelectedVariantId] = useState(null);
+  const [isInitialized, setIsInitialized] = useState(false);
+
+  // Get the selected variant object
   const selectedVariant = useMemo(() => {
-    if (!selectedColor || !selectedSize) return null;
+    if (!selectedVariantId) return null;
+    return product.variants_lookup.find((v) => v.id === selectedVariantId);
+  }, [selectedVariantId, product.variants_lookup]);
 
-    return product.variants_lookup.find(
-      (v) => v.colors?.id === selectedColor && v.sizes?.id === selectedSize
-    );
-  }, [selectedColor, selectedSize, product.variants_lookup]);
+  // Update URL with variant_id
+  const updateURL = useCallback(
+    (variantId) => {
+      const params = new URLSearchParams();
 
-  const handleSelectionChange = (selection) => {
-    if (selection) {
-      setSelectedColor(selection.color);
-      setSelectedSize(selection.size);
-    } else {
-      setSelectedColor(null);
-      setSelectedSize(null);
+      if (variantId) {
+        params.set("variant", variantId);
+      }
+
+      // Build the new URL
+      const newUrl = params.toString()
+        ? `${pathname}?${params.toString()}`
+        : pathname;
+
+      // Only update if URL actually changed
+      const currentUrl = `${pathname}${window.location.search}`;
+      if (currentUrl !== newUrl) {
+        router.replace(newUrl, { scroll: false });
+      }
+    },
+    [pathname, router]
+  );
+
+  // Handle variant selection from child component
+  const handleVariantChange = useCallback((variant) => {
+    setSelectedVariantId(variant?.id || null);
+  }, []);
+
+  // Read variant_id from URL on mount
+  useEffect(() => {
+    const variantIdParam = searchParams.get("variant");
+
+    let validVariantId = null;
+
+    // Validate variant exists in product
+    if (variantIdParam) {
+      const variantExists = product.variants_lookup.find(
+        (v) => v.id === variantIdParam
+      );
+      if (variantExists) {
+        validVariantId = variantIdParam;
+      }
     }
-  };
+
+    // Set initial state (null if no valid variant in URL)
+    setSelectedVariantId(validVariantId);
+    setIsInitialized(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Only run once on mount
+
+  // Sync state changes to URL (after initialization)
+  useEffect(() => {
+    if (!isInitialized) return;
+    updateURL(selectedVariantId);
+  }, [selectedVariantId, isInitialized, updateURL]);
 
   return (
     <div>
@@ -47,13 +95,13 @@ export default function ProductCustomerDetail({ product }) {
       <hr className="my-8 border-border" />
 
       <div className="space-y-6">
-        {/* ✅ REPLACED: Color & Size selection */}
+        {/* Color & Size selection with variant_id URL sync */}
         <ProductVariantSelector
           product={product}
           variant="customer"
           showTitle={true}
-          onSelectionChange={handleSelectionChange}
-          className="space-y-6"
+          selectedVariantId={selectedVariantId}
+          onVariantChange={handleVariantChange}
         />
 
         {/* Description */}
@@ -66,7 +114,7 @@ export default function ProductCustomerDetail({ product }) {
 
         {/* Add to bag */}
         <Button
-          className="w-full py-6 font-semibold font-poppins"
+          className="w-full py-6 font-semibold font-poppins disabled:cursor-not-allowed"
           size="lg"
           variant="outline"
           disabled={!selectedVariant || selectedVariant.quantity <= 0}
