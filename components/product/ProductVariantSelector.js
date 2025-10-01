@@ -5,82 +5,91 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 /**
- * Reusable variant selector for product color/size combinations.
+ * ProductVariantSelector v2 - Simplified version using variant IDs
  *
  * @param {Object} props
  * @param {Object} props.product - Product object with variants_lookup, available_colors, available_sizes
  * @param {"customer" | "admin"} [props.variant="customer"] - Styling and labeling variant
  * @param {boolean} [props.showTitle=true] - Whether to show section titles
  * @param {string} [props.className] - Additional container classes
- * @param {function} [props.onSelectionChange] - Callback when selection changes: (selection) => void
- * @param {Object} [props.selection] - Optional controlled selection { color: string, size: string }
- * @param {function} [props.onColorChange] - Required if controlled
- * @param {function} [props.onSizeChange] - Required if controlled
+ * @param {function} [props.onVariantChange] - Callback when variant changes: (variant) => void
+ * @param {string} [props.selectedVariantId] - Optional controlled variant ID
  */
 export default function ProductVariantSelector({
   product,
   variant = "customer",
   showTitle = true,
   className = "",
-  onSelectionChange,
-  // Controlled props (optional)
-  selection,
-  onColorChange,
-  onSizeChange,
+  onVariantChange,
+  selectedVariantId,
 }) {
-  const isControlled = selection != null;
+  const isControlled = selectedVariantId !== undefined;
 
-  const [internalColor, setInternalColor] = useState(null);
-  const [internalSize, setInternalSize] = useState(null);
-
-  const selectedColor = isControlled ? selection.color : internalColor;
-  const selectedSize = isControlled ? selection.size : internalSize;
-
-  const setSelectedColor = isControlled ? onColorChange : setInternalColor;
-  const setSelectedSize = isControlled ? onSizeChange : setInternalSize;
+  const [internalVariantId, setInternalVariantId] = useState(null);
+  const currentVariantId = isControlled ? selectedVariantId : internalVariantId;
 
   const isCustomer = variant === "customer";
   const isAdmin = variant === "admin";
 
-  // Compute available sizes for selected color
+  // Get selected variant object
+  const selectedVariant = useMemo(() => {
+    if (!currentVariantId) return null;
+    return product.variants_lookup.find((v) => v.id === currentVariantId);
+  }, [currentVariantId, product.variants_lookup]);
+
+  // Extract selected color and size from variant
+  const selectedColorId = selectedVariant?.colors?.id || null;
+  const selectedSizeId = selectedVariant?.sizes?.id || null;
+
+  // Get available sizes for the selected color
   const availableSizesForColor = useMemo(() => {
-    if (!selectedColor) return [];
+    if (!selectedColorId) return [];
     return product.variants_lookup
-      .filter((v) => v.colors?.id === selectedColor)
+      .filter((v) => v.colors?.id === selectedColorId)
       .map((v) => v.sizes)
       .filter(Boolean);
-  }, [selectedColor, product.variants_lookup]);
+  }, [selectedColorId, product.variants_lookup]);
 
-  // Compute full selected variant object
-  const selectedVariant = useMemo(() => {
-    if (!selectedColor || !selectedSize) return null;
-    return product.variants_lookup.find(
-      (v) => v.colors?.id === selectedColor && v.sizes?.id === selectedSize
-    );
-  }, [selectedColor, selectedSize, product.variants_lookup]);
-
-  // Notify parent of changes
+  // Notify parent when variant changes
   useEffect(() => {
-    if (onSelectionChange) {
-      if (selectedVariant) {
-        onSelectionChange({
-          color: selectedColor,
-          size: selectedSize,
-          quantity: selectedVariant.quantity ?? 0,
-          variant: selectedVariant,
-        });
-      } else {
-        onSelectionChange(null);
-      }
+    if (onVariantChange) {
+      onVariantChange(selectedVariant);
     }
-  }, [selectedColor, selectedSize, selectedVariant, onSelectionChange]);
+  }, [selectedVariant, onVariantChange]);
 
+  // Handle color selection - find first variant with this color
   const handleColorChange = (colorId) => {
-    setSelectedColor(colorId);
-    setSelectedSize(null); // Reset size when color changes
+    const firstVariantWithColor = product.variants_lookup.find(
+      (v) => v.colors?.id === colorId
+    );
+
+    const newVariantId = firstVariantWithColor?.id || null;
+
+    if (isControlled) {
+      onVariantChange?.(firstVariantWithColor || null);
+    } else {
+      setInternalVariantId(newVariantId);
+    }
   };
 
-  // Styling config based on variant
+  // Handle size selection - find variant with current color + this size
+  const handleSizeChange = (sizeId) => {
+    if (!selectedColorId) return;
+
+    const variantWithColorAndSize = product.variants_lookup.find(
+      (v) => v.colors?.id === selectedColorId && v.sizes?.id === sizeId
+    );
+
+    const newVariantId = variantWithColorAndSize?.id || null;
+
+    if (isControlled) {
+      onVariantChange?.(variantWithColorAndSize || null);
+    } else {
+      setInternalVariantId(newVariantId);
+    }
+  };
+
+  // Styling config
   const config = useMemo(() => {
     if (variant === "admin") {
       return {
@@ -89,7 +98,6 @@ export default function ProductVariantSelector({
         labelClassName: "text-lg font-semibold text-foreground/90",
       };
     }
-    // customer variant
     return {
       colorLabel: "Color",
       sizeLabel: "Size",
@@ -99,7 +107,7 @@ export default function ProductVariantSelector({
   }, [variant]);
 
   return (
-    <div className={className}>
+    <div className={`${className} space-y-6`}>
       {/* Color Selection */}
       <div className="space-y-2.5">
         {showTitle && (
@@ -107,7 +115,7 @@ export default function ProductVariantSelector({
         )}
         <RadioGroup
           className="flex gap-2 flex-wrap"
-          value={selectedColor}
+          value={selectedColorId || ""}
           onValueChange={handleColorChange}
         >
           {product.available_colors.map((color) => (
@@ -119,8 +127,8 @@ export default function ProductVariantSelector({
               />
               <Label
                 htmlFor={`color-${color.id}`}
-                className={`flex items-center justify-center px-5 py-2.5 text-base text-foreground cursor-pointer border border-border transition-colors hover:bg-muted ${
-                  selectedColor === color.id
+                className={`flex items-center justify-center px-6 py-2 text-base text-foreground cursor-pointer border border-border transition-colors hover:bg-muted ${
+                  selectedColorId === color.id
                     ? "bg-foreground text-background hover:bg-primary/90"
                     : ""
                 }`}
@@ -139,8 +147,8 @@ export default function ProductVariantSelector({
         )}
         <RadioGroup
           className="flex gap-2 flex-wrap"
-          value={selectedSize}
-          onValueChange={setSelectedSize}
+          value={selectedSizeId || ""}
+          onValueChange={handleSizeChange}
         >
           {availableSizesForColor.length > 0 ? (
             availableSizesForColor.map((size) => (
@@ -152,8 +160,8 @@ export default function ProductVariantSelector({
                 />
                 <Label
                   htmlFor={`size-${size.id}`}
-                  className={`flex items-center justify-center px-5 py-2.5 text-base text-foreground cursor-pointer border border-border transition-colors hover:bg-muted ${
-                    selectedSize === size.id
+                  className={`flex items-center justify-center px-6 py-2 text-base text-foreground cursor-pointer border border-border transition-colors hover:bg-muted ${
+                    selectedSizeId === size.id
                       ? "bg-foreground text-background hover:bg-primary/90"
                       : ""
                   }`}
@@ -178,25 +186,17 @@ export default function ProductVariantSelector({
           <h3 className="text-lg font-semibold">Product Details:</h3>
           <div className="space-y-2 text-sm">
             <div className="grid grid-cols-[1fr_1fr]">
-              {/* First column */}
               <div className="flex items-center gap-2">
                 <span className="font-medium">Color:</span>
-                <span>
-                  {product.available_colors.find((c) => c.id === selectedColor)
-                    ?.name || "N/A"}
-                </span>
+                <span>{selectedVariant.colors?.name || "N/A"}</span>
               </div>
 
               <div className="flex items-center gap-2">
                 <span className="font-medium">Size:</span>
-                <span>
-                  {availableSizesForColor.find((s) => s.id === selectedSize)
-                    ?.name || "N/A"}
-                </span>
+                <span>{selectedVariant.sizes?.name || "N/A"}</span>
               </div>
             </div>
 
-            {/* Second column */}
             <div className="grid grid-cols-[1fr_1fr]">
               <div className="flex items-center gap-2">
                 <span className="font-medium">Stock Quantity:</span>

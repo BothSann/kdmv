@@ -19,7 +19,7 @@ export default function ProductAdminDetail({ product }) {
   const [selectedSize, setSelectedSize] = useState(null);
   const [selectedVariant, setSelectedVariant] = useState(null);
 
-  // Handle selection changes from the new component
+  // Handle selection changes from the ProductVariantSelector component
   const handleSelectionChange = (selection) => {
     if (selection) {
       setSelectedColor(selection.color);

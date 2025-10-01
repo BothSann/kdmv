@@ -1,8 +1,9 @@
+import { Suspense } from "react";
 import NotFound from "@/app/not-found";
 import ProductCustomerDetail from "@/components/product/ProductCustomerDetail";
-
 import ProductImageSlider from "@/components/product/ProductImageSlider";
 import { getProductById } from "@/lib/apiProducts";
+import Spinner from "@/components/Spinner";
 
 export async function generateMetadata({ params }) {
   const resolvedParams = await params;
@@ -31,7 +32,11 @@ export default async function ProductDetailPage({ params }) {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-[1fr_1fr] gap-20 items-start">
       <ProductImageSlider product={product} />
-      <ProductCustomerDetail product={product} />
+
+      {/* Suspense required for useSearchParams in Next.js 15 */}
+      <Suspense fallback={<Spinner />}>
+        <ProductCustomerDetail key={productId} product={product} />
+      </Suspense>
     </div>
   );
 }
