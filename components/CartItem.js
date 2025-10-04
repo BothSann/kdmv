@@ -3,10 +3,13 @@ import { Button } from "./ui/button";
 import { Minus, Plus, Trash } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 import { Input } from "./ui/input";
+import useCartStore from "@/store/useCartStore";
 
 export default function CartItem({ item }) {
   const variant = item.variant;
   const product = variant.product;
+
+  const removeFromCart = useCartStore((state) => state.removeFromCart);
 
   return (
     <div className="flex gap-4">
@@ -53,7 +56,12 @@ export default function CartItem({ item }) {
         </div>
       </div>
 
-      <Button variant="ghost" size="sm" className="self-start">
+      <Button
+        variant="ghost"
+        size="sm"
+        className="self-start"
+        onClick={() => removeFromCart(item.id)}
+      >
         <Trash />
       </Button>
     </div>

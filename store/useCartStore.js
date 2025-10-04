@@ -1,12 +1,10 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-// import { updateCartItemAction } from "@/actions/cart";
-// import { removeFromCartAction } from "@/actions/cart";
 
 import { toast } from "sonner";
 import useAuthStore from "./useAuthStore";
 
-import { addToCartAction } from "@/actions/cart-action";
+import { addToCartAction, removeFromCartAction } from "@/actions/cart-action";
 import { getUserCart } from "@/lib/api/client/carts";
 
 const useCartStore = create(
@@ -60,7 +58,7 @@ const useCartStore = create(
             ),
           }));
 
-          toast.success("Updated quantity in bag!");
+          toast.success("Updated quantity in your cart");
         } else {
           // Add new item
           const optimisticItem = {
@@ -74,7 +72,7 @@ const useCartStore = create(
             items: [...state.items, optimisticItem],
             isDrawerOpen: true,
           }));
-          toast.success("Added to bag!");
+          toast.success("Item successfully added to your cart");
         }
 
         // Sync to database
@@ -130,20 +128,56 @@ const useCartStore = create(
         }
       },
 
+      // Remove from cart
+      removeFromCart: async (cartItemId) => {
+        // 1. Get user info
+        const userId = useAuthStore.getState().user?.id;
+        const isAuthenticated =
+          useAuthStore.getState().user?.role === "authenticated";
+
+        // 2. Guard: Must be authenticated to remove from cart
+        if (!userId && !isAuthenticated) {
+          toast.error("Please login to remove items from cart");
+          return;
+        }
+
+        // 3. Save current state (for rollback if error)
+        const previousItems = get().items;
+
+        // 4. OPTIMISTIC UPDATE - Remove immediately from U
+        set((state) => ({
+          items: state.items.filter((item) => item.id !== cartItemId),
+        }));
+
+        // 5. Show success toast immediately
+        toast.success("Item successfully removed from your cart");
+
+        // 6. Sync to database (background operation)
+        try {
+          const result = await removeFromCartAction(cartItemId, userId);
+
+          if (result.error) {
+            // 7a. ERROR: Rollback - restore item
+            set({ items: previousItems });
+            toast.error(result.error);
+          }
+          // 7b. SUCCESS: Item stays removed (already done in step 4)
+        } catch (error) {
+          set({ items: previousItems });
+          toast.error("Failed to remove item");
+        }
+      },
+
       // Fetch cart from database
       fetchCart: async () => {
-        console.log("🛒 fetchCart called");
         const userId = useAuthStore.getState().user?.id;
-        console.log("🛒 userId:", userId);
 
         if (!userId) {
-          console.log("🛒 No userId, clearing cart");
           set({ items: [] });
           return;
         }
 
         set({ isLoading: true });
-        console.log("🛒 Starting cart fetch...");
 
         try {
           const result = await getUserCart(userId);
@@ -163,7 +197,7 @@ const useCartStore = create(
             console.error("Failed to fetch cart:", result.error);
           }
         } catch (error) {
-          console.error("🛒 Error:", error);
+          console.error("Error:", error);
           set({ isLoading: false });
         }
       },
@@ -192,31 +226,6 @@ const useCartStore = create(
       //   } catch (error) {
       //     set({ items: previousItems });
       //     toast.error("Failed to update quantity");
-      //   }
-      // },
-
-      // // Remove from cart
-      // removeFromCart: async (cartItemId) => {
-      //   // Optimistic update
-      //   const previousItems = get().items;
-      //   set((state) => ({
-      //     items: state.items.filter((item) => item.id !== cartItemId),
-      //   }));
-
-      //   toast.success("Removed from bag");
-
-      //   // Sync to database
-      //   try {
-      //     const result = await removeFromCartAction(cartItemId);
-
-      //     if (result.error) {
-      //       // Rollback
-      //       set({ items: previousItems });
-      //       toast.error(result.error);
-      //     }
-      //   } catch (error) {
-      //     set({ items: previousItems });
-      //     toast.error("Failed to remove item");
       //   }
       // },
 
