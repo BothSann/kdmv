@@ -12,42 +12,40 @@ import Link from "next/link";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
-import { loginUserAction } from "@/actions/users";
-import { useFormStatus } from "react-dom";
-import { useRouter } from "next/navigation";
 import useAuthStore from "@/store/useAuthStore";
+import { useState } from "react";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 export default function LoginForm() {
-  const { initAuth } = useAuthStore();
+  const { signInUser } = useAuthStore();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
-    const formData = new FormData(event.target);
-    const loginData = {
-      email: formData.get("email"),
-      password: formData.get("password"),
-    };
+    setIsSubmitting(true);
 
     const toastId = toast.loading("Logging in...");
     try {
-      const { error, success, redirectTo, message } = await loginUserAction(
-        loginData
+      const formData = new FormData(event.target);
+      const result = await signInUser(
+        formData.get("email"),
+        formData.get("password")
       );
-      await initAuth();
 
-      if (error) {
-        toast.error(error, { id: toastId });
+      if (result.error) {
+        toast.error(result.error, { id: toastId });
       }
 
-      if (success) {
-        toast.success(message, { id: toastId });
-        router.push(redirectTo || "/");
+      if (result.success) {
+        toast.success(result.message, { id: toastId });
+        router.push(result.redirectTo);
       }
-    } catch (err) {
-      toast.error(err.message, { id: toastId });
+    } catch (error) {
+      toast.error(error.message, { id: toastId });
+    } finally {
+      setIsSubmitting(false);
     }
   };
   return (
@@ -67,7 +65,7 @@ export default function LoginForm() {
         <CardContent>
           <form onSubmit={handleSubmit}>
             <div className="flex flex-col gap-6">
-              <LoginFormField />
+              <LoginFormField isSubmitting={isSubmitting} />
             </div>
             <div className="mt-4 text-sm text-center">
               Don&apos;t have an account?{" "}
@@ -85,9 +83,7 @@ export default function LoginForm() {
   );
 }
 
-function LoginFormField() {
-  const { pending } = useFormStatus();
-
+function LoginFormField({ isSubmitting }) {
   return (
     <>
       <div className="grid gap-3">
@@ -97,7 +93,7 @@ function LoginFormField() {
           name="email"
           type="email"
           placeholder="m@example.com"
-          disabled={pending}
+          disabled={isSubmitting}
           required
         />
       </div>
@@ -115,13 +111,13 @@ function LoginFormField() {
           id="password"
           name="password"
           type="password"
-          disabled={pending}
+          disabled={isSubmitting}
           required
         />
       </div>
 
-      <Button type="submit" className="w-full" disabled={pending}>
-        {pending ? "Logging in..." : "Login"}
+      <Button type="submit" className="w-full" disabled={isSubmitting}>
+        {isSubmitting ? "Logging in..." : "Login"}
       </Button>
     </>
   );

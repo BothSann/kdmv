@@ -7,14 +7,14 @@ import { LogOut } from "lucide-react";
 import useAuthStore from "@/store/useAuthStore";
 
 export default function LogoutButton() {
-  const { logoutUser } = useAuthStore();
+  const { signOutUser } = useAuthStore();
   const router = useRouter();
 
   async function handleLogout() {
     const toastId = toast.loading("Logging out...");
 
     try {
-      const { error, success, message } = await logoutUser();
+      const { error, success, message } = await signOutUser();
 
       if (error) toast.error(error, { id: toastId });
 
