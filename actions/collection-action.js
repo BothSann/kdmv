@@ -9,12 +9,12 @@ import {
   sanitizeSlug,
 } from "@/lib/utils";
 
-import { getCurrentUser, getUserProfile } from "@/lib/apiUsers";
+import { getCurrentUser, getUserProfile } from "@/lib/api/server/users";
 
 import {
   cleanUpCreatedCollection,
   clearCollectionProducts,
-} from "@/lib/apiCollections";
+} from "@/lib/api/server/collections";
 
 export async function createNewCollectionAction(formData) {
   try {
