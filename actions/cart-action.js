@@ -4,7 +4,9 @@ import {
   createCartItem,
   getCartItem,
   updateCartItemQuantity,
+  removeFromCart,
 } from "@/lib/api/server/carts";
+import { createSupabaseServerClient } from "@/utils/supabase/server";
 
 export async function addToCartAction(userId, variantId, quantity = 1) {
   try {
@@ -53,5 +55,23 @@ export async function addToCartAction(userId, variantId, quantity = 1) {
   } catch (error) {
     console.error("Error adding item to cart:", error);
     return { error: "Failed to add item to cart" };
+  }
+}
+
+export async function removeFromCartAction(cartItemId, userId) {
+  try {
+    const { error: deleteError } = await removeFromCart(cartItemId, userId);
+
+    if (deleteError) {
+      return { error: deleteError };
+    }
+
+    return {
+      success: true,
+      message: "Item removed from cart",
+    };
+  } catch (error) {
+    console.error("Error removing item from cart:", error);
+    return { error: "Failed to remove item from cart" };
   }
 }
