@@ -3,13 +3,16 @@
 import { Label } from "../ui/label";
 import { useMemo, useState, useEffect, useCallback } from "react";
 import { Button } from "../ui/button";
-import { Handbag, ShoppingCart } from "lucide-react";
+import { ShoppingBag, ShoppingCart } from "lucide-react";
 import Link from "next/link";
 import { FaFacebookF, FaInstagram } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 import { formatCurrency } from "@/lib/utils";
 import ProductVariantSelector from "./ProductVariantSelector";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
+import useCartStore from "@/store/useCartStore";
+import { toast } from "sonner";
+import { Badge } from "../ui/badge";
 
 export default function ProductCustomerDetail({ product }) {
   const searchParams = useSearchParams();
@@ -18,6 +21,7 @@ export default function ProductCustomerDetail({ product }) {
 
   const [selectedVariantId, setSelectedVariantId] = useState(null);
   const [isInitialized, setIsInitialized] = useState(false);
+  const addToCart = useCartStore((state) => state.addToCart);
 
   // Get the selected variant object
   const selectedVariant = useMemo(() => {
@@ -81,15 +85,45 @@ export default function ProductCustomerDetail({ product }) {
     updateURL(selectedVariantId);
   }, [selectedVariantId, isInitialized, updateURL]);
 
+  const handleAddToBag = async () => {
+    if (!selectedVariant) {
+      toast.error("Please select a color and size");
+      return;
+    }
+
+    if (selectedVariant.quantity <= 0) {
+      toast.error("This variant is out of stock");
+      return;
+    }
+
+    const variantWithProduct = {
+      ...selectedVariant,
+      product: {
+        id: product.id,
+        name: product.name,
+        base_price: product.base_price,
+        discount_percentage: product.discount_percentage,
+        banner_image_url: product.banner_image_url,
+      },
+    };
+
+    await addToCart(variantWithProduct, 1);
+  };
+
   return (
     <div>
       <div className="space-y-4">
         <h1 className="text-5xl font-bold font-poppins leading-14">
           {product.name}
         </h1>
-        <span className="text-2xl text-foreground/80 tracking-wide">
-          {formatCurrency(product.base_price)}
-        </span>
+        <div className="flex items-center gap-4">
+          <span className="text-2xl text-foreground/80 tracking-wide">
+            {formatCurrency(product.base_price)}
+          </span>
+          {selectedVariant?.quantity <= 0 && (
+            <Badge variant="destructive">Sold Out</Badge>
+          )}
+        </div>
       </div>
 
       <hr className="my-8 border-border" />
@@ -112,23 +146,22 @@ export default function ProductCustomerDetail({ product }) {
           <p className="text-foreground">{product.description}</p>
         </div>
 
-        {/* Add to bag */}
+        {/* Add to Cart */}
         <Button
           className="w-full py-6 font-semibold font-poppins disabled:cursor-not-allowed"
           size="lg"
           variant="outline"
           disabled={!selectedVariant || selectedVariant.quantity <= 0}
+          onClick={handleAddToBag}
         >
-          <Handbag />
-          {selectedVariant?.quantity <= 0 ? "Out of Stock" : "Add to Bag"}
+          <ShoppingCart />
+          {selectedVariant?.quantity <= 0 ? "Out of Stock" : "Add to Cart"}
         </Button>
 
         {/* Shop more */}
-        <Button className="w-full py-6 font-semibold font-poppins" asChild>
-          <Link href="/">
-            <ShoppingCart />
-            Shop more
-          </Link>
+        <Button className="w-full py-6 font-semibold font-poppins">
+          <ShoppingBag />
+          Shop more
         </Button>
 
         {/* Share */}
