@@ -24,6 +24,18 @@
   --color-accent-foreground: var(--accent-foreground);
   --color-success: var(--success);
   --color-warning: var(--warning);
+  --color-warning-bg: var(--warning-bg); /* New: Background color for warning */
+  --color-warning-border: var(
+    --warning-border
+  ); /* New: Border color for warning */
+  --color-warning-text: var(--warning-text); /* New: Text color for warning */
+  --color-warning-dark-bg: var(
+    --warning-dark-bg
+  ); /* New: Dark mode background */
+  --color-warning-dark-border: var(
+    --warning-dark-border
+  ); /* New: Dark mode border */
+  --color-warning-dark-text: var(--warning-dark-text); /* New: Dark mode text */
   --color-destructive: var(--destructive);
   --color-border: var(--border);
   --color-input: var(--input);
@@ -63,6 +75,14 @@
   --accent-foreground: oklch(0.205 0 0);
   --success: oklch(62.7% 0.194 149.214);
   --warning: oklch(68.1% 0.162 75.834);
+  --warning-bg: oklch(0.985 0.027 75.834); /* ~bg-orange-50 */
+  --warning-border: oklch(0.922 0.081 75.834); /* ~border-orange-200 */
+  --warning-text: oklch(0.556 0.122 75.834); /* ~text-orange-700 */
+  --warning-dark-bg: oklch(0.205 0.081 75.834); /* ~dark:bg-orange-950 */
+  --warning-dark-border: oklch(
+    0.556 0.122 75.834
+  ); /* ~dark:border-orange-800 */
+  --warning-dark-text: oklch(0.708 0.122 75.834); /* ~dark:text-orange-300 */
   --destructive: oklch(0.577 0.245 27.325);
   --border: oklch(0.922 0 0);
   --input: oklch(0.922 0 0);
@@ -100,6 +120,15 @@
   --accent: oklch(0.269 0 0);
   --accent-foreground: oklch(0.985 0 0);
   --success: oklch(62.7% 0.194 149.214);
+  --warning: oklch(68.1% 0.162 75.834); /* Existing base warning color */
+  /* These override the :root values for dark mode */
+  --warning-bg: oklch(0.205 0.081 75.834); /* ~dark:bg-orange-950 */
+  --warning-border: oklch(0.556 0.122 75.834); /* ~dark:border-orange-800 */
+  --warning-text: oklch(0.708 0.122 75.834); /* ~dark:text-orange-300 */
+  /* You might want different light mode colors for dark theme's warning background/border */
+  /* Example: Slightly lighter background/border for dark theme */
+  /* --warning-bg: oklch(0.25 0.081 75.834); */
+  /* --warning-border: oklch(0.6 0.122 75.834); */
   --destructive: oklch(0.704 0.191 22.216);
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
@@ -134,6 +163,12 @@
 
 .scrollbar-hide::-webkit-scrollbar {
   display: none; /* Chrome, Safari, Opera */
+}
+
+.no-spin-buttons::-webkit-outer-spin-button,
+.no-spin-buttons::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 
 .loader {

@@ -4,12 +4,92 @@ import { Minus, Plus, Trash } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 import { Input } from "./ui/input";
 import useCartStore from "@/store/useCartStore";
+import { toast } from "sonner";
+import { useEffect, useState } from "react";
 
 export default function CartItem({ item }) {
   const variant = item.variant;
   const product = variant.product;
+  const stockAvailable = variant.quantity;
 
   const removeFromCart = useCartStore((state) => state.removeFromCart);
+  const updateQuantity = useCartStore((state) => state.updateQuantity);
+
+  // LOCAL STATE - allows temporary invalid values
+  const [inputValue, setInputValue] = useState(item.quantity.toString());
+
+  // Sync local state when store updates (e.g., from server)
+  useEffect(() => {
+    setInputValue(item.quantity.toString());
+  }, [item.quantity]);
+
+  const canIncrease = item.quantity < stockAvailable;
+  const isLowStock = stockAvailable <= 5 && stockAvailable > 0;
+  const isOutOfStock = stockAvailable === 0;
+
+  const handleIncrease = () => {
+    updateQuantity(item.id, item.quantity + 1);
+  };
+  const handleDecrease = () => {
+    if (item.quantity > 1) {
+      updateQuantity(item.id, item.quantity - 1);
+    }
+  };
+
+  const handleInputChange = (e) => {
+    const rawValue = e.target.value;
+
+    // Allow empty input (user is typing)
+    setInputValue(rawValue);
+
+    // Don't validate/update until user enters a valid number
+    const value = parseInt(rawValue);
+
+    if (rawValue === "" || isNaN(value)) {
+      // User is typing or cleared input - allow it
+      return;
+    }
+
+    // Now validate the number
+    if (value < 1) {
+      toast.error("Quantity must be at least 1");
+      return;
+    }
+
+    if (value > stockAvailable) {
+      toast.error(`Only ${stockAvailable} items available in stock`);
+      return;
+    }
+
+    // Valid number - update store
+    updateQuantity(item.id, value);
+  };
+
+  // Handle when user leaves input (blur)
+  const handleBlur = () => {
+    const value = parseInt(inputValue);
+
+    // If empty or invalid, reset to current quantity
+    if (inputValue === "" || isNaN(value) || value < 1) {
+      setInputValue(item.quantity.toString());
+      toast.error("Invalid quantity - reset to previous value");
+      return;
+    }
+
+    // If exceeds stock, cap it
+    if (value > stockAvailable) {
+      updateQuantity(item.id, stockAvailable);
+      toast.warning(
+        `Only ${stockAvailable} items available. Quantity adjusted.`
+      );
+      return;
+    }
+
+    // Valid - ensure store is updated
+    if (value !== item.quantity) {
+      updateQuantity(item.id, value);
+    }
+  };
 
   return (
     <div className="flex gap-4">
@@ -33,19 +113,45 @@ export default function CartItem({ item }) {
           <span>Size: {variant.sizes?.name}</span>
         </div>
 
+        {/* Stock Warning */}
+        {isLowStock && (
+          <p className="text-xs text-warning font-medium">
+            Only {stockAvailable} left in stock!
+          </p>
+        )}
+
+        {isOutOfStock && (
+          <p className="text-xs text-destructive font-medium">
+            Out of stock - Please remove from cart
+          </p>
+        )}
+
         <div className="flex items-center justify-between">
           <div className="flex items-center">
-            <Button variant="outline" size="sm">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleDecrease}
+              disabled={item.quantity <= 1 || isOutOfStock}
+            >
               <Minus className="scale-80" />
             </Button>
             <Input
-              value={item.quantity}
-              onChange={(e) => {
-                e.preventDefault();
-              }}
-              className="w-16 focus-visible:ring-0 text-center md:text-base"
+              type="number"
+              min="1"
+              max={stockAvailable}
+              value={inputValue} // ← Use local state
+              onChange={handleInputChange}
+              onBlur={handleBlur} // ← Validate on blur
+              disabled={isOutOfStock}
+              className="w-16 focus-visible:ring-0 text-center md:text-base no-spin-buttons"
             />
-            <Button variant="outline" size="sm">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleIncrease}
+              disabled={isOutOfStock || !canIncrease}
+            >
               <Plus className="scale-80 " />
             </Button>
           </div>

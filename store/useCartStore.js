@@ -4,7 +4,11 @@ import { persist } from "zustand/middleware";
 import { toast } from "sonner";
 import useAuthStore from "./useAuthStore";
 
-import { addToCartAction, removeFromCartAction } from "@/actions/cart-action";
+import {
+  addToCartAction,
+  removeFromCartAction,
+  updateCartItemQuantityAction,
+} from "@/actions/cart-action";
 import { getUserCart } from "@/lib/api/client/carts";
 
 const useCartStore = create(
@@ -98,7 +102,33 @@ const useCartStore = create(
               }));
             }
 
-            toast.error(result.error);
+            // Enhanced error handling for stock issues
+            if (result.maxQuantity !== undefined) {
+              // Stock limitation error - offer to set to max if possible
+              const canSetToMax =
+                result.currentQuantity !== undefined &&
+                result.currentQuantity < result.maxQuantity;
+
+              toast.error(result.error, {
+                duration: 5000,
+                action: canSetToMax
+                  ? {
+                      label: `Set to max (${result.maxQuantity})`,
+                      onClick: () => {
+                        // Find the cart item and update to max
+                        const cartItem = get().items.find(
+                          (item) => item.product_variant_id === variant.id
+                        );
+                        if (cartItem) {
+                          get().updateQuantity(cartItem.id, result.maxQuantity);
+                        }
+                      },
+                    }
+                  : undefined,
+              });
+            } else {
+              toast.error(result.error);
+            }
           } else if (!existingItem) {
             // Replace temp ID with real ID only for new items
             set((state) => ({
@@ -168,6 +198,67 @@ const useCartStore = create(
         }
       },
 
+      // Update cart item quantity
+      updateQuantity: async (cartItemId, newQuantity) => {
+        // 1. Validate quantity
+        if (newQuantity < 1) {
+          toast.error("Quantity cannot be less than 1");
+          return;
+        }
+
+        // 2. Get user info
+        const userId = useAuthStore.getState().user?.id;
+        const isAuthenticated =
+          useAuthStore.getState().user?.role === "authenticated";
+
+        if (!userId && !isAuthenticated) {
+          toast.error("Please login to update quantity");
+          return;
+        }
+
+        // 3. Save current state (for rollback if error)
+        const previousItems = get().items;
+
+        // 4. OPTIMISTIC UPDATE - Update immediately from UI
+        set((state) => ({
+          items: state.items.map((item) =>
+            item.id === cartItemId ? { ...item, quantity: newQuantity } : item
+          ),
+        }));
+
+        // 5. Sync to database (background operation)
+        try {
+          const result = await updateCartItemQuantityAction(
+            cartItemId,
+            newQuantity,
+            userId
+          );
+
+          if (result.error) {
+            set({ items: previousItems });
+
+            // Enhanced error handling for stock limitations
+            if (result.maxQuantity !== undefined) {
+              toast.error(result.error, {
+                duration: 5000,
+                action: {
+                  label: `Set to ${result.maxQuantity}`,
+                  onClick: () => {
+                    get().updateQuantity(cartItemId, result.maxQuantity);
+                  },
+                },
+              });
+            } else {
+              toast.error(result.error);
+            }
+          }
+          // 6b. SUCCESS: Item stays updated (already done in step 4)
+        } catch (error) {
+          set({ items: previousItems });
+          toast.error("Failed to update quantity");
+        }
+      },
+
       // Fetch cart from database
       fetchCart: async () => {
         const userId = useAuthStore.getState().user?.id;
@@ -201,33 +292,6 @@ const useCartStore = create(
           set({ isLoading: false });
         }
       },
-
-      // // Update quantity
-      // updateQuantity: async (cartItemId, newQuantity) => {
-      //   if (newQuantity < 1) return;
-
-      //   // Optimistic update
-      //   const previousItems = get().items;
-      //   set((state) => ({
-      //     items: state.items.map((item) =>
-      //       item.id === cartItemId ? { ...item, quantity: newQuantity } : item
-      //     ),
-      //   }));
-
-      //   // Sync to database
-      //   try {
-      //     const result = await updateCartItemAction(cartItemId, newQuantity);
-
-      //     if (result.error) {
-      //       // Rollback
-      //       set({ items: previousItems });
-      //       toast.error(result.error);
-      //     }
-      //   } catch (error) {
-      //     set({ items: previousItems });
-      //     toast.error("Failed to update quantity");
-      //   }
-      // },
 
       // Clear cart
       clearCart: () => set({ items: [] }),
