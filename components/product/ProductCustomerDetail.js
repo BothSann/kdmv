@@ -21,13 +21,32 @@ export default function ProductCustomerDetail({ product }) {
 
   const [selectedVariantId, setSelectedVariantId] = useState(null);
   const [isInitialized, setIsInitialized] = useState(false);
+
   const addToCart = useCartStore((state) => state.addToCart);
+  const items = useCartStore((state) => state.items);
 
   // Get the selected variant object
   const selectedVariant = useMemo(() => {
     if (!selectedVariantId) return null;
     return product.variants_lookup.find((v) => v.id === selectedVariantId);
   }, [selectedVariantId, product.variants_lookup]);
+
+  // Check how many of this variant are already in cart
+  const quantityInCart = useMemo(() => {
+    if (!selectedVariantId) return 0;
+
+    const cartItem = items.find(
+      (item) => item.product_variant_id === selectedVariantId
+    );
+
+    return cartItem ? cartItem.quantity : 0;
+  }, [items, selectedVariantId]);
+
+  // Calculate remaining stock
+  const remainingStock = useMemo(() => {
+    if (!selectedVariant) return 0;
+    return selectedVariant.quantity - quantityInCart;
+  }, [selectedVariant, quantityInCart]);
 
   // Update URL with variant_id
   const updateURL = useCallback(
@@ -91,8 +110,23 @@ export default function ProductCustomerDetail({ product }) {
       return;
     }
 
+    // Check if out of stock
     if (selectedVariant.quantity <= 0) {
       toast.error("This variant is out of stock");
+      return;
+    }
+
+    // NEW: Check if adding more would exceed stock
+    if (quantityInCart >= selectedVariant.quantity) {
+      toast.error(
+        `You already have the maximum available quantity (${selectedVariant.quantity}) in your cart`
+      );
+      return;
+    }
+
+    // NEW: Check remaining stock
+    if (remainingStock <= 0) {
+      toast.error("No more stock available for this variant");
       return;
     }
 
@@ -120,9 +154,24 @@ export default function ProductCustomerDetail({ product }) {
           <span className="text-2xl text-foreground/80 tracking-wide">
             {formatCurrency(product.base_price)}
           </span>
+
           {selectedVariant?.quantity <= 0 && (
             <Badge variant="destructive">Sold Out</Badge>
           )}
+
+          {selectedVariant && quantityInCart > 0 && remainingStock > 0 && (
+            <Badge variant="secondary">
+              {quantityInCart} in cart ({remainingStock} left)
+            </Badge>
+          )}
+
+          {selectedVariant &&
+            remainingStock <= 0 &&
+            selectedVariant.quantity > 0 && (
+              <Badge variant="outline" className="border-warning text-warning">
+                Max quantity in cart
+              </Badge>
+            )}
         </div>
       </div>
 
@@ -138,6 +187,15 @@ export default function ProductCustomerDetail({ product }) {
           onVariantChange={handleVariantChange}
         />
 
+        {selectedVariant && remainingStock > 0 && remainingStock <= 3 && (
+          <div className="bg-warning-bg dark:bg-warning-dark-bg border border-warning-border dark:border-warning-dark-border p-3">
+            <p className="text-sm text-warning dark:text-warning-dark-text">
+              Only {remainingStock} more can be added to cart
+              {quantityInCart > 0 && ` (${quantityInCart} already in cart)`}
+            </p>
+          </div>
+        )}
+
         {/* Description */}
         <div className="space-y-2.5 mt-4">
           <Label className="text-sm font-bold font-poppins uppercase tracking-widest">
@@ -146,16 +204,29 @@ export default function ProductCustomerDetail({ product }) {
           <p className="text-foreground">{product.description}</p>
         </div>
 
-        {/* Add to Cart */}
+        {/* Add to Cart Button */}
         <Button
           className="w-full py-6 font-semibold font-poppins disabled:cursor-not-allowed"
           size="lg"
           variant="outline"
-          disabled={!selectedVariant || selectedVariant.quantity <= 0}
+          disabled={
+            !selectedVariant ||
+            selectedVariant.quantity <= 0 ||
+            remainingStock <= 0 // ← Disable if no remaining stock
+          }
           onClick={handleAddToBag}
         >
           <ShoppingCart />
-          {selectedVariant?.quantity <= 0 ? "Out of Stock" : "Add to Cart"}
+          {!selectedVariant && "Select variant"}
+          {selectedVariant?.quantity <= 0 && "Out of Stock"}
+          {selectedVariant &&
+            selectedVariant.quantity > 0 &&
+            remainingStock <= 0 &&
+            "Max in Cart"}
+          {selectedVariant &&
+            selectedVariant.quantity > 0 &&
+            remainingStock > 0 &&
+            "Add to Cart"}
         </Button>
 
         {/* Shop more */}

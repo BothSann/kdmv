@@ -33,14 +33,17 @@ export default function CartDrawer() {
           {hasHydrated && count > 0 && (
             <Badge
               variant="destructive"
-              className="absolute rounded-full h-4 w-4 top-0 right-0 font-normal p-0"
+              className="absolute rounded-full h-4.5 w-4.5 top-0 right-0 font-normal flex items-center justify-center"
             >
               {count}
             </Badge>
           )}
         </Button>
       </SheetTrigger>
-      <SheetContent className="md:max-w-lg px-8 py-6">
+      <SheetContent
+        className="md:max-w-lg px-8 py-6"
+        onOpenAutoFocus={(e) => e.preventDefault()}
+      >
         <SheetHeader className="px-0">
           <SheetTitle className="text-2xl font-bold ">Your Cart</SheetTitle>
         </SheetHeader>
