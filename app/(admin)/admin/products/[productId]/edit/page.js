@@ -4,8 +4,8 @@ import {
   getAllCategories,
   getAllSubcategories,
   getProductById,
-} from "@/lib/apiProducts";
-import { getAllCollections } from "@/lib/apiCollections";
+} from "@/lib/api/server/products";
+import { getAllCollections } from "@/lib/api/server/collections";
 import ProductCreateEditForm from "@/components/product/ProductCreateEditForm";
 
 export async function generateMetadata({ params }) {

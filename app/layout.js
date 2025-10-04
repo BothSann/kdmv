@@ -11,7 +11,7 @@ export const metadata = {
   description: "KDMV Cambodia",
 };
 
-export default function RootLayout({ children }) {
+export default async function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body

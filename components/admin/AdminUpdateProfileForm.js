@@ -17,7 +17,7 @@ import { useRef, useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { toast } from "sonner";
-import { updateCurrentAdminProfileAction } from "@/actions/users";
+import { updateCurrentAdminProfileAction } from "@/actions/user-action";
 import { Trash, User } from "lucide-react";
 import { sanitizeName } from "@/lib/utils";
 

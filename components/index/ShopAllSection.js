@@ -1,10 +1,8 @@
 import Link from "next/link";
 import { Button } from "../ui/button";
 import ProductList from "../product/ProductList";
-import { MoveRight } from "lucide-react";
 
 export default function ShopAllSection({ products }) {
-  console.log("products", products);
   return (
     <div className="my-12 space-y-8 pt-20 border-t border-border">
       <h2 className="text-[2.7rem] font-poppins font-bold uppercase">

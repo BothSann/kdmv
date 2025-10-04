@@ -3,9 +3,9 @@ import {
   getAllSizes,
   getAllCategories,
   getAllSubcategories,
-} from "@/lib/apiProducts";
+} from "@/lib/api/server/products";
 
-import { getAllCollections } from "@/lib/apiCollections";
+import { getAllCollections } from "@/lib/api/server/collections";
 import ProductCreateEditForm from "@/components/product/ProductCreateEditForm";
 
 export default async function AdminAddProductPage() {

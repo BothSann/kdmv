@@ -8,7 +8,7 @@ import { toast } from "sonner";
 import {
   createNewProductAction,
   updateProductAction,
-} from "@/actions/products";
+} from "@/actions/product-action";
 import { useFormStatus } from "react-dom";
 import { useRouter } from "next/navigation";
 import Link from "next/link";

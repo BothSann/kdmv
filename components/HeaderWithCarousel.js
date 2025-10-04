@@ -5,9 +5,12 @@ import HeroCarousel from "@/components/HeroCarousel";
 export default function HeaderWithCarousel() {
   return (
     <header className="relative">
-      <nav className="absolute top-0 left-0 right-0 z-10 flex items-center justify-between px-8 py-5 max-w-7xl mx-auto invert dark:invert-0">
-        <Logo width="w-28" />
-        <Navigation modeToggleClassName="bg-transparent hover:bg-input/50 border-none" />
+      <nav className="absolute top-0 left-0 right-0 z-10 flex items-center justify-between px-8 py-5 max-w-7xl mx-auto">
+        <Logo width="w-28 invert dark:invert-0" />
+
+        <div className="dark text-foreground/90">
+          <Navigation />
+        </div>
       </nav>
 
       <HeroCarousel />
