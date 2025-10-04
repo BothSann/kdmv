@@ -56,5 +56,8 @@ coupon_constraints.sql
 use_coupon_transaction.sql
 couponCleanupJob.js
 object-of-single-product.js
+complete-add-to-cart-flow.js
+signInWithPasswordResponse.js
+text-2.md
 
 temp/
