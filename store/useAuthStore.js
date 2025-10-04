@@ -1,5 +1,13 @@
 import { create } from "zustand";
 import { createSupabaseFrontendClient } from "@/utils/supabase/client";
+import useCartStore from "./useCartStore";
+
+import {
+  getCurrentUserAction,
+  loginUserAction,
+  logoutUserAction,
+} from "@/actions/auth-action";
+import { fetchUserProfile } from "@/lib/api/client/users";
 
 const useAuthStore = create((set, get) => ({
   // 1. User State
@@ -14,77 +22,147 @@ const useAuthStore = create((set, get) => ({
   setRole: (role) => set({ role }),
   setIsLoading: (isLoading) => set({ isLoading }),
 
-  initAuth: async () => {
+  // 3. Initialize auth with event listeners
+  initializeAuth: async () => {
     console.log("Initializing auth...");
-    const supabase = createSupabaseFrontendClient();
-    // 1. Get the current session
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
-    console.log("Session:", session);
+    // 1. Get the current user (verified from server)
+    // Use getUser() instead of getSession() for security
+    // getUser() validates the JWT with the Auth server
+    const { user, error } = await getCurrentUserAction();
+    console.log("User from calling getUser() (createServerClient ):", user);
 
-    if (!session) {
-      console.log("No session found");
-      set({ user: null, profile: null, role: null, isLoading: false });
-      return;
+    if (!error && user) {
+      set({ user });
+      console.log("User set:", user);
+      await get().fetchAndSetUserProfile(user.id);
+    } else {
+      // No user or error - clear auth and cart
+      // This handles logout in other browsers/tabs
+      console.log("No authenticated user found, clearing auth and cart");
+      get().clearAuth();
+      useCartStore.getState().clearCart();
     }
 
-    //Version 1: Always get the user from the auth getUser()
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    set({ user: user });
-    await get().fetchUserProfile(user.id);
     set({ isLoading: false });
 
-    //Version 2
-    // const {
-    //   data: { user },
-    // } = await supabase.auth.getUser();
-    // set({ user: user });
+    // 2. Set up auth state change listener
+    const supabase = createSupabaseFrontendClient();
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      switch (event) {
+        case "INITIAL_SESSION":
+        case "SIGNED_IN":
+          console.log("SIGNED_IN EVENT OCCURRED:", event);
 
-    // if (user) {
-    //   await get().fetchUserProfile(user.id);
-    //   set({ isLoading: false });
-    // } else {
-    //   return;
-    // }
+          if (session?.user) {
+            set({ user: session.user });
+
+            setTimeout(async () => {
+              try {
+                const { profile, error } = await fetchUserProfile(
+                  session.user.id
+                );
+
+                if (!error && profile) {
+                  set({ profile, role: profile.role });
+                }
+
+                useCartStore.getState().fetchCart(); // Fire-and-forget (no await)
+              } catch (error) {
+                console.error("Error fetching user profile:", error);
+              }
+            }, 0);
+          }
+          break;
+
+        case "SIGNED_OUT":
+          console.log("SIGNED_OUT EVENT OCCURRED");
+          get().clearAuth();
+          useCartStore.getState().clearCart();
+          break;
+
+        default:
+          break;
+      }
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
   },
 
   // 3. Fetch User Profile and Role
-  fetchUserProfile: async (userId) => {
-    console.log("Fetching profile for user:", userId);
+  fetchAndSetUserProfile: async (userId) => {
+    const { profile, error } = await fetchUserProfile(userId);
 
-    const supabase = createSupabaseFrontendClient();
-    const { data: profile, error: profileError } = await supabase
-      .from("profiles")
-      .select("*")
-      .eq("id", userId)
-      .single();
-
-    console.log("Profile query result:", { profile, profileError });
-
-    if (!profileError && profile) {
-      console.log("Setting profile:", profile);
-      set({ profile: profile });
-      set({ role: profile.role });
-      console.log("Profile set:", profile);
+    if (!error && profile) {
+      console.log("Fetching user profile done, setting profile:", profile);
+      set({ profile, role: profile.role });
     } else {
-      console.error("Profile fetch error:", profileError);
+      console.error("Profile fetch error:", error);
     }
   },
 
-  logoutUser: async () => {
+  signInUser: async (email, password) => {
     try {
-      const supabase = createSupabaseFrontendClient();
-      const { error } = await supabase.auth.signOut();
+      // 1. Call server action for authentication
+      const result = await loginUserAction({ email, password });
 
-      if (error) {
-        console.error("Sign out error:", error);
-        return { error: error.message };
+      if (result.error) {
+        return { error: result.error };
       }
 
+      // 2. Use the user data returned from server action
+      if (result.user) {
+        set({ user: result.user });
+        // Fetch profile immediately with the user ID we already have
+        console.log("User is logged in, fetching profile...");
+        await get().fetchAndSetUserProfile(result.user.id);
+
+        // 3. Fetch cart immediately after login
+        // This is needed because onAuthStateChange won't fire until window focus/tab switch
+        console.log("Fetching cart after login...");
+        useCartStore.getState().fetchCart(); // Fire-and-forget (no await)
+
+        set({ isLoading: false });
+      }
+
+      // 4. Determine redirect based on role
+      const profile = get().profile;
+      const redirectTo = profile?.role === "admin" ? "/admin/dashboard" : "/";
+
+      return { success: true, message: result.message, redirectTo };
+    } catch (err) {
+      console.error("Unexpected error:", err);
+      return { error: "An unexpected error occurred during sign in" };
+    }
+  },
+
+  signOutUser: async () => {
+    try {
+      // 1. Sign out on client first (removes local storage, triggers SIGNED_OUT event)
+      const supabase = createSupabaseFrontendClient();
+      const { error: clientSignOutError } = await supabase.auth.signOut();
+
+      if (clientSignOutError) {
+        console.error("Client sign out error:", clientSignOutError);
+        return { error: clientSignOutError.message };
+      }
+
+      // 2. Also sign out on server to revoke refresh tokens and clear server cookies
+      // This ensures the user is logged out across all devices/sessions
+      const result = await logoutUserAction();
+
+      if (result.error) {
+        console.error("Server sign out error:", result.error);
+        // Continue anyway since client-side is cleared
+      }
+
+      // 3. Clear local state (already done by SIGNED_OUT event listener, but be explicit)
       get().clearAuth();
+      useCartStore.getState().clearCart();
+
       return { success: true, message: "Logged out successfully!" };
     } catch (err) {
       console.error("Unexpected error:", err);
