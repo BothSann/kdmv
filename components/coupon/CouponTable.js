@@ -1,4 +1,4 @@
-import { getAllCoupons } from "@/lib/apiCoupons";
+import { getAllCoupons } from "@/lib/api/server/coupons";
 import CouponTableClient from "./CouponTableClient";
 
 export default async function CouponTable({ searchParams }) {

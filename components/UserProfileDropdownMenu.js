@@ -9,6 +9,7 @@ import Link from "next/link";
 import useAuthorization from "@/hooks/useAuthorization";
 import LogoutButton from "@/components/LogoutButton";
 import { cn } from "@/lib/utils";
+import { Button } from "./ui/button";
 
 export default function UserProfileDropdownMenu() {
   const { profile } = useAuthorization();
@@ -16,19 +17,16 @@ export default function UserProfileDropdownMenu() {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger
-        className={cn(
-          "flex items-center gap-2 cursor-pointer focus:outline-none"
-        )}
-      >
-        <User className="cursor-pointer" />
-        <span className="font-medium">{profile ? fullName : "Guest"}</span>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost">
+          <User className="scale-125" />
+        </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className={cn("w-[16rem]")}>
         {profile ? (
           <>
             <Link href="/account/profile">
-              <DropdownMenuItem>My Profile</DropdownMenuItem>
+              <DropdownMenuItem>{fullName}</DropdownMenuItem>
             </Link>
             <DropdownMenuItem>
               <LogoutButton />

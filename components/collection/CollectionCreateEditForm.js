@@ -16,7 +16,7 @@ import { toast } from "sonner";
 import {
   createNewCollectionAction,
   updateCollectionAction,
-} from "@/actions/collections";
+} from "@/actions/collection-action";
 import { useRouter } from "next/navigation";
 import { useProductTableStore } from "@/store/useTableSelectionStore";
 

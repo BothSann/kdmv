@@ -6,7 +6,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useState } from "react";
-import { verifyAndUpdateAdminPasswordAction } from "@/actions/users";
+import { verifyAndUpdateAdminPasswordAction } from "@/actions/user-action";
 import { toast } from "sonner";
 
 export default function AdminChangePasswordForm() {

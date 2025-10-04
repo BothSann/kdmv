@@ -1,4 +1,4 @@
-import { getAllCollections } from "@/lib/apiCollections";
+import { getAllCollections } from "@/lib/api/server/collections";
 import CollectionTableClient from "./CollectionTableClient";
 
 export default async function CollectionTable({ searchParams }) {

@@ -11,7 +11,10 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { DateTimePicker24h } from "@/components/DateTimePicker24";
 import { toast } from "sonner";
-import { createNewCouponAction, updateCouponAction } from "@/actions/coupons";
+import {
+  createNewCouponAction,
+  updateCouponAction,
+} from "@/actions/coupon-action";
 
 export default function CouponCreateEditForm({ existingCoupon = null }) {
   const isEditMode = Boolean(existingCoupon);

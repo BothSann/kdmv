@@ -8,7 +8,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { deleteCollectionByIdAction } from "@/actions/collections";
+import { deleteCollectionByIdAction } from "@/actions/collection-action";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { useState } from "react";

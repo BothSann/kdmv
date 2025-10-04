@@ -1,5 +1,5 @@
 import ProductTableClient from "./ProductTableClient";
-import { getAllProducts } from "@/lib/apiProducts";
+import { getAllProducts } from "@/lib/api/server/products";
 
 export default async function ProductTable({ searchParams }) {
   const resolvedSearchParams = await searchParams;

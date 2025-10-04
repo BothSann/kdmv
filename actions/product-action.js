@@ -10,12 +10,12 @@ import {
   uploadProductGalleryImages,
   deleteUnselectedProductImages,
   deleteAllProductImages,
-} from "@/lib/apiProducts";
-import { getCurrentUser, getUserProfile } from "@/lib/apiUsers";
+} from "@/lib/api/server/products";
+import { getCurrentUser, getUserProfile } from "@/lib/api/server/users";
 import {
   addProductToCollection,
   removeProductFromCollection,
-} from "@/lib/apiCollections";
+} from "@/lib/api/server/collections";
 
 export async function createNewProductAction(formData) {
   try {

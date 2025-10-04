@@ -3,7 +3,7 @@ import {
   getCollectionProducts,
   getFeaturedCollections,
   getFeaturedProducts,
-} from "@/lib/apiProducts";
+} from "@/lib/api/server/products";
 
 export default async function Home() {
   let data = { collectionsWithProducts: [], featuredProducts: [] };

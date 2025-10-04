@@ -10,7 +10,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { bulkDeleteProductsAction } from "@/actions/products";
+import { bulkDeleteProductsAction } from "@/actions/product-action";
 import { toast } from "sonner";
 import { useState } from "react";
 import { useRouter } from "next/navigation";

@@ -10,7 +10,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { bulkDeleteCollectionsAction } from "@/actions/collections";
+import { bulkDeleteCollectionsAction } from "@/actions/collection-action";
 import { toast } from "sonner";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
