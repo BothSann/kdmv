@@ -7,7 +7,7 @@ import {
   loginUserAction,
   logoutUserAction,
 } from "@/actions/auth-action";
-import { fetchUserProfile } from "@/lib/api/client/users";
+import { getUserProfileAction } from "@/actions/user-action";
 
 const useAuthStore = create((set, get) => ({
   // 1. User State
@@ -60,7 +60,7 @@ const useAuthStore = create((set, get) => ({
 
             setTimeout(async () => {
               try {
-                const { profile, error } = await fetchUserProfile(
+                const { profile, error } = await getUserProfileAction(
                   session.user.id
                 );
 
@@ -94,7 +94,7 @@ const useAuthStore = create((set, get) => ({
 
   // 3. Fetch User Profile and Role
   fetchAndSetUserProfile: async (userId) => {
-    const { profile, error } = await fetchUserProfile(userId);
+    const { profile, error } = await getUserProfileAction(userId);
 
     if (!error && profile) {
       console.log("Fetching user profile done, setting profile:", profile);

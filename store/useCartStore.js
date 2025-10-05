@@ -6,10 +6,10 @@ import useAuthStore from "./useAuthStore";
 
 import {
   addToCartAction,
+  getUserCartAction,
   removeFromCartAction,
   updateCartItemQuantityAction,
 } from "@/actions/cart-action";
-import { getUserCart } from "@/lib/api/client/carts";
 
 const useCartStore = create(
   persist(
@@ -271,7 +271,7 @@ const useCartStore = create(
         set({ isLoading: true });
 
         try {
-          const result = await getUserCart(userId);
+          const result = await getUserCartAction(userId);
 
           if (result.success) {
             const transformedItems = result.cartItems.map((item) => ({
