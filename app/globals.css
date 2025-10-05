@@ -55,6 +55,7 @@
   --color-sidebar-ring: var(--sidebar-ring);
   --font-jost: var(--font-jost);
   --font-poppins: var(--font-poppins);
+  --font-source-sans-3: var(--font-source-sans-3);
 }
 
 :root {
@@ -102,6 +103,7 @@
   --sidebar-ring: oklch(0.708 0 0);
   --font-jost: var(--font-jost);
   --font-poppins: var(--font-poppins);
+  --font-source-sans-3: var(--font-source-sans-3);
 }
 
 .dark {
@@ -152,8 +154,13 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground/90;
+  }
+
+  .dark body {
+    @apply bg-primary-foreground text-foreground/90;
   }
 }
 .scrollbar-hide {
