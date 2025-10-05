@@ -1,4 +1,10 @@
-import { robotoCondensed, inconsolata, poppins, jost } from "@/lib/fonts";
+import {
+  robotoCondensed,
+  inconsolata,
+  poppins,
+  jost,
+  sourceSans3,
+} from "@/lib/fonts";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "sonner";
 import "react-photo-view/dist/react-photo-view.css";
@@ -15,7 +21,7 @@ export default async function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${poppins.className} ${poppins.variable} ${jost.variable} bg-background text-foreground/90 dark:text-foreground/90 dark:bg-background antialiased min-h-screen`}
+        className={`${poppins.className} ${poppins.variable} ${jost.variable} ${sourceSans3.variable} antialiased min-h-screen`}
       >
         <ThemeProvider
           attribute="class"

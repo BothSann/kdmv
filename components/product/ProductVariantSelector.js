@@ -95,7 +95,7 @@ export default function ProductVariantSelector({
       return {
         colorLabel: "Available Colors:",
         sizeLabel: "Available Sizes:",
-        labelClassName: "text-lg font-semibold text-foreground/90",
+        labelClassName: "text-lg font-semibold text-foreground/95",
       };
     }
     return {

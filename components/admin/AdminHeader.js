@@ -14,7 +14,7 @@ export default function AdminHeader() {
   const fullName = `${profile?.first_name} ${profile?.last_name}`;
 
   return (
-    <header className="flex justify-between items-center py-4 px-8 border-b border-border sticky top-0 z-40 bg-background">
+    <header className="flex justify-between items-center py-4 px-8 border-b border-border sticky top-0 z-40 bg-background dark:bg-primary-foreground">
       <SidebarTrigger />
 
       <div className="flex items-center gap-4">

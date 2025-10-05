@@ -25,12 +25,20 @@ export default function CartDrawer() {
   const count = itemCount();
   const total = totalPrice();
 
+  if (!hasHydrated) {
+    return (
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+        <Spinner />
+      </div>
+    );
+  }
+
   return (
     <Sheet open={isDrawerOpen} onOpenChange={setDrawerOpen}>
       <SheetTrigger asChild>
         <Button variant="ghost" className="relative">
           <ShoppingCart className="scale-125" />
-          {hasHydrated && count > 0 && (
+          {count > 0 && (
             <Badge
               variant="destructive"
               className="absolute rounded-full h-4.5 w-4.5 top-0 right-0 font-normal flex items-center justify-center"
@@ -41,20 +49,14 @@ export default function CartDrawer() {
         </Button>
       </SheetTrigger>
       <SheetContent
-        className="md:max-w-lg px-8 py-6"
+        className="md:max-w-lg px-8 py-6 dark:bg-primary-foreground"
         onOpenAutoFocus={(e) => e.preventDefault()}
       >
         <SheetHeader className="px-0">
           <SheetTitle className="text-2xl font-bold ">Your Cart</SheetTitle>
         </SheetHeader>
 
-        {!hasHydrated && (
-          <div className="flex items-center justify-center h-full">
-            <Spinner />
-          </div>
-        )}
-
-        {hasHydrated && items.length === 0 && (
+        {items.length === 0 && (
           <div className="flex flex-col items-center justify-center h-full text-center">
             <ShoppingCart className="w-16 h-16 text-muted-foreground mb-4" />
             <div>
@@ -66,7 +68,7 @@ export default function CartDrawer() {
           </div>
         )}
 
-        {hasHydrated && items.length > 0 && (
+        {items.length > 0 && (
           <>
             {/* Cart Items */}
             <div className="flex-1 overflow-y-auto pt-8 border-t border-border scrollbar-hide">
@@ -98,8 +100,9 @@ export default function CartDrawer() {
                     className="w-full py-6 mt-4 text-base"
                     size="lg"
                     asChild
+                    onClick={() => setDrawerOpen(false)}
                   >
-                    <Link href="/checkout">
+                    <Link href="/checkouts">
                       <DollarSign className="scale-105" />
                       Checkout
                     </Link>
