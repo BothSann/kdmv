@@ -59,5 +59,7 @@ object-of-single-product.js
 complete-add-to-cart-flow.js
 signInWithPasswordResponse.js
 text-2.md
+checkout-flow.md
+CLAUDE.md
 
 temp/
