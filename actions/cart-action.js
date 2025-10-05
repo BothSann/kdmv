@@ -170,3 +170,38 @@ export async function updateCartItemQuantityAction(
     return { error: "Failed to update cart item quantity" };
   }
 }
+
+export async function getUserCartAction(userId) {
+  const supabase = await createSupabaseServerClient();
+
+  const { data: cartItems, error: cartItemsError } = await supabase
+    .from("shopping_cart")
+    .select(
+      `
+      *,
+      product_variants(
+        id,
+        sku,
+        quantity,
+        colors(id, name, slug, hex_code),
+        sizes(id, name, slug, display_order),
+        product:products(
+          id,
+          name,
+          base_price,
+          discount_percentage,
+          banner_image_url
+        )
+      )
+    `
+    )
+    .eq("customer_id", userId)
+    .order("added_at", { ascending: false });
+
+  if (cartItemsError) {
+    console.error("Get user cart error:", cartItemsError);
+    return { error: "Failed to fetch cart" };
+  }
+
+  return { success: true, cartItems };
+}
