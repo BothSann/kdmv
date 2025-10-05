@@ -195,3 +195,7 @@ export async function verifyAndUpdateAdminPasswordAction(formData) {
     };
   }
 }
+
+export async function getUserProfileAction(userId) {
+  return await getUserProfile(userId);
+}

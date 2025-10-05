@@ -63,7 +63,7 @@ export default function HeroCarousel() {
                 src={slide.image}
                 alt={slide.title}
                 fill
-                className="object-cover object-top "
+                className="object-cover object-top"
                 priority={slide.id === "1"}
               />
               <div className="absolute inset-0 bg-foreground/50 dark:bg-background/50 flex flex-col items-center justify-center text-background dark:text-foreground px-4 font-poppins text-center">
