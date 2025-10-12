@@ -34,7 +34,7 @@ export default function CartDrawer() {
   }
 
   return (
-    <Sheet open={isDrawerOpen} onOpenChange={setDrawerOpen}>
+    <Sheet open={isDrawerOpen} onOpenChange={setDrawerOpen} modal={false}>
       <SheetTrigger asChild>
         <Button variant="ghost" className="relative">
           <ShoppingCart className="scale-125" />

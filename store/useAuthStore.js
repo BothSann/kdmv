@@ -40,7 +40,6 @@ const useAuthStore = create((set, get) => ({
       // This handles logout in other browsers/tabs
       console.log("No authenticated user found, clearing auth and cart");
       get().clearAuth();
-      useCartStore.getState().clearCart();
     }
 
     set({ isLoading: false });
@@ -79,7 +78,6 @@ const useAuthStore = create((set, get) => ({
         case "SIGNED_OUT":
           console.log("SIGNED_OUT EVENT OCCURRED");
           get().clearAuth();
-          useCartStore.getState().clearCart();
           break;
 
         default:
@@ -161,7 +159,6 @@ const useAuthStore = create((set, get) => ({
 
       // 3. Clear local state (already done by SIGNED_OUT event listener, but be explicit)
       get().clearAuth();
-      useCartStore.getState().clearCart();
 
       return { success: true, message: "Logged out successfully!" };
     } catch (err) {
