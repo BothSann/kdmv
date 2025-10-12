@@ -9,7 +9,7 @@ export default function ThemeSelector() {
   const { theme, setTheme } = useTheme();
 
   return (
-    <div className="mt-8 space-y-6">
+    <div className="mt-6 space-y-6">
       <div className="space-y-1">
         <h2 className="text-lg font-medium">Theme</h2>
         <p className="text-sm text-muted-foreground">

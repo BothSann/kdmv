@@ -10,19 +10,18 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-
 import useAuthStore from "@/store/useAuthStore";
-
 import { useRef, useState, useEffect } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { toast } from "sonner";
-import { updateCurrentAdminProfileAction } from "@/actions/user-action";
-import { Trash, User } from "lucide-react";
+import { updateCurrentCustomerProfileAction } from "@/actions/user-action";
 import { sanitizeName } from "@/lib/utils";
+import Image from "next/image";
+import { User, Trash } from "lucide-react";
+import Spinner from "../Spinner";
 
-export default function AdminUpdateProfileForm() {
-  const { profile, setProfile } = useAuthStore();
+export default function CustomerUpdateProfileForm() {
+  const { profile, setProfile, isLoading } = useAuthStore();
 
   // ✅ FIX 1: Initialize with empty strings (controlled from start)
   const [first_name, setFirst_name] = useState("");
@@ -60,7 +59,7 @@ export default function AdminUpdateProfileForm() {
     setIsPending(true);
 
     const formData = new FormData(event.target);
-    const updateAdminProfileData = {
+    const updateCustomerProfileData = {
       first_name: formData.get("first_name"),
       last_name: formData.get("last_name"),
       gender: formData.get("gender"),
@@ -73,7 +72,7 @@ export default function AdminUpdateProfileForm() {
     const toastId = toast.loading("Updating profile...");
     try {
       const { success, error, message, updatedProfile } =
-        await updateCurrentAdminProfileAction(updateAdminProfileData);
+        await updateCurrentCustomerProfileAction(updateCustomerProfileData);
 
       if (error) {
         toast.error(error, { id: toastId });
@@ -124,6 +123,15 @@ export default function AdminUpdateProfileForm() {
   const triggerFileInput = () => {
     fileInputRef.current?.click();
   };
+
+  if (isLoading) {
+    return (
+      <Spinner
+        className="min-h-[calc(100vh-16rem)]"
+        message="Loading profile..."
+      />
+    );
+  }
 
   return (
     <form onSubmit={handleSubmit} className="w-3/4 mt-10">

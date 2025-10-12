@@ -199,3 +199,5 @@ export async function verifyAndUpdateAdminPasswordAction(formData) {
 export async function getUserProfileAction(userId) {
   return await getUserProfile(userId);
 }
+
+export async function updateCurrentCustomerProfileAction(formData) {}
