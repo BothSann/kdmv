@@ -1,10 +1,16 @@
 import Image from "next/image";
+
 import { Badge } from "./ui/badge";
+
 import { formatCurrency } from "@/lib/utils";
 
 export default function CheckoutItem({ item }) {
   const variant = item.variant;
   const product = variant.product;
+
+  const hasDiscount = product.discount_percentage > 0;
+  const discountPercentage = product.discount_percentage;
+  const discountedPrice = product.base_price * (1 - discountPercentage / 100);
 
   return (
     <div className="flex gap-8 pt-4">
@@ -41,7 +47,22 @@ export default function CheckoutItem({ item }) {
           </div>
 
           <span className="self-start">
-            {formatCurrency(product.base_price * item.quantity)}
+            {hasDiscount ? (
+              <div className="flex flex-col items-end">
+                <span className="text-lg font-jost">
+                  {formatCurrency(discountedPrice * item.quantity)}
+                </span>
+                <span className="text-sm text-muted-foreground line-through">
+                  {formatCurrency(product.base_price * item.quantity)}
+                </span>
+              </div>
+            ) : (
+              <span className="text-lg font-jost">
+                {formatCurrency(
+                  item.variant.product.base_price * item.quantity
+                )}
+              </span>
+            )}
           </span>
         </div>
       </div>

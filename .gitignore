@@ -61,5 +61,10 @@ signInWithPasswordResponse.js
 text-2.md
 checkout-flow.md
 CLAUDE.md
+check-transaction-by-md5.md
+generate-khqr-clientside-sdk.md
+how-khqr-works.md
+how-to-use-khqr-sdk.md
+supabase-functions.sql
 
 temp/

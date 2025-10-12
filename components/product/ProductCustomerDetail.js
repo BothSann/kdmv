@@ -3,7 +3,7 @@
 import { Label } from "../ui/label";
 import { useMemo, useState, useEffect, useCallback } from "react";
 import { Button } from "../ui/button";
-import { ShoppingBag, ShoppingCart } from "lucide-react";
+import { MoveRight, ShoppingBag, ShoppingCart } from "lucide-react";
 import Link from "next/link";
 import { FaFacebookF, FaInstagram } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
@@ -24,6 +24,9 @@ export default function ProductCustomerDetail({ product }) {
 
   const addToCart = useCartStore((state) => state.addToCart);
   const items = useCartStore((state) => state.items);
+
+  const hasDiscount = product.discount_percentage > 0;
+  const discountedPrice = product.discounted_price;
 
   // Get the selected variant object
   const selectedVariant = useMemo(() => {
@@ -146,14 +149,26 @@ export default function ProductCustomerDetail({ product }) {
 
   return (
     <div>
-      <div className="space-y-4">
+      <div className="space-y-4.5">
         <h1 className="text-5xl font-bold font-poppins leading-14">
           {product.name}
         </h1>
         <div className="flex items-center gap-4">
-          <span className="text-2xl text-foreground/80 tracking-wide">
-            {formatCurrency(product.base_price)}
-          </span>
+          {hasDiscount > 0 && (
+            <span className="text-2xl text-foreground/80 tracking-wide flex items-center gap-2">
+              <span className="line-through">
+                {formatCurrency(product.base_price)}
+              </span>
+              <MoveRight />
+              <span>{formatCurrency(discountedPrice)}</span>
+            </span>
+          )}
+
+          {!hasDiscount && (
+            <span className="text-2xl text-foreground/80 tracking-wide flex items-center gap-2">
+              <span>{formatCurrency(product.base_price)}</span>
+            </span>
+          )}
 
           {selectedVariant?.quantity <= 0 && (
             <Badge variant="destructive">Sold Out</Badge>
