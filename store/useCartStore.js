@@ -26,11 +26,21 @@ const useCartStore = create(
       },
 
       totalPrice: () => {
-        return get().items.reduce(
-          (total, item) =>
-            total + item.variant.product.base_price * item.quantity,
-          0
-        );
+        return get().items.reduce((total, item) => {
+          const product = item.variant.product;
+          const basePrice = product.base_price;
+          const discountPercentage = product.discount_percentage; // Can be 0 or null if no discount
+          const quantity = item.quantity;
+
+          // Calculate the price per unit considering the discount
+          let pricePerUnit = basePrice;
+          if (discountPercentage && discountPercentage > 0) {
+            pricePerUnit = basePrice * (1 - discountPercentage / 100);
+          }
+
+          // Add the cost of this item type (price per unit * quantity) to the total
+          return total + pricePerUnit * quantity;
+        }, 0);
       },
 
       // Actions

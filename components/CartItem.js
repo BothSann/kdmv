@@ -15,6 +15,10 @@ export default function CartItem({ item }) {
   const removeFromCart = useCartStore((state) => state.removeFromCart);
   const updateQuantity = useCartStore((state) => state.updateQuantity);
 
+  const hasDiscount = product.discount_percentage > 0;
+  const discountPercentage = product.discount_percentage;
+  const discountedPrice = product.base_price * (1 - discountPercentage / 100);
+
   // LOCAL STATE - allows temporary invalid values
   const [inputValue, setInputValue] = useState(item.quantity.toString());
 
@@ -92,7 +96,7 @@ export default function CartItem({ item }) {
   };
 
   return (
-    <div className="flex gap-4">
+    <div className="flex gap-4 relative">
       {/* Product Image */}
       <div className="relative w-24 h-24 flex-shrink-0">
         <Image
@@ -105,7 +109,12 @@ export default function CartItem({ item }) {
 
       {/* Product Info */}
       <div className="flex-1 space-y-2">
-        <h4 className="font-jost text-lg line-clamp-1">{product.name}</h4>
+        <h4 className="font-jost text-lg line-clamp-1">
+          {product.name}{" "}
+          <span className="text-sm text-muted-foreground">
+            (&minus;{discountPercentage}%)
+          </span>
+        </h4>
 
         {/* Color and Size */}
         <div className="text-sm text-muted-foreground flex flex-col">
@@ -157,7 +166,21 @@ export default function CartItem({ item }) {
           </div>
 
           <span className="text-lg font-jost">
-            {formatCurrency(item.variant.product.base_price * item.quantity)}
+            {hasDiscount ? (
+              <div className="flex flex-col items-end">
+                <span className="text-sm text-muted-foreground line-through">
+                  {formatCurrency(product.base_price * item.quantity)}
+                </span>
+
+                <span>{formatCurrency(discountedPrice * item.quantity)}</span>
+              </div>
+            ) : (
+              <span className="text-lg font-jost">
+                {formatCurrency(
+                  item.variant.product.base_price * item.quantity
+                )}
+              </span>
+            )}
           </span>
         </div>
       </div>
@@ -165,7 +188,7 @@ export default function CartItem({ item }) {
       <Button
         variant="ghost"
         size="sm"
-        className="self-start"
+        className="absolute -right-2 top-0"
         onClick={() => removeFromCart(item.id)}
       >
         <Trash />
