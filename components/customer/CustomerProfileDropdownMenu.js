@@ -18,7 +18,7 @@ import {
 import useAuthorization from "@/hooks/useAuthorization";
 
 export default function CustomerProfileDropdownMenu() {
-  const { profile } = useAuthStore();
+  const { profile, isLoading } = useAuthStore();
   const { isAuthenticated } = useAuthorization();
   const fullName = `${profile?.first_name} ${profile?.last_name}`;
 
@@ -39,31 +39,40 @@ export default function CustomerProfileDropdownMenu() {
       <DropdownMenuContent className={cn("w-[16rem]")}>
         {isAuthenticated() ? (
           <>
-            <DropdownMenuLabel className={cn("flex items-center gap-2")}>
-              <div className="relative w-8 h-8 aspect-square">
-                {profile?.avatar_url ? (
-                  <Image
-                    src={profile?.avatar_url}
-                    alt="Admin Avatar"
-                    fill
-                    quality={80}
-                    sizes="100vw"
-                    className="object-cover object-center rounded-full"
-                  />
-                ) : (
-                  <div className="w-full h-full bg-secondary rounded-full flex items-center justify-center">
-                    <User className="w-2/3 h-2/3 text-ring" />
-                  </div>
-                )}
-              </div>
+            {!isLoading ? (
+              <DropdownMenuLabel className={cn("flex items-center gap-2")}>
+                <div className="relative w-8 h-8 aspect-square">
+                  {profile?.avatar_url ? (
+                    <Image
+                      src={profile?.avatar_url}
+                      alt="Admin Avatar"
+                      fill
+                      quality={80}
+                      sizes="100vw"
+                      className="object-cover object-center rounded-full"
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-secondary rounded-full flex items-center justify-center">
+                      <User className="w-2/3 h-2/3 text-ring" />
+                    </div>
+                  )}
+                </div>
 
-              <div>
-                <p className="font-medium">{fullName}</p>
-                <p className="text-xs font-normal text-muted-foreground">
-                  {profile?.email}
-                </p>
-              </div>
-            </DropdownMenuLabel>
+                <div>
+                  <p className="font-medium">{fullName}</p>
+                  <p className="text-xs font-normal text-muted-foreground">
+                    {profile?.email}
+                  </p>
+                </div>
+              </DropdownMenuLabel>
+            ) : (
+              <DropdownMenuLabel className={cn("flex items-center gap-2")}>
+                <div className="flex items-center justify-center gap-2">
+                  <User size={20} />
+                  <span>Loading...</span>
+                </div>
+              </DropdownMenuLabel>
+            )}
             <DropdownMenuSeparator />
             {navItems.map((item) => (
               <Link href={item.href} key={item.href}>
