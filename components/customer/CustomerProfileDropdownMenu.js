@@ -15,9 +15,11 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
+import useAuthorization from "@/hooks/useAuthorization";
 
 export default function CustomerProfileDropdownMenu() {
-  const { profile, isLoading } = useAuthStore();
+  const { profile } = useAuthStore();
+  const { isAuthenticated } = useAuthorization();
   const fullName = `${profile?.first_name} ${profile?.last_name}`;
 
   const navItems = [
@@ -27,10 +29,6 @@ export default function CustomerProfileDropdownMenu() {
     { href: "/account/settings", icon: Settings, label: "Settings" },
   ];
 
-  if (isLoading) {
-    return null;
-  }
-
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
@@ -39,45 +37,58 @@ export default function CustomerProfileDropdownMenu() {
         <User />
       </DropdownMenuTrigger>
       <DropdownMenuContent className={cn("w-[16rem]")}>
-        <DropdownMenuLabel className={cn("flex items-center gap-2")}>
-          <div className="relative w-8 h-8 aspect-square">
-            {profile?.avatar_url ? (
-              <Image
-                src={profile?.avatar_url}
-                alt="Admin Avatar"
-                fill
-                quality={80}
-                sizes="100vw"
-                className="object-cover object-center rounded-full"
-              />
-            ) : (
-              <div className="w-full h-full bg-secondary rounded-full flex items-center justify-center">
-                <User className="w-2/3 h-2/3 text-ring" />
+        {isAuthenticated() ? (
+          <>
+            <DropdownMenuLabel className={cn("flex items-center gap-2")}>
+              <div className="relative w-8 h-8 aspect-square">
+                {profile?.avatar_url ? (
+                  <Image
+                    src={profile?.avatar_url}
+                    alt="Admin Avatar"
+                    fill
+                    quality={80}
+                    sizes="100vw"
+                    className="object-cover object-center rounded-full"
+                  />
+                ) : (
+                  <div className="w-full h-full bg-secondary rounded-full flex items-center justify-center">
+                    <User className="w-2/3 h-2/3 text-ring" />
+                  </div>
+                )}
               </div>
-            )}
-          </div>
 
-          <div>
-            <p className="font-medium">{fullName}</p>
-            <p className="text-xs font-normal text-muted-foreground">
-              {profile?.email}
-            </p>
-          </div>
-        </DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        {navItems.map((item) => (
-          <Link href={item.href} key={item.href}>
-            <DropdownMenuItem className={cn("py-2.5")}>
-              <item.icon size={20} />
-              {item.label}
+              <div>
+                <p className="font-medium">{fullName}</p>
+                <p className="text-xs font-normal text-muted-foreground">
+                  {profile?.email}
+                </p>
+              </div>
+            </DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            {navItems.map((item) => (
+              <Link href={item.href} key={item.href}>
+                <DropdownMenuItem className={cn("py-2.5")}>
+                  <item.icon size={20} />
+                  {item.label}
+                </DropdownMenuItem>
+              </Link>
+            ))}
+            <DropdownMenuSeparator />
+
+            <DropdownMenuItem>
+              <LogoutButton />
             </DropdownMenuItem>
-          </Link>
-        ))}
-        <DropdownMenuSeparator />
-
-        <DropdownMenuItem>
-          <LogoutButton />
-        </DropdownMenuItem>
+          </>
+        ) : (
+          <>
+            <Link href="/auth/login">
+              <DropdownMenuItem>Login</DropdownMenuItem>
+            </Link>
+            <Link href="/auth/register">
+              <DropdownMenuItem>Register</DropdownMenuItem>
+            </Link>
+          </>
+        )}
       </DropdownMenuContent>
     </DropdownMenu>
   );

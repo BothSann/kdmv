@@ -19,6 +19,7 @@ import { sanitizeName } from "@/lib/utils";
 import Image from "next/image";
 import { User, Trash } from "lucide-react";
 import Spinner from "../Spinner";
+import NotFound from "../NotFound";
 
 export default function CustomerUpdateProfileForm() {
   const { profile, setProfile, isLoading } = useAuthStore();
@@ -131,6 +132,10 @@ export default function CustomerUpdateProfileForm() {
         message="Loading profile..."
       />
     );
+  }
+
+  if (!profile) {
+    return <NotFound href="/" title="Profile" />;
   }
 
   return (
