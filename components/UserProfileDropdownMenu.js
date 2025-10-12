@@ -6,13 +6,13 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { User } from "lucide-react";
 import Link from "next/link";
-import useAuthorization from "@/hooks/useAuthorization";
 import LogoutButton from "@/components/LogoutButton";
 import { cn } from "@/lib/utils";
 import { Button } from "./ui/button";
+import useAuthStore from "@/store/useAuthStore";
 
 export default function UserProfileDropdownMenu() {
-  const { profile } = useAuthorization();
+  const { profile } = useAuthStore();
   const fullName = `${profile?.first_name} ${profile?.last_name}`;
 
   return (
