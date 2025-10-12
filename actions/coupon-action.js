@@ -9,6 +9,7 @@ import { getCurrentUser, getUserProfile } from "@/lib/api/server/users";
 import {
   isCouponCodeTaken,
   isCouponCodeTakenByOther,
+  validateCoupon,
 } from "@/lib/api/server/coupons";
 
 export async function createNewCouponAction(formData) {
@@ -246,6 +247,30 @@ export async function bulkDeleteCouponsAction(couponIds) {
     console.error("Unexpected error:", err);
     return {
       error: "An unexpected error occurred during bulk coupon deletion",
+    };
+  }
+}
+
+export async function applyCouponAction(couponCode, customerId) {
+  try {
+    const result = await validateCoupon(couponCode, customerId);
+
+    if (!result.valid || result.error) {
+      console.error("Coupon usage error:", result.error);
+      return { valid: false, error: result.error };
+    }
+
+    return {
+      valid: true,
+      coupon: result.coupon,
+      remainingUses: result.remainingUses,
+      customerRemainingUses: result.customerRemainingUses,
+    };
+  } catch (err) {
+    console.error("Unexpected error:", err);
+    return {
+      valid: false,
+      error: "An unexpected error occurred during coupon usage",
     };
   }
 }
