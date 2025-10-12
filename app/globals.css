@@ -56,6 +56,7 @@
   --font-jost: var(--font-jost);
   --font-poppins: var(--font-poppins);
   --font-source-sans-3: var(--font-source-sans-3);
+  --font-nunito-sans: var(--font-nunito-sans);
 }
 
 :root {
@@ -104,6 +105,7 @@
   --font-jost: var(--font-jost);
   --font-poppins: var(--font-poppins);
   --font-source-sans-3: var(--font-source-sans-3);
+  --font-nunito-sans: var(--font-nunito-sans);
 }
 
 .dark {
@@ -189,6 +191,65 @@
   animation: animloader 1s linear infinite alternate;
 }
 
+.mini-loader {
+  width: 18px;
+  height: 18px;
+  border: 2.5px solid oklch(55.1% 0.027 264.364);
+  border-bottom-color: oklch(68.5% 0.169 237.323);
+  border-radius: 50%;
+  display: inline-block;
+  box-sizing: border-box;
+  animation: rotation 1s linear infinite;
+}
+
+.loader-v2 {
+  color: #fff;
+  position: relative;
+  font-size: 3px;
+  background: #fff;
+  animation: escaleY 1s infinite ease-in-out;
+  width: 1em;
+  height: 4em;
+  animation-delay: -0.16s;
+}
+.loader-v2:before,
+.loader-v2:after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 2em;
+  background: #fff;
+  width: 1em;
+  height: 4em;
+  animation: escaleY 1s infinite ease-in-out;
+}
+.loader-v2:before {
+  left: -2em;
+  animation-delay: -0.32s;
+}
+
+@keyframes escaleY {
+  0%,
+  80%,
+  100% {
+    box-shadow: 0 0;
+    height: 4em;
+  }
+  40% {
+    box-shadow: 0 -2em;
+    height: 5em;
+  }
+}
+
+@keyframes rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
 .custom-bullet {
   width: 12px;
   height: 12px;
@@ -242,4 +303,16 @@
 .\[\&_svg\:not\(\[class\*\=\'size-\'\]\)\]\:size-4 svg:not([class*="size-"]) {
   width: calc(var(--spacing) * 5);
   height: calc(var(--spacing) * 5);
+}
+
+@font-face {
+  font-family: "RegularFont";
+  src: url("/fonts/regular.ttf") format("truetype");
+  font-display: swap; /* Optional: improve loading */
+}
+
+@font-face {
+  font-family: "BoldFont";
+  src: url("/fonts/bold.ttf") format("truetype");
+  font-display: swap; /* Optional: improve loading */
 }
