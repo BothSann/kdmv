@@ -295,6 +295,7 @@ export async function updateProductAction(formData) {
     }
 
     // CACHE INVALIDATION: Clear cached pages to show updated data
+    revalidatePath("/");
     revalidatePath("/admin/products");
     revalidatePath(`/admin/products/${productId}`);
     revalidatePath(`/admin/products/${productId}/edit`);
