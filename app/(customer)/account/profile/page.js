@@ -1,4 +1,4 @@
-import CustomerUpdateProfileForm from "@/components/customer/CustomerUpdateProfileForm";
+import CustomerUpdateProfileForm from "@/components/UserUpdateProfileForm";
 
 export default function ProfilePage() {
   return (

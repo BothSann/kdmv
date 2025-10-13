@@ -8,8 +8,9 @@ import { isValidCambodiaPhoneNumber, sanitizeName } from "@/lib/utils";
 
 import { getCurrentUser, getUserProfile } from "@/lib/api/server/users";
 
-export async function updateCurrentAdminProfileAction(formData) {
+export async function updateCurrentUserProfileAction(formData) {
   try {
+    const supabase = await createSupabaseServerClient();
     // 1. EARLY VALIDATIONS FIRST (fail fast)
     // Validate required fields and formats before any database operations
     const cleanFirstName = sanitizeName(formData.first_name);
@@ -38,10 +39,12 @@ export async function updateCurrentAdminProfileAction(formData) {
       return { error: profileError.message };
     }
 
-    if (profile?.role !== "admin") {
-      console.error("User is not admin");
+    console.log("Profile:", profile);
+
+    if (!["admin", "customer"].includes(profile.role)) {
+      console.error("User is not admin or customer");
       return {
-        error: "Unauthorized - Please login as admin to update profile",
+        error: "Unauthorized - Please login to update profile",
       };
     }
 
@@ -97,21 +100,20 @@ export async function updateCurrentAdminProfileAction(formData) {
     }
 
     // 7. DATABASE UPDATES - Update profile
-    const { data: updatedProfile, error: updateProfileError } =
-      await supabaseAdmin
-        .from("profiles")
-        .update({
-          first_name: cleanFirstName,
-          last_name: cleanLastName,
-          gender: formData.gender,
-          telephone: formData.telephone,
-          city_province: formData.city_province,
-          avatar_url: avatar_url,
-          updated_at: new Date().toISOString(),
-        })
-        .eq("id", user.id)
-        .select()
-        .single();
+    const { data: updatedProfile, error: updateProfileError } = await supabase
+      .from("profiles")
+      .update({
+        first_name: cleanFirstName,
+        last_name: cleanLastName,
+        gender: formData.gender,
+        telephone: formData.telephone,
+        city_province: formData.city_province,
+        avatar_url: avatar_url,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", user.id)
+      .select()
+      .single();
 
     if (updateProfileError) {
       console.error("Update profile error:", updateProfileError);
@@ -119,6 +121,7 @@ export async function updateCurrentAdminProfileAction(formData) {
     }
 
     // 8. SUCCESS OPERATIONS
+    revalidatePath("/account/profile");
     revalidatePath("/admin/account/profile");
 
     return {
@@ -199,5 +202,3 @@ export async function verifyAndUpdateAdminPasswordAction(formData) {
 export async function getUserProfileAction(userId) {
   return await getUserProfile(userId);
 }
-
-export async function updateCurrentCustomerProfileAction(formData) {}
