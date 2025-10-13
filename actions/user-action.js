@@ -39,8 +39,6 @@ export async function updateCurrentUserProfileAction(formData) {
       return { error: profileError.message };
     }
 
-    console.log("Profile:", profile);
-
     if (!["admin", "customer"].includes(profile.role)) {
       console.error("User is not admin or customer");
       return {
