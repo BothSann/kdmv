@@ -29,10 +29,10 @@ export default function LogoutButton() {
 
   return (
     <Button
-      className="flex items-center w-full cursor-pointer py-5"
+      className="flex items-center w-full cursor-pointer lg:py-5 py-3 text-xs"
       onClick={handleLogout}
     >
-      <LogOut className="text-background" />
+      <LogOut className="text-background scale-80" />
       Logout
     </Button>
   );

@@ -36,7 +36,7 @@ export default function CustomerProfileDropdownMenu() {
       >
         <User />
       </DropdownMenuTrigger>
-      <DropdownMenuContent className={cn("w-[18rem]")}>
+      <DropdownMenuContent className={cn("w-full lg:w-[18rem]")}>
         {isAuthenticated() ? (
           <>
             {!isLoading ? (
