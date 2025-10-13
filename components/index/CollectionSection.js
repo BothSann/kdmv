@@ -13,14 +13,14 @@ export default function CollectionSection({ collection, products, index }) {
       }`}
     >
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl lg:text-[2.7rem] font-poppins font-bold">
+        <h2 className="text-4xl lg:text-[2.7rem] font-poppins font-bold">
           {collection.name}
         </h2>
 
-        <div className="flex justify-center group">
+        <div className="flex justify-center group self-start">
           <Button
             variant={"link"}
-            className="text-sm lg:text-base size-sm lg:size-default "
+            className="hidden lg:inline-flex text-base size-sm lg:size-default"
           >
             <Link href="/" className="flex items-center gap-1.5">
               View all
