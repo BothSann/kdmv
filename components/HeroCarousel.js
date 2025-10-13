@@ -38,7 +38,7 @@ const slides = [
 
 export default function HeroCarousel() {
   return (
-    <div className="w-full aspect-[16/9] md:aspect-[26/9] overflow-hidden relative">
+    <div className="w-full aspect-[16/14] md:aspect-[26/10] overflow-hidden relative">
       <Swiper
         modules={[Autoplay, Pagination, Keyboard]}
         grabCursor={true}
@@ -66,25 +66,27 @@ export default function HeroCarousel() {
                 className="object-cover object-top"
                 priority={slide.id === "1"}
               />
-              <div className="absolute inset-0 bg-foreground/50 dark:bg-background/50 flex flex-col items-center justify-center text-background dark:text-foreground px-4 font-poppins text-center">
+              <div className="absolute inset-0 bg-foreground/50 dark:bg-background/50 flex flex-col items-center justify-center text-background dark:text-foreground px-4 font-poppins text-center space-y-1.5">
                 {slide.title && (
-                  <h2 className="text-6xl font-bold mb-3">{slide.title}</h2>
+                  <h2 className="text-3xl lg:text-6xl font-bold">
+                    {slide.title}
+                  </h2>
                 )}
 
                 {slide.subtitle && (
-                  <p className="mb-4 uppercase text-lg tracking-widest">
+                  <p className="uppercase text-sm lg:text-lg tracking-widest">
                     {slide.subtitle}
                   </p>
                 )}
 
                 {slide.link && (
                   <Button
-                    className="border-border border bg-transparent hover:bg-primary/20 dark:text-foreground dark:border-foreground dark:hover:bg-foreground/20 group font-semibold"
+                    className="border-border border bg-transparent hover:bg-primary/20 dark:text-foreground dark:border-foreground dark:hover:bg-foreground/20 group font-semibold mt-1.5 size-sm lg:size-default"
                     asChild
                   >
                     <Link href={slide.link}>
                       {slide.linkText}
-                      <MoveRight className=" transition-all duration-300 ease-in-out group-hover:opacity-100  group-hover:translate-x-0.5 group-hover:scale-110" />
+                      <MoveRight className="transition-all duration-300 ease-in-out group-hover:opacity-100 group-hover:translate-x-0.5 group-hover:scale-110" />
                     </Link>
                   </Button>
                 )}
