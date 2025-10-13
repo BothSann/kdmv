@@ -13,7 +13,7 @@ export default function CollectionSection({ collection, products, index }) {
       }`}
     >
       <div className="flex items-center justify-between">
-        <h2 className="text-3xl lg:text-[2.7rem] font-poppins font-bold">
+        <h2 className="text-4xl lg:text-[2.7rem] font-poppins font-bold">
           {collection.name}
         </h2>
 
