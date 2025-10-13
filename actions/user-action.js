@@ -126,13 +126,13 @@ export async function updateCurrentUserProfileAction(formData) {
 
     return {
       success: true,
-      message: "Admin profile updated successfully",
+      message: "Profile updated successfully",
       updatedProfile,
     };
   } catch (err) {
     console.error("Unexpected error:", err);
     return {
-      error: "An unexpected error occurred during admin profile update",
+      error: "An unexpected error occurred during profile update",
     };
   }
 }
