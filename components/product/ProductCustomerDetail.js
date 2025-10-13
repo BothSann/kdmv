@@ -13,6 +13,7 @@ import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import useCartStore from "@/store/useCartStore";
 import { toast } from "sonner";
 import { Badge } from "../ui/badge";
+import MiniSpinner from "../MiniSpinner";
 
 export default function ProductCustomerDetail({ product }) {
   const searchParams = useSearchParams();
@@ -21,6 +22,7 @@ export default function ProductCustomerDetail({ product }) {
 
   const [selectedVariantId, setSelectedVariantId] = useState(null);
   const [isInitialized, setIsInitialized] = useState(false);
+  const [isAddingToCart, setIsAddingToCart] = useState(false);
 
   const addToCart = useCartStore((state) => state.addToCart);
   const items = useCartStore((state) => state.items);
@@ -108,6 +110,7 @@ export default function ProductCustomerDetail({ product }) {
   }, [selectedVariantId, isInitialized, updateURL]);
 
   const handleAddToBag = async () => {
+    setIsAddingToCart(true);
     if (!selectedVariant) {
       toast.error("Please select a color and size");
       return;
@@ -145,6 +148,7 @@ export default function ProductCustomerDetail({ product }) {
     };
 
     await addToCart(variantWithProduct, 1);
+    setIsAddingToCart(false);
   };
 
   return (
@@ -227,7 +231,8 @@ export default function ProductCustomerDetail({ product }) {
           disabled={
             !selectedVariant ||
             selectedVariant.quantity <= 0 ||
-            remainingStock <= 0 // ← Disable if no remaining stock
+            remainingStock <= 0 ||
+            isAddingToCart
           }
           onClick={handleAddToBag}
         >

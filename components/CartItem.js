@@ -6,6 +6,7 @@ import { Input } from "./ui/input";
 import useCartStore from "@/store/useCartStore";
 import { toast } from "sonner";
 import { useEffect, useState } from "react";
+import { useDebouncedCallback } from "use-debounce";
 
 export default function CartItem({ item }) {
   const variant = item.variant;
@@ -21,25 +22,44 @@ export default function CartItem({ item }) {
 
   // LOCAL STATE - allows temporary invalid values
   const [inputValue, setInputValue] = useState(item.quantity.toString());
+  const [isUpdating, setIsUpdating] = useState(false);
 
   // Sync local state when store updates (e.g., from server)
   useEffect(() => {
     setInputValue(item.quantity.toString());
   }, [item.quantity]);
 
+  const debouncedUpdate = useDebouncedCallback((itemId, newQuantity) => {
+    setIsUpdating(true);
+    updateQuantity(itemId, newQuantity);
+    setIsUpdating(false);
+  }, 500);
+
   const canIncrease = item.quantity < stockAvailable;
   const isLowStock = stockAvailable <= 5 && stockAvailable > 0;
   const isOutOfStock = stockAvailable === 0;
 
   const handleIncrease = () => {
-    updateQuantity(item.id, item.quantity + 1);
-  };
-  const handleDecrease = () => {
-    if (item.quantity > 1) {
-      updateQuantity(item.id, item.quantity - 1);
+    if (item.quantity < stockAvailable) {
+      const newQuantity = item.quantity + 1;
+      setInputValue(newQuantity.toString());
+      setIsUpdating(true);
+
+      // Cancel previous debounced call, schedule new one
+      debouncedUpdate(item.id, newQuantity);
     }
   };
 
+  const handleDecrease = () => {
+    if (item.quantity > 1) {
+      const newQuantity = item.quantity - 1;
+      setInputValue(newQuantity.toString());
+      setIsUpdating(true);
+
+      // Cancel previous debounced call, schedule new one
+      debouncedUpdate(item.id, newQuantity);
+    }
+  };
   const handleInputChange = (e) => {
     const rawValue = e.target.value;
 
@@ -141,7 +161,7 @@ export default function CartItem({ item }) {
               variant="outline"
               size="sm"
               onClick={handleDecrease}
-              disabled={item.quantity <= 1 || isOutOfStock}
+              disabled={item.quantity <= 1 || isOutOfStock || isUpdating}
             >
               <Minus className="scale-80" />
             </Button>
@@ -159,7 +179,7 @@ export default function CartItem({ item }) {
               variant="outline"
               size="sm"
               onClick={handleIncrease}
-              disabled={isOutOfStock || !canIncrease}
+              disabled={isOutOfStock || !canIncrease || isUpdating}
             >
               <Plus className="scale-80 " />
             </Button>

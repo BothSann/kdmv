@@ -48,6 +48,7 @@ const useCartStore = create(
 
       // Add to cart with optimistic update
       addToCart: async (variant, quantity = 1) => {
+        console.log("Adding item to cart:", variant, quantity);
         const userId = useAuthStore.getState().user?.id;
         const isAuthenticated =
           useAuthStore.getState().user?.role === "authenticated";
@@ -170,6 +171,7 @@ const useCartStore = create(
 
       // Remove from cart
       removeFromCart: async (cartItemId) => {
+        console.log("Removing item from cart:", cartItemId);
         // 1. Get user info
         const userId = useAuthStore.getState().user?.id;
         const isAuthenticated =
@@ -184,7 +186,7 @@ const useCartStore = create(
         // 3. Save current state (for rollback if error)
         const previousItems = get().items;
 
-        // 4. OPTIMISTIC UPDATE - Remove immediately from U
+        // 4. OPTIMISTIC UPDATE - Remove immediately from UI
         set((state) => ({
           items: state.items.filter((item) => item.id !== cartItemId),
         }));

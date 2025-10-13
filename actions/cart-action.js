@@ -5,7 +5,6 @@ import {
   getCartItem,
   updateCartItemQuantity,
   removeFromCart,
-  getUserCart,
 } from "@/lib/api/server/carts";
 import { createSupabaseServerClient } from "@/utils/supabase/server";
 
@@ -171,7 +170,6 @@ export async function updateCartItemQuantityAction(
 }
 
 export async function getUserCartAction(userId) {
-  console.log("Fetching cart from server");
   const supabase = await createSupabaseServerClient();
 
   const { data: cartItems, error: cartItemsError } = await supabase

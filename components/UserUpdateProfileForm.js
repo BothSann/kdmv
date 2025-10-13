@@ -19,7 +19,6 @@ import { sanitizeName } from "@/lib/utils";
 import Image from "next/image";
 import { User, Trash } from "lucide-react";
 import Spinner from "./Spinner";
-import NotFound from "./NotFound";
 
 export default function UserUpdateProfileForm() {
   const { profile, setProfile } = useAuthStore();
