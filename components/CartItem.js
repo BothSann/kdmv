@@ -1,12 +1,13 @@
 import Image from "next/image";
 import { Button } from "./ui/button";
-import { Minus, Plus, Trash } from "lucide-react";
+import { Loader2, Minus, Plus, Trash } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 import { Input } from "./ui/input";
 import useCartStore from "@/store/useCartStore";
 import { toast } from "sonner";
 import { useEffect, useState } from "react";
 import { useDebouncedCallback } from "use-debounce";
+import MiniSpinner from "./MiniSpinner";
 
 export default function CartItem({ item }) {
   const variant = item.variant;
@@ -15,6 +16,7 @@ export default function CartItem({ item }) {
 
   const removeFromCart = useCartStore((state) => state.removeFromCart);
   const updateQuantity = useCartStore((state) => state.updateQuantity);
+  const isOperationPending = useCartStore((state) => state.isOperationPending);
 
   const hasDiscount = product.discount_percentage > 0;
   const discountPercentage = product.discount_percentage;
@@ -24,15 +26,21 @@ export default function CartItem({ item }) {
   const [inputValue, setInputValue] = useState(item.quantity.toString());
   const [isUpdating, setIsUpdating] = useState(false);
 
+  const isPending = isOperationPending(item.id);
+
   // Sync local state when store updates (e.g., from server)
   useEffect(() => {
     setInputValue(item.quantity.toString());
   }, [item.quantity]);
 
-  const debouncedUpdate = useDebouncedCallback((itemId, newQuantity) => {
+  const debouncedUpdate = useDebouncedCallback(async (itemId, newQuantity) => {
     setIsUpdating(true);
-    updateQuantity(itemId, newQuantity);
-    setIsUpdating(false);
+
+    try {
+      await updateQuantity(itemId, newQuantity);
+    } finally {
+      setIsUpdating(false);
+    }
   }, 500);
 
   const canIncrease = item.quantity < stockAvailable;
@@ -113,6 +121,11 @@ export default function CartItem({ item }) {
     if (value !== item.quantity) {
       updateQuantity(item.id, value);
     }
+  };
+
+  const handleRemove = async () => {
+    if (isPending) return; // Prevent double-click
+    await removeFromCart(item.id);
   };
 
   return (
@@ -209,9 +222,10 @@ export default function CartItem({ item }) {
         variant="ghost"
         size="sm"
         className="absolute -right-2 top-0"
-        onClick={() => removeFromCart(item.id)}
+        onClick={handleRemove}
+        disabled={isPending}
       >
-        <Trash />
+        {isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash />}
       </Button>
     </div>
   );

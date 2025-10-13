@@ -3,7 +3,7 @@
 import { Label } from "../ui/label";
 import { useMemo, useState, useEffect, useCallback } from "react";
 import { Button } from "../ui/button";
-import { MoveRight, ShoppingBag, ShoppingCart } from "lucide-react";
+import { Loader2, MoveRight, ShoppingBag, ShoppingCart } from "lucide-react";
 import Link from "next/link";
 import { FaFacebookF, FaInstagram } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
@@ -247,6 +247,7 @@ export default function ProductCustomerDetail({ product }) {
             selectedVariant.quantity > 0 &&
             remainingStock > 0 &&
             "Add to Cart"}
+          {isAddingToCart && <Loader2 className="animate-spin" />}
         </Button>
 
         {/* Shop more */}

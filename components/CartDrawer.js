@@ -9,13 +9,12 @@ import {
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 
-import { DollarSign, ShoppingCart } from "lucide-react";
+import { DollarSign, Loader2, ShoppingCart } from "lucide-react";
 import useCartStore from "@/store/useCartStore";
 import { Badge } from "./ui/badge";
 import CartItem from "./CartItem";
 import { formatCurrency } from "@/lib/utils";
 import Link from "next/link";
-import Spinner from "./Spinner";
 
 export default function CartDrawer() {
   const { items, itemCount, totalPrice, isDrawerOpen, setDrawerOpen } =
@@ -27,8 +26,8 @@ export default function CartDrawer() {
 
   if (!hasHydrated) {
     return (
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-        <Spinner />
+      <div className="flex items-center justify-center h-full">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
       </div>
     );
   }

@@ -19,6 +19,7 @@ const useCartStore = create(
       isLoading: false,
       isDrawerOpen: false,
       _hasHydrated: false, // Internal flag
+      pendingOperations: new Set(), // Track ongoing operations
 
       // Computed values
       itemCount: () => {
@@ -48,197 +49,108 @@ const useCartStore = create(
 
       // Add to cart with optimistic update
       addToCart: async (variant, quantity = 1) => {
-        console.log("Adding item to cart:", variant, quantity);
         const userId = useAuthStore.getState().user?.id;
-        const isAuthenticated =
-          useAuthStore.getState().user?.role === "authenticated";
-
-        if (!userId && !isAuthenticated) {
+        if (!userId) {
           toast.error("Please login to add items to cart");
-          return;
+          return { success: false };
         }
 
-        // Check if variant already exists in cart
-        const existingItem = get().items.find(
-          (item) => item.product_variant_id === variant.id
-        );
+        // Show loading state
+        const loadingToast = toast.loading("Adding to cart...");
 
-        if (existingItem) {
-          // Update quantity of existing item
-          set((state) => ({
-            items: state.items.map((item) =>
-              item.product_variant_id === variant.id
-                ? { ...item, quantity: item.quantity + quantity }
-                : item
-            ),
-          }));
-
-          toast.success("Updated quantity in your cart");
-        } else {
-          // Add new item
-          const optimisticItem = {
-            id: `temp-${Date.now()}`,
-            product_variant_id: variant.id,
-            quantity,
-            variant, // Full variant object with colors, sizes, product info
-          };
-
-          set((state) => ({
-            items: [...state.items, optimisticItem],
-            isDrawerOpen: true,
-          }));
-          toast.success("Item successfully added to your cart");
-        }
-
-        // Sync to database
         try {
           const result = await addToCartAction(userId, variant.id, quantity);
 
           if (result.error) {
-            // Rollback on error - revert the optimistic update
-            if (existingItem) {
-              set((state) => ({
-                items: state.items.map((item) =>
-                  item.product_variant_id === variant.id
-                    ? { ...item, quantity: existingItem.quantity }
-                    : item
-                ),
-              }));
-            } else {
-              set((state) => ({
-                // Remove temp item
-                items: state.items.filter(
-                  (item) => !item.id.startsWith("temp-")
-                ),
-              }));
-            }
-
-            // Enhanced error handling for stock issues
-            if (result.maxQuantity !== undefined) {
-              // Stock limitation error - offer to set to max if possible
-              const canSetToMax =
-                result.currentQuantity !== undefined &&
-                result.currentQuantity < result.maxQuantity;
-
-              toast.error(result.error, {
-                duration: 5000,
-                action: canSetToMax
-                  ? {
-                      label: `Set to max (${result.maxQuantity})`,
-                      onClick: () => {
-                        // Find the cart item and update to max
-                        const cartItem = get().items.find(
-                          (item) => item.product_variant_id === variant.id
-                        );
-                        if (cartItem) {
-                          get().updateQuantity(cartItem.id, result.maxQuantity);
-                        }
-                      },
-                    }
-                  : undefined,
-              });
-            } else {
-              toast.error(result.error);
-            }
-          } else if (!existingItem) {
-            // Replace temp ID with real ID only for new items
-            set((state) => ({
-              items: state.items.map((item) =>
-                item.id.startsWith("temp-")
-                  ? { ...item, id: result.cartItem.id }
-                  : item
-              ),
-            }));
+            toast.error(result.error, { id: loadingToast });
+            return { success: false, error: result.error };
           }
+
+          // Fetch fresh cart from server
+          await get().fetchCart();
+
+          toast.success("Item added to cart", { id: loadingToast });
+          set({ isDrawerOpen: true });
+
+          return { success: true };
         } catch (error) {
-          // Rollback on error
-          if (existingItem) {
-            set((state) => ({
-              items: state.items.map((item) =>
-                item.product_variant_id === variant.id
-                  ? { ...item, quantity: existingItem.quantity }
-                  : item
-              ),
-            }));
-          } else {
-            set((state) => ({
-              items: state.items.filter((item) => !item.id.startsWith("temp-")),
-            }));
-          }
-          toast.error("Failed to add item to cart");
+          console.error("Error adding item to cart:", error);
+          toast.error("Failed to add item to cart", { id: loadingToast });
+          return { success: false, error: error.message };
         }
       },
 
       // Remove from cart
       removeFromCart: async (cartItemId) => {
-        console.log("Removing item from cart:", cartItemId);
-        // 1. Get user info
         const userId = useAuthStore.getState().user?.id;
-        const isAuthenticated =
-          useAuthStore.getState().user?.role === "authenticated";
-
-        // 2. Guard: Must be authenticated to remove from cart
-        if (!userId && !isAuthenticated) {
+        if (!userId) {
           toast.error("Please login to remove items from cart");
-          return;
+          return { success: false };
         }
 
-        // 3. Save current state (for rollback if error)
-        const previousItems = get().items;
+        // Prevent duplicate operations
+        if (get().pendingOperations.has(cartItemId)) {
+          return { success: false, error: "Operation in progress" };
+        }
 
-        // 4. OPTIMISTIC UPDATE - Remove immediately from UI
+        // Mark as pending
         set((state) => ({
-          items: state.items.filter((item) => item.id !== cartItemId),
+          pendingOperations: new Set(state.pendingOperations).add(cartItemId),
         }));
 
-        // 5. Show success toast immediately
-        toast.success("Item successfully removed from your cart");
+        const loadingToast = toast.loading("Removing item...");
 
-        // 6. Sync to database (background operation)
         try {
           const result = await removeFromCartAction(cartItemId, userId);
 
           if (result.error) {
-            // 7a. ERROR: Rollback - restore item
-            set({ items: previousItems });
-            toast.error(result.error);
+            toast.error(result.error, { id: loadingToast });
+            return { success: false, error: result.error };
           }
-          // 7b. SUCCESS: Item stays removed (already done in step 4)
+
+          // ✅ Fetch fresh cart from server
+          await get().fetchCart();
+
+          toast.success("Item removed from cart", { id: loadingToast });
+
+          return { success: true };
         } catch (error) {
-          set({ items: previousItems });
-          toast.error("Failed to remove item");
+          console.error("Error removing item:", error);
+          toast.error("Failed to remove item", { id: loadingToast });
+          return { success: false, error: error.message };
+        } finally {
+          // Remove from pending
+          set((state) => {
+            const newPending = new Set(state.pendingOperations);
+            newPending.delete(cartItemId);
+            return { pendingOperations: newPending };
+          });
         }
       },
 
       // Update cart item quantity
       updateQuantity: async (cartItemId, newQuantity) => {
-        // 1. Validate quantity
         if (newQuantity < 1) {
           toast.error("Quantity cannot be less than 1");
-          return;
+          return { success: false };
         }
 
-        // 2. Get user info
         const userId = useAuthStore.getState().user?.id;
-        const isAuthenticated =
-          useAuthStore.getState().user?.role === "authenticated";
-
-        if (!userId && !isAuthenticated) {
+        if (!userId) {
           toast.error("Please login to update quantity");
-          return;
+          return { success: false };
         }
 
-        // 3. Save current state (for rollback if error)
-        const previousItems = get().items;
+        // Prevent duplicate operations
+        if (get().pendingOperations.has(cartItemId)) {
+          return { success: false, error: "Operation in progress" };
+        }
 
-        // 4. OPTIMISTIC UPDATE - Update immediately from UI
+        // Mark as pending
         set((state) => ({
-          items: state.items.map((item) =>
-            item.id === cartItemId ? { ...item, quantity: newQuantity } : item
-          ),
+          pendingOperations: new Set(state.pendingOperations).add(cartItemId),
         }));
 
-        // 5. Sync to database (background operation)
         try {
           const result = await updateCartItemQuantityAction(
             cartItemId,
@@ -247,9 +159,6 @@ const useCartStore = create(
           );
 
           if (result.error) {
-            set({ items: previousItems });
-
-            // Enhanced error handling for stock limitations
             if (result.maxQuantity !== undefined) {
               toast.error(result.error, {
                 duration: 5000,
@@ -263,11 +172,24 @@ const useCartStore = create(
             } else {
               toast.error(result.error);
             }
+            return { success: false, error: result.error };
           }
-          // 6b. SUCCESS: Item stays updated (already done in step 4)
+
+          // Fetch fresh cart from server
+          await get().fetchCart();
+
+          return { success: true };
         } catch (error) {
-          set({ items: previousItems });
+          console.error("Error updating quantity:", error);
           toast.error("Failed to update quantity");
+          return { success: false, error: error.message };
+        } finally {
+          // Remove from pending
+          set((state) => {
+            const newPending = new Set(state.pendingOperations);
+            newPending.delete(cartItemId);
+            return { pendingOperations: newPending };
+          });
         }
       },
 
@@ -276,7 +198,7 @@ const useCartStore = create(
         const userId = useAuthStore.getState().user?.id;
 
         if (!userId) {
-          set({ items: [] });
+          set({ items: [], isLoading: false });
           return;
         }
 
@@ -300,9 +222,14 @@ const useCartStore = create(
             console.error("Failed to fetch cart:", result.error);
           }
         } catch (error) {
-          console.error("Error:", error);
+          console.error("Error fetching cart:", error);
           set({ isLoading: false });
         }
+      },
+
+      // Check if operation is pending
+      isOperationPending: (cartItemId) => {
+        return get().pendingOperations.has(cartItemId);
       },
 
       // Clear cart
@@ -313,6 +240,15 @@ const useCartStore = create(
       partialize: (state) => ({ items: state.items }), // Only persist items
       onRehydrateStorage: () => (state) => {
         state._hasHydrated = true;
+
+        // ✅ IMPORTANT: Fetch fresh data from server after hydration
+        const userId = useAuthStore.getState().user?.id;
+        if (userId) {
+          // Delay to ensure auth is ready
+          setTimeout(() => {
+            state.fetchCart();
+          }, 100);
+        }
       },
     }
   )
