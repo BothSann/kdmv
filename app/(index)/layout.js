@@ -4,7 +4,7 @@ export default function IndexLayout({ children }) {
   return (
     <div>
       <HeaderWithCarousel />
-      <main className="max-w-7xl mx-auto w-full px-6 lg:px-8 pt-4 lg:pt-12">
+      <main className="max-w-7xl mx-auto w-full px-6 lg:px-8 pt-6 lg:pt-12">
         {children}
       </main>
     </div>

@@ -4,7 +4,7 @@ import ProductList from "../product/ProductList";
 
 export default function ShopAllSection({ products }) {
   return (
-    <div className="my-12 space-y-8 pt-20 border-t border-border">
+    <div className="my-6 lg:my-12 space-y-8 pt-6 border-t border-border">
       <h2 className="text-4xl lg:text-[2.7rem] font-poppins font-bold uppercase">
         Shop All
       </h2>
