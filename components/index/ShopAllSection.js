@@ -5,15 +5,18 @@ import ProductList from "../product/ProductList";
 export default function ShopAllSection({ products }) {
   return (
     <div className="my-12 space-y-8 pt-20 border-t border-border">
-      <h2 className="text-2xl lg:text-[2.7rem] font-poppins font-bold uppercase">
+      <h2 className="text-4xl lg:text-[2.7rem] font-poppins font-bold uppercase">
         Shop All
       </h2>
 
       <ProductList products={products} />
 
       <div className="flex justify-center group">
-        <Button size="lg" className="font-semibold text-sm lg:text-base">
-          <Link href="/">View all </Link>
+        <Button
+          size="lg"
+          className="font-semibold text-sm lg:text-base hidden lg:inline-flex"
+        >
+          <Link href="/">View all</Link>
         </Button>
       </div>
     </div>

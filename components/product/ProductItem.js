@@ -1,15 +1,15 @@
-import { formatCurrency } from "@/lib/utils";
+import { cn, formatCurrency } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
 import { Badge } from "../ui/badge";
 
-export default function ProductItem({ product }) {
+export default function ProductItem({ product, className }) {
   const discountedPrice = product.discounted_price;
   const discountPercentage = product.discount_percentage;
   const hasDiscount = product.discount_percentage > 0;
 
   return (
-    <li key={product.id}>
+    <li key={product.id} className={cn(className)}>
       <Link href={`/products/${product.id}`}>
         {/* Product Image */}
         <div className="relative aspect-[3/4]">
@@ -23,7 +23,7 @@ export default function ProductItem({ product }) {
           {hasDiscount && (
             <Badge
               variant="destructive"
-              className="absolute top-0 right-0 z-10 text-base"
+              className="absolute top-0 right-0 z-10 text-xs lg:text-base"
             >
               {discountPercentage}% off
             </Badge>

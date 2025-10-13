@@ -13,7 +13,7 @@ export default function HomePageClient({ data }) {
   }, [data]);
 
   return (
-    <div>
+    <>
       {/* Featured Collections */}
       {data.collectionsWithProducts.map((collection, index) => (
         <CollectionSection
@@ -26,6 +26,6 @@ export default function HomePageClient({ data }) {
 
       {/* Featured Products */}
       <ShopAllSection products={data.featuredProducts} />
-    </div>
+    </>
   );
 }
