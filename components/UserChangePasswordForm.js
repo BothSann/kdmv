@@ -6,14 +6,20 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useState } from "react";
-import { verifyAndUpdateAdminPasswordAction } from "@/actions/user-action";
+import { verifyAndUpdateUserPasswordAction } from "@/actions/user-action";
 import { toast } from "sonner";
 
-export default function AdminChangePasswordForm() {
+export default function UserChangePasswordForm() {
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isPending, setIsPending] = useState(false);
+
+  const handleCancel = () => {
+    setCurrentPassword("");
+    setNewPassword("");
+    setConfirmPassword("");
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -31,7 +37,7 @@ export default function AdminChangePasswordForm() {
 
     try {
       const { success, error, message } =
-        await verifyAndUpdateAdminPasswordAction(changePasswordData);
+        await verifyAndUpdateUserPasswordAction(changePasswordData);
 
       if (error) {
         toast.error(error, { id: toastId });
@@ -110,8 +116,13 @@ export default function AdminChangePasswordForm() {
         </div>
 
         <div className="flex justify-end gap-3">
-          <Button variant="outline" type="button" asChild disabled={isPending}>
-            <Link href="/admin/account/profile">Cancel</Link>
+          <Button
+            variant="outline"
+            type="button"
+            disabled={isPending}
+            onClick={handleCancel}
+          >
+            Cancel
           </Button>
           <Button
             type="submit"

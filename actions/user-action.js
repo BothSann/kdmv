@@ -135,7 +135,7 @@ export async function updateCurrentUserProfileAction(formData) {
   }
 }
 
-export async function verifyAndUpdateAdminPasswordAction(formData) {
+export async function verifyAndUpdateUserPasswordAction(formData) {
   try {
     if (formData.new_password !== formData.confirm_password) {
       return { error: "New password and confirm password do not match" };
@@ -185,6 +185,7 @@ export async function verifyAndUpdateAdminPasswordAction(formData) {
     }
 
     revalidatePath("/admin/account/password");
+    revalidatePath("/account/settings");
     return {
       success: true,
       message: "Password updated successfully",

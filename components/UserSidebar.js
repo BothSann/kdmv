@@ -24,7 +24,7 @@ const navLinks = [
     icon: MapPinHouse,
   },
   {
-    title: "Settings",
+    title: "Password & Security",
     href: "/account/settings",
     icon: Settings,
   },
@@ -44,7 +44,7 @@ export function UserSidebar() {
               key={link.href}
               href={link.href}
               className={cn(
-                "flex items-center gap-4 px-2 py-4 transition-colors hover:bg-accent",
+                "flex items-center gap-2 px-2 py-4 transition-colors hover:bg-accent",
                 isActive && "bg-accent"
               )}
             >
