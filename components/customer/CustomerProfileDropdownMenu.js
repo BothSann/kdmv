@@ -41,7 +41,7 @@ export default function CustomerProfileDropdownMenu() {
           <>
             {!isLoading ? (
               <DropdownMenuLabel className={cn("flex items-center gap-2")}>
-                <div className="relative w-9 h-9 lg:w-8 lg:h-8 aspect-square">
+                <div className="relative w-9 h-9 aspect-square">
                   {profile?.avatar_url ? (
                     <Image
                       src={profile?.avatar_url}
@@ -59,8 +59,8 @@ export default function CustomerProfileDropdownMenu() {
                 </div>
 
                 <div className="space-y-0.5 lg:space-y-0">
-                  <p className="font-medium text-xs">{fullName}</p>
-                  <p className="text-[0.625rem] font-normal text-muted-foreground">
+                  <p className="font-medium text-xs lg:text-sm">{fullName}</p>
+                  <p className="text-[0.625rem] lg:text-xs font-normal text-muted-foreground">
                     {profile?.email}
                   </p>
                 </div>
@@ -77,7 +77,7 @@ export default function CustomerProfileDropdownMenu() {
             {navItems.map((item) => (
               <Link href={item.href} key={item.href}>
                 <DropdownMenuItem
-                  className={cn("py-2.5 text-xs gap-1 lg:gap-2")}
+                  className={cn("py-2.5 text-xs gap-1 lg:gap-2 lg:text-sm")}
                 >
                   <item.icon size={20} className="scale-80 lg:scale-100" />
                   {item.label}
