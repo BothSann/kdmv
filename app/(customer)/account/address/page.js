@@ -1,3 +1,3 @@
 export default function AddressPage() {
-  return <h1>AddressPage</h1>;
+  return <h2 className="text-2xl font-semibold">Address</h2>;
 }
