@@ -1,3 +1,8 @@
-export default function OrdersPage() {
-  return <h1>OrdersPage</h1>;
+export default async function OrdersPage() {
+  return (
+    <>
+      <h1 className="text-2xl font-bold">Orders</h1>
+      <div>{/* <OrderList /> */}</div>
+    </>
+  );
 }

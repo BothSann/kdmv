@@ -4,7 +4,6 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
 import { useState } from "react";
 import { verifyAndUpdateUserPasswordAction } from "@/actions/user-action";
 import { toast } from "sonner";
