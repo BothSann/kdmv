@@ -10,6 +10,7 @@ import { Badge } from "../ui/badge";
 
 export default function OrderItem({ order }) {
   console.log("order", order);
+
   const orderNumber = order.order_number;
   const date = order.created_at;
   const totalAmount = order.total_amount;
@@ -20,11 +21,25 @@ export default function OrderItem({ order }) {
   const hasSingleItem = order.items && order.items.length === 1;
   const singleItemName = hasSingleItem ? order.items[0]?.product_name : null;
 
+  // Determine the badge variant based on status
+  const getBadgeVariant = (status) => {
+    switch (status) {
+      case "CONFIRMED":
+        return "success";
+      case "PENDING":
+        return "default";
+      default:
+        return "default"; // Or another appropriate default variant
+    }
+  };
+
   return (
     <Card className="mt-10 cursor-pointer">
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-6">
         <div className="flex items-center justify-between text-sm">
-          <span>{orderNumber}</span>
+          <Badge variant="outline" className="text-base font-mono">
+            {orderNumber}
+          </Badge>
           <span>{formatISODateToDayDateMonthYear(date)}</span>
           <span className="text-lg font-semibold flex items-center gap-0.5">
             {formatCurrency(totalAmount)}
@@ -32,8 +47,8 @@ export default function OrderItem({ order }) {
           </span>
         </div>
 
-        <div className="space-x-4 text-sm">
-          <Badge className="font-semibold" variant="default">
+        <div className="space-x-3 text-sm">
+          <Badge className="font-semibold" variant={getBadgeVariant(status)}>
             {status}
           </Badge>
           <span>{formatISODateToDayMonthNameYear(date)}</span>
