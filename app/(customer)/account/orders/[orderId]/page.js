@@ -66,7 +66,7 @@ export default async function OrderDetailPage({ params }) {
   const getPaymentStatusBadgeVariant = (status) => {
     switch (status) {
       case "PENDING":
-        return "default";
+        return "warning";
       case "PAID":
         return "success";
       case "FAILED":
@@ -91,11 +91,15 @@ export default async function OrderDetailPage({ params }) {
 
         <Badge
           variant={paymentStatusBadgeVariant}
-          className="text-base px-6 gap-2"
+          className="lg:text-base lg:px-6 gap-2"
         >
           {paymentStatus}
-          {paymentStatus === "PAID" && <BadgeCheck className="scale-150" />}
-          {paymentStatus === "PENDING" && <Clock className="scale-150" />}
+          {paymentStatus === "PAID" && (
+            <BadgeCheck className="scale-125lg:scale-150" />
+          )}
+          {paymentStatus === "PENDING" && (
+            <Clock className="scale-125 lg:scale-150" />
+          )}
         </Badge>
       </div>
 
@@ -141,7 +145,7 @@ export default async function OrderDetailPage({ params }) {
 
                   <div className="flex flex-1 flex-col space-y-1 h-40">
                     <div className="flex items-center justify-between">
-                      <span className="text-base font-medium line-clamp-1">
+                      <span className="text-base font-semibold line-clamp-1">
                         {productName}
                       </span>
                       {hasDiscount && (
@@ -151,32 +155,34 @@ export default async function OrderDetailPage({ params }) {
                       )}
                     </div>
                     <div className="space-x-2">
-                      <span className="text-sm">Code:</span>
+                      <span className="text-xs lg:text-sm">Code:</span>
                       <Badge className="font-mono" variant="outline">
                         {productCode}
                       </Badge>{" "}
                     </div>
-                    <span className="text-sm">Quantity: {quantity}</span>
+                    <span className="text-xs lg:text-sm">
+                      Quantity: {quantity}
+                    </span>
                     <div className="flex items-end justify-between mt-auto">
-                      <span className="text-muted-foreground text-sm">
+                      <span className="text-muted-foreground text-xs lg:text-sm">
                         {colorName} / {sizeName}
                       </span>
 
                       <div className="flex flex-col items-end font-jost">
                         {hasDiscount ? (
-                          <div className="flex flex-col items-end space-y-1">
-                            <span className="text-sm text-muted-foreground line-through">
+                          <div className="flex flex-col items-end space-y-1 text-xs lg:text-sm">
+                            <span className="text-muted-foreground line-through">
                               {formatCurrency(unitPrice)}
                             </span>
-                            <span className="text-sm text-muted-foreground">
+                            <span className="text-muted-foreground">
                               &minus;{formatCurrency(saveAmount)}
                             </span>
-                            <span className="font-medium text-lg">
+                            <span className="font-semibold text-base lg:text-lg">
                               {formatCurrency(finalPrice)}
                             </span>
                           </div>
                         ) : (
-                          <span className="font-medium text-lg">
+                          <span className="font-semibold text-base lg:text-lg">
                             {formatCurrency(finalPrice)}
                           </span>
                         )}
@@ -246,7 +252,7 @@ export default async function OrderDetailPage({ params }) {
 
               <div className="flex items-center justify-between text-sm mt-auto">
                 <span className="font-medium">Paid Amount</span>
-                <span className="text-muted-foreground font-semibold text-base">
+                <span className="font-semibold text-base">
                   {formatCurrency(totalAmount)}
                 </span>
               </div>

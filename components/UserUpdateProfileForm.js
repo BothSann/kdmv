@@ -142,7 +142,7 @@ export default function UserUpdateProfileForm() {
       <div className="grid grid-cols-2 gap-6">
         {/* Avatar Section */}
         <div className="grid col-span-2 gap-3 mb-6">
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-4">
             <div className="relative w-20 h-20 aspect-square">
               {previewUrl ? (
                 <Image
