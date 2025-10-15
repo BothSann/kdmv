@@ -7,8 +7,8 @@ import AuthProvider from "@/components/AuthProvider";
 import "./globals.css";
 
 export const metadata = {
-  title: "KDMV Cambodia",
-  description: "KDMV Cambodia",
+  title: "KDMV",
+  description: "KDMV",
 };
 
 export default async function RootLayout({ children }) {

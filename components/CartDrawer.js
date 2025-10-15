@@ -33,7 +33,7 @@ export default function CartDrawer() {
   }
 
   return (
-    <Sheet open={isDrawerOpen} onOpenChange={setDrawerOpen} modal={false}>
+    <Sheet open={isDrawerOpen} onOpenChange={setDrawerOpen}>
       <SheetTrigger asChild>
         <Button variant="ghost" className="relative">
           <ShoppingCart className="scale-125" />
@@ -48,7 +48,7 @@ export default function CartDrawer() {
         </Button>
       </SheetTrigger>
       <SheetContent
-        className="md:max-w-lg px-8 py-6 dark:bg-primary-foreground"
+        className="md:max-w-lg px-4 lg:px-8 py-6 dark:bg-primary-foreground"
         onOpenAutoFocus={(e) => e.preventDefault()}
       >
         <SheetHeader className="px-0">

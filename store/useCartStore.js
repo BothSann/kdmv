@@ -26,6 +26,16 @@ const useCartStore = create(
         return get().items.reduce((total, item) => total + item.quantity, 0);
       },
 
+      subTotalPrice: () => {
+        return get().items.reduce((total, item) => {
+          const product = item.variant.product;
+          const basePrice = product.base_price;
+          const quantity = item.quantity;
+
+          return total + basePrice * quantity;
+        }, 0);
+      },
+
       totalPrice: () => {
         return get().items.reduce((total, item) => {
           const product = item.variant.product;

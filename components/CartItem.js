@@ -129,7 +129,7 @@ export default function CartItem({ item }) {
   };
 
   return (
-    <div className="flex gap-4 relative">
+    <div className="flex gap-2 lg:gap-4 relative">
       {/* Product Image */}
       <div className="relative w-24 h-24 flex-shrink-0">
         <Image
@@ -142,12 +142,27 @@ export default function CartItem({ item }) {
 
       {/* Product Info */}
       <div className="flex-1 space-y-2">
-        <h4 className="font-jost text-lg line-clamp-1">
-          {product.name}{" "}
-          <span className="text-sm text-muted-foreground">
-            (&minus;{discountPercentage}%)
-          </span>
-        </h4>
+        <div className="flex items-center justify-between">
+          <h4 className="font-jost text-lg line-clamp-1">
+            {product.name}{" "}
+            <span className="text-sm text-muted-foreground">
+              (&minus;{discountPercentage}%)
+            </span>
+          </h4>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="self-start"
+            onClick={handleRemove}
+            disabled={isPending}
+          >
+            {isPending ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              <Trash />
+            )}
+          </Button>
+        </div>
 
         {/* Color and Size */}
         <div className="text-sm text-muted-foreground flex flex-col">
@@ -186,7 +201,7 @@ export default function CartItem({ item }) {
               onChange={handleInputChange}
               onBlur={handleBlur} // ← Validate on blur
               disabled={isOutOfStock}
-              className="w-16 focus-visible:ring-0 text-center md:text-base no-spin-buttons"
+              className="w-10 lg:w-16 focus-visible:ring-0 text-center md:text-base no-spin-buttons"
             />
             <Button
               variant="outline"
@@ -217,16 +232,6 @@ export default function CartItem({ item }) {
           </span>
         </div>
       </div>
-
-      <Button
-        variant="ghost"
-        size="sm"
-        className="absolute -right-2 top-0"
-        onClick={handleRemove}
-        disabled={isPending}
-      >
-        {isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash />}
-      </Button>
     </div>
   );
 }

@@ -41,7 +41,13 @@ export default function CheckoutsPage() {
   const pollingIntervalRef = useRef(null);
 
   // 2. Cart and auth state
-  const { items, itemCount, totalPrice, clearCart } = useCartStore();
+  const {
+    items,
+    itemCount,
+    totalPrice: storeTotalPrice,
+    clearCart,
+    subTotalPrice: storeSubTotalPrice,
+  } = useCartStore();
   const { profile, isLoading } = useAuthStore();
   const hasHydrated = useCartStore((state) => state._hasHydrated);
 
@@ -65,12 +71,22 @@ export default function CheckoutsPage() {
   ];
 
   const count = itemCount();
-  const total = totalPrice();
-  const subtotal = total;
-  const discount = appliedCoupon
-    ? (subtotal * appliedCoupon.discount_percentage) / 100
+  const subtotal = storeSubTotalPrice(); // Price before item discounts
+  const totalAfterItemDiscounts = storeTotalPrice(); // Price after item discounts, before coupon
+  const saveAmount = subtotal - totalAfterItemDiscounts; // The 'Save' from item discounts
+
+  // const discount = appliedCoupon
+  //   ? (subtotal * appliedCoupon.discount_percentage) / 100
+  //   : 0;
+
+  // Calculate the discount amount from the coupon (applied on the totalAfterItemDiscounts or subtotal, depending on business logic)
+  // Typically, percentage coupons are applied after item discounts.
+  const couponDiscountAmount = appliedCoupon
+    ? (totalAfterItemDiscounts * appliedCoupon.discount_percentage) / 100 // Apply coupon to the discounted subtotal
     : 0;
-  const finalTotal = subtotal - discount;
+
+  // Calculate the final total amount to pay
+  const finalTotal = totalAfterItemDiscounts - couponDiscountAmount;
 
   const fullName = `${profile?.first_name} ${profile?.last_name}`;
   const telephone = profile?.telephone;
@@ -191,8 +207,8 @@ export default function CheckoutsPage() {
 
         // Pricing
         subtotal: subtotal,
-        discountAmount: discount,
-        totalAmount: finalTotal,
+        discountAmount: saveAmount + couponDiscountAmount,
+        totalAmount: finalTotal, // Final price after all discounts
         // Promo code
         promoCodeId: appliedCoupon?.id || null,
 
@@ -431,33 +447,42 @@ export default function CheckoutsPage() {
           {/* <BakongKHQRModal url={"https://www.google.com"} /> */}
 
           <Card>
-            <CardContent className="space-y-2">
+            <CardContent className="space-y-2.5">
               <div className="flex items-center justify-between gap-4">
                 <span className="text-muted-foreground">
                   Subtotal ({count})
                 </span>
-                <span className="">{formatCurrency(subtotal)}</span>
+                <span className="font-jost">{formatCurrency(subtotal)}</span>
+              </div>
+
+              <div className="flex items-center justify-between gap-4">
+                <span className="text-muted-foreground">
+                  Save (Item Discounts)
+                </span>
+                <span className="font-jost">
+                  &minus;{formatCurrency(saveAmount)}
+                </span>
               </div>
 
               <div className="flex items-center justify-between gap-4 mb-4">
                 <span className="text-muted-foreground">Delivery Fee</span>
-                <span className="">{formatCurrency(0)}</span>
+                <span className="font-jost">{formatCurrency(0)}</span>
               </div>
 
               {appliedCoupon && (
                 <div className="flex items-center justify-between gap-4 text-success mb-4">
                   <span className="text-sm">
-                    Discount ({appliedCoupon.code})
+                    Coupon Applied ({appliedCoupon.code})
                   </span>
                   <span className="text-sm font-medium">
-                    -{formatCurrency(discount)}
+                    &minus;{formatCurrency(couponDiscountAmount)}
                   </span>
                 </div>
               )}
 
               <div className="flex items-center justify-between gap-4 border-t border-border pt-4">
                 <span className="text-xl font-semibold">Total</span>
-                <span className="text-xl font-semibold">
+                <span className="text-xl font-semibold font-jost">
                   {formatCurrency(finalTotal)}
                 </span>
               </div>

@@ -7,10 +7,10 @@ import { Card, CardContent } from "../ui/card";
 import { ChevronRight } from "lucide-react";
 import Image from "next/image";
 import { Badge } from "../ui/badge";
+import Link from "next/link";
 
 export default function OrderItem({ order }) {
-  console.log("order", order);
-
+  const orderId = order.id;
   const orderNumber = order.order_number;
   const date = order.created_at;
   const totalAmount = order.total_amount;
@@ -27,48 +27,67 @@ export default function OrderItem({ order }) {
       case "CONFIRMED":
         return "success";
       case "PENDING":
-        return "default";
+        return "warning";
       default:
         return "default"; // Or another appropriate default variant
     }
   };
 
   return (
-    <Card className="mt-10 cursor-pointer">
-      <CardContent className="space-y-6">
-        <div className="flex items-center justify-between text-sm">
-          <Badge variant="outline" className="text-base font-mono">
-            {orderNumber}
-          </Badge>
-          <span>{formatISODateToDayDateMonthYear(date)}</span>
-          <span className="text-lg font-semibold flex items-center gap-0.5">
-            {formatCurrency(totalAmount)}
-            <ChevronRight className="text-muted-foreground" size={24} />
-          </span>
-        </div>
-
-        <div className="space-x-3 text-sm">
-          <Badge className="font-semibold" variant={getBadgeVariant(status)}>
-            {status}
-          </Badge>
-          <span>{formatISODateToDayMonthNameYear(date)}</span>
-          <span>Qty. {totalQuantity}</span>
-        </div>
-
-        <div className="flex items-center justify-between">
-          <span className="self-end">
-            {hasSingleItem ? singleItemName : `${itemCount} items`}
-          </span>
-          <div className="relative w-32 h-32">
-            <Image
-              src="/kdmv-shirt.webp"
-              alt="Product"
-              fill
-              className="object-cover object-center"
-            />
+    <Link href={`/account/orders/${orderId}`}>
+      <Card className="mt-6 cursor-pointer">
+        <CardContent className="space-y-6">
+          <div className="flex items-start justify-between text-sm flex-col lg:flex-row lg:items-center space-y-2 lg:space-y-0">
+            <Badge variant="outline" className="text-sm font-mono">
+              {orderNumber}
+            </Badge>
+            <span className="text-muted-foreground">
+              {formatISODateToDayDateMonthYear(date)}
+            </span>
+            <div className="text-lg font-semibold flex items-center justify-between w-full lg:w-auto lg:justify-end">
+              {formatCurrency(totalAmount)}
+              <ChevronRight className="text-muted-foreground" size={24} />
+            </div>
           </div>
-        </div>
-      </CardContent>
-    </Card>
+
+          <div className="space-x-3 text-sm">
+            <Badge className="font-semibold" variant={getBadgeVariant(status)}>
+              {status}
+            </Badge>
+            <span>Qty. {totalQuantity}</span>
+          </div>
+
+          <div className="flex items-center justify-between">
+            <span className="self-end text-sm lg:text-base line-clamp-1">
+              {hasSingleItem ? singleItemName : `${itemCount} items`}
+            </span>
+            <div className="flex gap-2 overflow-x-auto">
+              {/* Flex container for images */}
+              {order.items && order.items.length > 0 ? (
+                order.items.map((item, index) => (
+                  <div
+                    key={item.id || index}
+                    className="relative w-18 h-18 lg:w-32 lg:h-32"
+                  >
+                    {/* Use item.id if available as key */}
+                    <Image
+                      src={item.banner_image_url} // Use the image URL from the item
+                      alt={item.product_name || "Product"} // Use product name for alt text if available
+                      fill
+                      className="object-cover object-center"
+                    />
+                  </div>
+                ))
+              ) : (
+                // Optional: Render a placeholder if no items exist
+                <div className="relative w-32 h-32 border border-dashed flex items-center justify-center">
+                  <span className="text-gray-500 text-sm">No Image</span>
+                </div>
+              )}
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </Link>
   );
 }
