@@ -19,6 +19,7 @@ import { sanitizeName } from "@/lib/utils";
 import Image from "next/image";
 import { User, Trash } from "lucide-react";
 import Spinner from "./Spinner";
+import { useRouter } from "next/navigation";
 
 export default function UserUpdateProfileForm() {
   const { profile, setProfile } = useAuthStore();
@@ -34,6 +35,8 @@ export default function UserUpdateProfileForm() {
   const [previewUrl, setPreviewUrl] = useState(null);
   const [isPending, setIsPending] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+
+  const router = useRouter();
 
   const fileInputRef = useRef(null);
 
@@ -323,10 +326,10 @@ export default function UserUpdateProfileForm() {
             <Button
               variant="outline"
               type="button"
-              asChild
               disabled={isPending}
+              onClick={() => router.back()}
             >
-              <Link href="/admin/dashboard">Cancel</Link>
+              Cancel
             </Button>
             <Button type="submit" disabled={isPending}>
               {isPending ? "Updating..." : "Update Profile"}
