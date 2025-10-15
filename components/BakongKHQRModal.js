@@ -1,7 +1,7 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import QRCodeStyling from "qr-code-styling";
-import { Clock, Timer, XIcon } from "lucide-react";
+import { Clock, XIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { formatCurrency } from "@/lib/utils";
@@ -136,7 +136,7 @@ export default function BakongKHQRModal({
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [isOpen]);
+  }, [isOpen, onClose]);
 
   // Prevent scrolling when modal is open
   useEffect(() => {

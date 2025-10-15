@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -249,13 +249,13 @@ export default function CheckoutsPage() {
     }
   };
 
-  const handleCloseKHQRModal = () => {
+  const handleCloseKHQRModal = useCallback(() => {
     if (confirm("Are you sure you want to cancel the payment?")) {
       stopPolling(); // ✅ Stop polling when modal closes
       setShowKHQRModal(false);
       setPaymentData(null); // Clear payment data
     }
-  };
+  }, []);
 
   // Show loading state until Zustand has hydrated from localStorage
   // This prevents hydration mismatch between server-rendered empty state
