@@ -19,7 +19,7 @@ export default async function OrdersPage() {
 
   return (
     <>
-      <h2 className="text-3xl font-bold">Orders</h2>
+      <h2 className="text-[2.125rem] lg:text-3xl font-bold">Orders</h2>
       <Suspense fallback={<Spinner message="Loading orders..." />}>
         <OrdersList orders={orders} />
       </Suspense>

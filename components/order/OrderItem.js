@@ -38,11 +38,11 @@ export default function OrderItem({ order }) {
       <Card className="mt-6 cursor-pointer">
         <CardContent className="space-y-6">
           <div className="flex items-start justify-between text-sm flex-col lg:flex-row lg:items-center space-y-2 lg:space-y-0">
-            <Badge variant="outline" className="text-sm font-mono">
+            <Badge variant="outline" className="text-xs lg:text-sm font-mono">
               {orderNumber}
             </Badge>
-            <span className="text-muted-foreground">
-              {formatISODateToDayDateMonthYear(date)}
+            <span className="text-xs lg:text-sm text-muted-foreground">
+              {formatISODateToDayMonthNameYear(date)}
             </span>
             <div className="text-lg font-semibold flex items-center justify-between w-full lg:w-auto lg:justify-end">
               {formatCurrency(totalAmount)}
