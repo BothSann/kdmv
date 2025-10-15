@@ -256,42 +256,145 @@ export async function updateProductAction(formData) {
       }
     }
 
-    // VARIANTS MANAGEMENT: Replace all existing variants with new ones
-    // Delete all existing variants first
-    const { error: deleteVariantsError } = await supabaseAdmin
-      .from("product_variants")
-      .delete()
-      .eq("product_id", productId);
+    // VARIANTS MANAGEMENT: Smart update with foreign key constraint handling
+    // Instead of deleting all variants, we UPDATE existing ones and INSERT new ones
+    // This prevents foreign key violations from orders that reference variants
 
-    if (deleteVariantsError) {
-      console.error("Delete variants error:", deleteVariantsError);
-      return { error: deleteVariantsError.message };
+    // 1. Fetch existing variants
+    const { data: existingVariants, error: fetchVariantsError } =
+      await supabaseAdmin
+        .from("product_variants")
+        .select("id, color_id, size_id, sku")
+        .eq("product_id", productId);
+
+    if (fetchVariantsError) {
+      console.error("Fetch variants error:", fetchVariantsError);
+      return { error: fetchVariantsError.message };
     }
 
-    // Insert new variants with proper SKUs
-    const variantsToInsert = await Promise.all(
-      formData.variants.map(async (variant) => ({
-        product_id: productId,
-        color_id: variant.color_id,
-        size_id: variant.size_id,
-        quantity: parseInt(variant.quantity),
-        sku:
-          variant.sku ||
-          (await generateSKU(
-            product.product_code,
-            variant.color_id,
-            variant.size_id
-          )),
-      }))
-    );
+    // 2. Process new variants from form - separate into update vs insert
+    const variantsToUpdate = [];
+    const variantsToInsert = [];
+    const variantIdsToKeep = [];
 
-    const { error: variantsError } = await supabaseAdmin
-      .from("product_variants")
-      .insert(variantsToInsert);
+    for (const newVariant of formData.variants) {
+      // Find matching existing variant (same color + size combination)
+      const existing = existingVariants?.find(
+        (v) =>
+          v.color_id === newVariant.color_id && v.size_id === newVariant.size_id
+      );
 
-    if (variantsError) {
-      console.error("Variants insert error:", variantsError);
-      return { error: variantsError.message };
+      if (existing) {
+        // Variant exists - prepare UPDATE
+        variantsToUpdate.push({
+          id: existing.id,
+          quantity: parseInt(newVariant.quantity),
+          sku:
+            newVariant.sku ||
+            existing.sku ||
+            (await generateSKU(
+              product.product_code,
+              newVariant.color_id,
+              newVariant.size_id
+            )),
+        });
+        variantIdsToKeep.push(existing.id);
+      } else {
+        // New variant - prepare INSERT
+        variantsToInsert.push({
+          product_id: productId,
+          color_id: newVariant.color_id,
+          size_id: newVariant.size_id,
+          quantity: parseInt(newVariant.quantity),
+          sku:
+            newVariant.sku ||
+            (await generateSKU(
+              product.product_code,
+              newVariant.color_id,
+              newVariant.size_id
+            )),
+        });
+      }
+    }
+
+    // 3. Update existing variants (preserves foreign key references)
+    for (const variant of variantsToUpdate) {
+      const { error: updateVariantError } = await supabaseAdmin
+        .from("product_variants")
+        .update({
+          quantity: variant.quantity,
+          sku: variant.sku,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", variant.id);
+
+      if (updateVariantError) {
+        console.error("Update variant error:", updateVariantError);
+        return { error: updateVariantError.message };
+      }
+    }
+
+    // 4. Insert new variants
+    if (variantsToInsert.length > 0) {
+      const { error: insertVariantsError } = await supabaseAdmin
+        .from("product_variants")
+        .insert(variantsToInsert);
+
+      if (insertVariantsError) {
+        console.error("Insert variants error:", insertVariantsError);
+        return { error: insertVariantsError.message };
+      }
+    }
+
+    // 5. Handle variants no longer in the list (safe deletion)
+    const variantIdsToRemove =
+      existingVariants
+        ?.filter((v) => !variantIdsToKeep.includes(v.id))
+        .map((v) => v.id) || [];
+
+    if (variantIdsToRemove.length > 0) {
+      // Check if any variants are used in past orders
+      const { data: usedInOrders, error: checkOrdersError } =
+        await supabaseAdmin
+          .from("order_items")
+          .select("product_variant_id")
+          .in("product_variant_id", variantIdsToRemove);
+
+      if (checkOrdersError) {
+        console.error("Check order items error:", checkOrdersError);
+        // Continue anyway - better to skip deletion than fail entire update
+      }
+
+      const usedVariantIds =
+        usedInOrders?.map((item) => item.product_variant_id) || [];
+
+      // Delete ONLY variants not used in orders
+      const safeToDelete = variantIdsToRemove.filter(
+        (id) => !usedVariantIds.includes(id)
+      );
+
+      if (safeToDelete.length > 0) {
+        const { error: deleteVariantsError } = await supabaseAdmin
+          .from("product_variants")
+          .delete()
+          .in("id", safeToDelete);
+
+        if (deleteVariantsError) {
+          console.error("Delete unused variants error:", deleteVariantsError);
+          // Don't return error - product is already updated successfully
+        }
+      }
+
+      // Log variants that couldn't be deleted (used in past orders)
+      const protectedVariants = variantIdsToRemove.filter((id) =>
+        usedVariantIds.includes(id)
+      );
+
+      if (protectedVariants.length > 0) {
+        console.warn(
+          `Note: ${protectedVariants.length} variant(s) could not be deleted because they are referenced in past orders. These variants are preserved for order history.`
+        );
+      }
     }
 
     // CACHE INVALIDATION: Clear cached pages to show updated data

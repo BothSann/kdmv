@@ -57,7 +57,7 @@ export default function UserChangePasswordForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="w-1/2 mt-10">
+    <form onSubmit={handleSubmit} className="w-full lg:w-1/2 mt-10">
       <div className="grid grid-cols-1 gap-6">
         <div className="space-y-4">
           <Label htmlFor="current_password">Current Password</Label>

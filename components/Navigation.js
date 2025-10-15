@@ -13,7 +13,7 @@ export default function Navigation() {
   const { user } = useAuthStore();
   return (
     <nav className="z-10">
-      <ul className="flex items-center gap-2">
+      <ul className="flex items-center lg:gap-2">
         <>
           <Button variant="ghost" asChild>
             <Link href="/dashboard">

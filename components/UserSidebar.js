@@ -33,7 +33,7 @@ const navLinks = [
 export function UserSidebar() {
   const pathname = usePathname();
   return (
-    <nav className="border-r border-border ">
+    <nav className="border-r border-border hidden md:block">
       <ul className="flex flex-col space-y-4 h-full">
         {navLinks.map((link) => {
           const isActive = pathname === link.href;
@@ -54,9 +54,9 @@ export function UserSidebar() {
           );
         })}
 
-        <li className="mt-auto">
+        {/* <li className="mt-auto">
           <LogoutButton />
-        </li>
+        </li> */}
       </ul>
     </nav>
   );
