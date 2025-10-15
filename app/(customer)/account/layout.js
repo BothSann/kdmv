@@ -6,7 +6,7 @@ export default function AccountLayout({ children }) {
       <UserSidebar />
 
       {/* Scrollable content area with custom scrollbar */}
-      <main className="scrollbar-hide w-full mx-auto md:mx-0 py-8 lg:overflow-y-auto lg:overflow-x-hidden">
+      <main className="scrollbar-hide w-full mx-auto md:mx-0 pb-8 lg:overflow-y-auto lg:overflow-x-hidden">
         {children}
       </main>
     </div>
