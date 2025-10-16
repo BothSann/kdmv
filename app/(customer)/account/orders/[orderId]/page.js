@@ -14,7 +14,6 @@ import {
   MapPinHouse,
   PackageCheck,
   PackageOpen,
-  Truck,
   TruckElectric,
 } from "lucide-react";
 import Image from "next/image";
@@ -28,8 +27,6 @@ export async function generateMetadata({ params }) {
   const userId = user?.id;
 
   const { order, error } = await getOrderDetails(orderId, userId);
-
-  console.log(order);
 
   if (error || !order) {
     return {
