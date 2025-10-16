@@ -82,7 +82,6 @@ export async function confirmOrderPayment(
     const { data: order } = await supabaseAdmin
       .from("orders")
       .update({
-        status: "CONFIRMED",
         payment_status: "PAID",
         updated_at: new Date().toISOString(),
       })
@@ -119,12 +118,12 @@ export async function confirmOrderPayment(
       .eq("customer_id", order.customer_id);
 
     // Create status history
-    await supabaseAdmin.from("order_status_history").insert({
-      order_id: orderId,
-      status: "CONFIRMED",
-      notes: "Payment completed successfully",
-      changed_by: order.customer_id,
-    });
+    // await supabaseAdmin.from("order_status_history").insert({
+    //   order_id: orderId,
+    //   status: "CONFIRMED",
+    //   notes: "Payment completed successfully",
+    //   changed_by: order.customer_id,
+    // });
 
     revalidatePath("/checkouts");
     return { success: true };

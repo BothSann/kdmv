@@ -24,12 +24,30 @@ export default function OrderItem({ order }) {
   // Determine the badge variant based on status
   const getBadgeVariant = (status) => {
     switch (status) {
-      case "CONFIRMED":
-        return "success";
       case "PENDING":
+      case "CONFIRMED":
         return "warning";
+      case "DELIVERED":
+        return "success";
+      case "CANCELLED":
+        return "destructive";
       default:
         return "default"; // Or another appropriate default variant
+    }
+  };
+
+  const statusTextToDisplay = (status) => {
+    switch (status) {
+      case "PENDING":
+        return "Processing";
+      case "CONFIRMED":
+        return "Preparing Order";
+      case "DELIVERED":
+        return "Delivered";
+      case "CANCELLED":
+        return "Cancelled";
+      default:
+        return status;
     }
   };
 
@@ -52,7 +70,7 @@ export default function OrderItem({ order }) {
 
           <div className="space-x-3 text-sm">
             <Badge className="font-semibold" variant={getBadgeVariant(status)}>
-              {status}
+              {statusTextToDisplay(status)}
             </Badge>
             <span>Qty. {totalQuantity}</span>
           </div>
