@@ -182,41 +182,41 @@ export default async function OrderDetailPage({ params }) {
         <CardContent>
           <div className="flex items-center justify-between">
             {/* Step 1: Processing (PENDING) */}
-            <div className="flex flex-col items-center gap-2">
+            <div className="flex flex-col items-center gap-1 lg:gap-2">
               <div
                 className={`rounded-full p-1.5 lg:p-2 flex items-center justify-center ${processingStep.className}`}
               >
-                <processingStep.IconComponent className="w-4 h-4 lg:w-6 lg:h-6" />
+                <processingStep.IconComponent className="w-5 h-5 lg:w-6 lg:h-6" />
               </div>
               <span className="text-xs lg:text-sm">Processing</span>
             </div>
 
             {/* Step 2: Preparing Order (CONFIRMED) */}
-            <div className="flex flex-col items-center gap-2">
+            <div className="flex flex-col items-center gap-1 lg:gap-2">
               <div
                 className={`rounded-full p-1.5 lg:p-2 flex items-center justify-center ${preparingStep.className}`}
               >
-                <preparingStep.IconComponent className="w-4 h-4 lg:w-6 lg:h-6" />
+                <preparingStep.IconComponent className="w-5 h-5 lg:w-6 lg:h-6" />
               </div>
               <span className="text-xs lg:text-sm">Preparing Order</span>
             </div>
 
             {/* Step 3: Shipped (SHIPPED) */}
-            <div className="flex flex-col items-center gap-2">
+            <div className="flex flex-col items-center gap-1 lg:gap-2">
               <div
                 className={`rounded-full p-1.5 lg:p-2 flex items-center justify-center ${shippedStep.className}`}
               >
-                <shippedStep.IconComponent className="w-4 h-4 lg:w-6 lg:h-6" />
+                <shippedStep.IconComponent className="w-5 h-5 lg:w-6 lg:h-6" />
               </div>
               <span className="text-xs lg:text-sm">Shipped</span>
             </div>
 
             {/* Step 4: Delivered (DELIVERED) */}
-            <div className="flex flex-col items-center gap-2">
+            <div className="flex flex-col items-center gap-1 lg:gap-2">
               <div
                 className={`rounded-full p-1.5 lg:p-2 flex items-center justify-center ${deliveredStep.className}`}
               >
-                <deliveredStep.IconComponent className="w-4 h-4 lg:w-6 lg:h-6" />
+                <deliveredStep.IconComponent className="w-5 h-5 lg:w-6 lg:h-6" />
               </div>
               <span className="text-xs lg:text-sm">Delivered</span>
             </div>
