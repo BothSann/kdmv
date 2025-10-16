@@ -129,7 +129,7 @@ export default function CartItem({ item }) {
   };
 
   return (
-    <div className="flex gap-2 lg:gap-4 relative">
+    <div className="flex gap-2.5 lg:gap-4 relative">
       {/* Product Image */}
       <div className="relative w-18 h-18 lg:w-24 lg:h-24 flex-shrink-0">
         <Image
