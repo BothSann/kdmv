@@ -23,7 +23,7 @@ export default async function RootLayout({ children }) {
           enableSystem
           disableTransitionOnChange
         >
-          <Toaster richColors position="top-center" expand visibleToasts={2} />
+          <Toaster richColors position="top-center" expand visibleToasts={1} />
 
           <AuthProvider>{children}</AuthProvider>
         </ThemeProvider>
