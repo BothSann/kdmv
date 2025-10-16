@@ -168,15 +168,10 @@ export default async function OrderDetailPage({ params }) {
 
         <Badge
           variant={paymentStatusBadgeVariant}
-          className="lg:text-base lg:px-6 gap-2"
+          className="lg:text-base lg:px-4 gap-2"
         >
           {paymentStatus}
-          {paymentStatus === "PAID" && (
-            <BadgeCheck className="scale-125lg:scale-150" />
-          )}
-          {paymentStatus === "PENDING" && (
-            <Clock className="scale-125 lg:scale-150" />
-          )}
+          <BadgeCheck className="scale-125 lg:scale-150" />
         </Badge>
       </div>
 
