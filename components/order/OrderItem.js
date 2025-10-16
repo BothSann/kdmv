@@ -56,7 +56,7 @@ export default function OrderItem({ order }) {
       <Card className="mt-6 cursor-pointer">
         <CardContent className="space-y-6">
           <div className="flex items-start justify-between text-sm flex-col lg:flex-row lg:items-center space-y-2 lg:space-y-0">
-            <Badge variant="outline" className="text-xs lg:text-sm font-mono">
+            <Badge variant="outline" className="text-sm lg:text-base font-mono">
               {orderNumber}
             </Badge>
             <span className="text-xs lg:text-sm text-muted-foreground">
