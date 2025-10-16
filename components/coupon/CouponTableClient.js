@@ -102,7 +102,7 @@ export default function CouponTableClient({ coupons, pagination }) {
         </div>
       )}
 
-      <Table className="mt-10 border rounded-lg">
+      <Table className="mt-10 border">
         <TableHeader>
           <TableRow>
             {tableHeaders.map((header) => (

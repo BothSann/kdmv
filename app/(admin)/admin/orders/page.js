@@ -1,18 +1,18 @@
 import OrderTable from "@/components/order/OrderTable";
+import PaginationStateManager from "@/components/PaginationStateManager";
 import TableSkeleton from "@/components/TableSkeleton";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
 import { Suspense } from "react";
 
-export default function OrdersPage() {
+export default function OrdersPage({ searchParams }) {
   return (
     <>
+      <PaginationStateManager />
       <div className="flex justify-between items-center">
         <h1 className="text-4xl font-bold">Orders</h1>
       </div>
 
       <Suspense fallback={<TableSkeleton />}>
-        <OrderTable />
+        <OrderTable searchParams={searchParams} />
       </Suspense>
     </>
   );
