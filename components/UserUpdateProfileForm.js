@@ -179,6 +179,8 @@ export default function UserUpdateProfileForm() {
                   type="button"
                   onClick={triggerFileInput}
                   disabled={isPending}
+                  size="sm"
+                  className="text-xs"
                 >
                   {profile?.avatar_url ? "Change Avatar" : "Upload Avatar"}
                 </Button>
@@ -186,11 +188,12 @@ export default function UserUpdateProfileForm() {
                 {previewUrl && (
                   <Button
                     type="button"
-                    variant="destructive"
+                    variant="outline"
                     onClick={() => setPreviewUrl(null)}
                     disabled={isPending}
+                    size="sm"
                   >
-                    <Trash className="w-4 h-4" />
+                    <Trash />
                   </Button>
                 )}
               </div>

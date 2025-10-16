@@ -131,7 +131,7 @@ export default function CartItem({ item }) {
   return (
     <div className="flex gap-2 lg:gap-4 relative">
       {/* Product Image */}
-      <div className="relative w-24 h-24 flex-shrink-0">
+      <div className="relative w-18 h-18 lg:w-24 lg:h-24 flex-shrink-0">
         <Image
           src={product.banner_image_url}
           alt={product.name}
@@ -141,18 +141,18 @@ export default function CartItem({ item }) {
       </div>
 
       {/* Product Info */}
-      <div className="flex-1 space-y-2">
+      <div className="flex-1 space-y-1 lg:space-y-2">
         <div className="flex items-center justify-between">
-          <h4 className="font-jost text-lg line-clamp-1">
+          <h4 className="font-jost text-base lg:text-lg line-clamp-1">
             {product.name}{" "}
             <span className="text-sm text-muted-foreground">
-              (&minus;{discountPercentage}%)
+              {hasDiscount && `(${discountPercentage}%)`}
             </span>
           </h4>
           <Button
             variant="ghost"
             size="sm"
-            className="self-start"
+            className="self-start "
             onClick={handleRemove}
             disabled={isPending}
           >
@@ -165,7 +165,7 @@ export default function CartItem({ item }) {
         </div>
 
         {/* Color and Size */}
-        <div className="text-sm text-muted-foreground flex flex-col">
+        <div className="text-xs lg:text-sm text-muted-foreground flex flex-col">
           <span>Color: {variant.colors?.name}</span>
           <span>Size: {variant.sizes?.name}</span>
         </div>
@@ -186,7 +186,7 @@ export default function CartItem({ item }) {
         <div className="flex items-center justify-between">
           <div className="flex items-center">
             <Button
-              variant="outline"
+              variant="ghost lg:outline"
               size="sm"
               onClick={handleDecrease}
               disabled={item.quantity <= 1 || isOutOfStock || isUpdating}
@@ -204,7 +204,7 @@ export default function CartItem({ item }) {
               className="w-10 lg:w-16 focus-visible:ring-0 text-center md:text-base no-spin-buttons"
             />
             <Button
-              variant="outline"
+              variant="ghost lg:outline"
               size="sm"
               onClick={handleIncrease}
               disabled={isOutOfStock || !canIncrease || isUpdating}
@@ -216,14 +216,16 @@ export default function CartItem({ item }) {
           <span className="text-lg font-jost">
             {hasDiscount ? (
               <div className="flex flex-col items-end">
-                <span className="text-sm text-muted-foreground line-through">
+                <span className="text-xs lg:text-sm text-muted-foreground line-through">
                   {formatCurrency(product.base_price * item.quantity)}
                 </span>
 
-                <span>{formatCurrency(discountedPrice * item.quantity)}</span>
+                <span className="text-base lg:text-lg font-jost">
+                  {formatCurrency(discountedPrice * item.quantity)}
+                </span>
               </div>
             ) : (
-              <span className="text-lg font-jost">
+              <span className="text-base lg:text-lg font-jost">
                 {formatCurrency(
                   item.variant.product.base_price * item.quantity
                 )}
