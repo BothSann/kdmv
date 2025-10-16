@@ -29,11 +29,11 @@ const useAuthStore = create((set, get) => ({
     // Use getUser() instead of getSession() for security
     // getUser() validates the JWT with the Auth server
     const { user, error } = await getCurrentUserAction();
-    console.log("User from calling getUser() (createServerClient ):", user);
+    // console.log("User from calling getUser() (createServerClient ):", user);
 
     if (!error && user) {
       set({ user });
-      console.log("User set:", user);
+      // console.log("User set:", user);
       await get().fetchAndSetUserProfile(user.id);
     } else {
       // No user or error - clear auth and cart
@@ -95,7 +95,7 @@ const useAuthStore = create((set, get) => ({
     const { profile, error } = await getUserProfileAction(userId);
 
     if (!error && profile) {
-      console.log("Fetching user profile done, setting profile:", profile);
+      // console.log("Fetching user profile done, setting profile:", profile);
       set({ profile, role: profile.role });
     } else {
       console.error("Profile fetch error:", error);
