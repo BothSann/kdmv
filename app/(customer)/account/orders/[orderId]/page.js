@@ -8,10 +8,14 @@ import { formatCurrency } from "@/lib/utils";
 import {
   BadgeCheck,
   ChevronLeft,
+  CircleCheckBig,
   CircleDollarSign,
   Clock,
   MapPinHouse,
+  PackageCheck,
   PackageOpen,
+  Truck,
+  TruckElectric,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -24,6 +28,8 @@ export async function generateMetadata({ params }) {
   const userId = user?.id;
 
   const { order, error } = await getOrderDetails(orderId, userId);
+
+  console.log(order);
 
   if (error || !order) {
     return {
@@ -63,6 +69,56 @@ export default async function OrderDetailPage({ params }) {
   const promoCode = order?.promo_codes?.code;
   const promoDiscount = order?.promo_codes?.discount_percentage;
 
+  const deliveryStatus = order?.status;
+
+  // Helper function to determine styling and icon components for each step
+  const getStepConfig = (stepKey) => {
+    let isComplete = false;
+    let bgColor = "bg-ring/20"; // Default pending background
+    let textColor = "text-ring"; // Default pending text
+    let IconComponent = null; // Default icon placeholder
+
+    switch (stepKey) {
+      case "processing":
+        isComplete =
+          deliveryStatus === "PENDING" ||
+          deliveryStatus === "CONFIRMED" ||
+          deliveryStatus === "SHIPPED" ||
+          deliveryStatus === "DELIVERED";
+        IconComponent = isComplete ? CircleCheckBig : PackageOpen;
+        break;
+      case "preparing":
+        isComplete =
+          deliveryStatus === "CONFIRMED" ||
+          deliveryStatus === "SHIPPED" ||
+          deliveryStatus === "DELIVERED";
+        IconComponent = isComplete ? CircleCheckBig : PackageCheck;
+        break;
+      case "shipped":
+        isComplete =
+          deliveryStatus === "SHIPPED" || deliveryStatus === "DELIVERED";
+        IconComponent = isComplete ? CircleCheckBig : TruckElectric;
+        break;
+      case "delivered":
+        isComplete = deliveryStatus === "DELIVERED";
+        IconComponent = isComplete ? CircleCheckBig : PackageCheck; // Or another icon
+        break;
+      default:
+        break;
+    }
+
+    if (isComplete) {
+      bgColor = "bg-success";
+      textColor = "text-white";
+    }
+
+    return {
+      className: `${bgColor} ${textColor}`,
+      IconComponent,
+      isComplete,
+    };
+  };
+
   const getPaymentStatusBadgeVariant = (status) => {
     switch (status) {
       case "PENDING":
@@ -75,7 +131,31 @@ export default async function OrderDetailPage({ params }) {
         return "default";
     }
   };
+
+  const deliveryStatusTextToDisplay = (status) => {
+    switch (status) {
+      case "PENDING":
+        return "Processing";
+      case "CONFIRMED":
+        return "Preparing Order";
+      case "SHIPPED":
+        return "Shipped";
+      case "DELIVERED":
+        return "Delivered";
+      case "CANCELLED":
+        return "Cancelled";
+      default:
+        return status;
+    }
+  };
+
   const paymentStatusBadgeVariant = getPaymentStatusBadgeVariant(paymentStatus);
+
+  // Get configurations for each step
+  const processingStep = getStepConfig("processing");
+  const preparingStep = getStepConfig("preparing");
+  const shippedStep = getStepConfig("shipped");
+  const deliveredStep = getStepConfig("delivered");
 
   return (
     <>
@@ -102,6 +182,55 @@ export default async function OrderDetailPage({ params }) {
           )}
         </Badge>
       </div>
+
+      <Card className="mb-4">
+        <CardHeader>
+          <CardTitle>Delivery Status</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center justify-between">
+            {/* Step 1: Processing (PENDING) */}
+            <div className="flex flex-col items-center gap-2">
+              <div
+                className={`rounded-full p-1.5 lg:p-2 flex items-center justify-center ${processingStep.className}`}
+              >
+                <processingStep.IconComponent className="w-4 h-4 lg:w-6 lg:h-6" />
+              </div>
+              <span className="text-xs lg:text-sm">Processing</span>
+            </div>
+
+            {/* Step 2: Preparing Order (CONFIRMED) */}
+            <div className="flex flex-col items-center gap-2">
+              <div
+                className={`rounded-full p-1.5 lg:p-2 flex items-center justify-center ${preparingStep.className}`}
+              >
+                <preparingStep.IconComponent className="w-4 h-4 lg:w-6 lg:h-6" />
+              </div>
+              <span className="text-xs lg:text-sm">Preparing Order</span>
+            </div>
+
+            {/* Step 3: Shipped (SHIPPED) */}
+            <div className="flex flex-col items-center gap-2">
+              <div
+                className={`rounded-full p-1.5 lg:p-2 flex items-center justify-center ${shippedStep.className}`}
+              >
+                <shippedStep.IconComponent className="w-4 h-4 lg:w-6 lg:h-6" />
+              </div>
+              <span className="text-xs lg:text-sm">Shipped</span>
+            </div>
+
+            {/* Step 4: Delivered (DELIVERED) */}
+            <div className="flex flex-col items-center gap-2">
+              <div
+                className={`rounded-full p-1.5 lg:p-2 flex items-center justify-center ${deliveredStep.className}`}
+              >
+                <deliveredStep.IconComponent className="w-4 h-4 lg:w-6 lg:h-6" />
+              </div>
+              <span className="text-xs lg:text-sm">Delivered</span>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
       <div className="grid grid-cols-1 lg:grid-cols-[1.55fr_1fr] gap-4 items-start">
         <Card>
