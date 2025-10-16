@@ -184,7 +184,7 @@ export default async function OrderDetailPage({ params }) {
             {/* Step 1: Processing (PENDING) */}
             <div className="flex flex-col items-center gap-2">
               <div
-                className={`rounded-full p-1.5 lg:p-2 flex items-center justify-center ${processingStep.className}`}
+                className={`rounded-full p-2 flex items-center justify-center ${processingStep.className}`}
               >
                 <processingStep.IconComponent className="w-5 h-5 lg:w-6 lg:h-6" />
               </div>
@@ -194,7 +194,7 @@ export default async function OrderDetailPage({ params }) {
             {/* Step 2: Preparing Order (CONFIRMED) */}
             <div className="flex flex-col items-center gap-2">
               <div
-                className={`rounded-full p-1.5 lg:p-2 flex items-center justify-center ${preparingStep.className}`}
+                className={`rounded-full p-2 flex items-center justify-center ${preparingStep.className}`}
               >
                 <preparingStep.IconComponent className="w-5 h-5 lg:w-6 lg:h-6" />
               </div>
@@ -204,7 +204,7 @@ export default async function OrderDetailPage({ params }) {
             {/* Step 3: Shipped (SHIPPED) */}
             <div className="flex flex-col items-center gap-2">
               <div
-                className={`rounded-full p-1.5 lg:p-2 flex items-center justify-center ${shippedStep.className}`}
+                className={`rounded-full p-2 flex items-center justify-center ${shippedStep.className}`}
               >
                 <shippedStep.IconComponent className="w-5 h-5 lg:w-6 lg:h-6" />
               </div>
@@ -214,7 +214,7 @@ export default async function OrderDetailPage({ params }) {
             {/* Step 4: Delivered (DELIVERED) */}
             <div className="flex flex-col items-center gap-2">
               <div
-                className={`rounded-full p-1.5 lg:p-2 flex items-center justify-center ${deliveredStep.className}`}
+                className={`rounded-full p-2 flex items-center justify-center ${deliveredStep.className}`}
               >
                 <deliveredStep.IconComponent className="w-5 h-5 lg:w-6 lg:h-6" />
               </div>
