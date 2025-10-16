@@ -48,7 +48,7 @@ export default function CartDrawer() {
         </Button>
       </SheetTrigger>
       <SheetContent
-        className="md:max-w-lg px-4 lg:px-8 py-6 dark:bg-primary-foreground"
+        className="md:max-w-lg px-4 lg:px-8 pt-4 pb-2 lg:py-6 dark:bg-primary-foreground"
         onOpenAutoFocus={(e) => e.preventDefault()}
       >
         <SheetHeader className="px-0 py-0 lg:py-4">
@@ -72,7 +72,7 @@ export default function CartDrawer() {
         {items.length > 0 && (
           <>
             {/* Cart Items */}
-            <div className="flex-1 overflow-y-auto pt-8 border-t border-border scrollbar-hide">
+            <div className="flex-1 overflow-y-auto pt-4 lg:pt-8 border-t border-border scrollbar-hide">
               <div className="space-y-10">
                 {items.map((item) => (
                   <CartItem key={item.id} item={item} />
@@ -81,7 +81,7 @@ export default function CartDrawer() {
             </div>
 
             {/* Footer */}
-            <SheetFooter className="px-0 pb-0 pt-6 border-t border-border">
+            <SheetFooter className="px-0 pb-0 pt-4 lg:pt-6 border-t border-border">
               <div className="space-y-1.5">
                 <div className="flex justify-between items-center">
                   <span className="uppercase text-base lg:text-xl font-bold tracking-widest">
