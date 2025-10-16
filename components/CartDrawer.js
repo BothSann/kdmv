@@ -48,7 +48,7 @@ export default function CartDrawer() {
         </Button>
       </SheetTrigger>
       <SheetContent
-        className="md:max-w-lg px-4 lg:px-8 pt-4 pb-2 lg:py-6 dark:bg-primary-foreground"
+        className="w-[90%] md:w-3/4 md:max-w-lg px-4 lg:px-8 pt-4 pb-2 lg:py-6 dark:bg-primary-foreground"
         onOpenAutoFocus={(e) => e.preventDefault()}
       >
         <SheetHeader className="px-0 py-0 lg:py-4">
@@ -98,7 +98,7 @@ export default function CartDrawer() {
 
                 <div className="space-y-1.5">
                   <Button
-                    className="w-full gap-1 lg:gap-2  py-4 lg:py-6 mt-4 text-sm lg:text-base"
+                    className="w-full gap-1 lg:gap-2 py-4 lg:py-6 mt-4 text-sm lg:text-base"
                     size="lg"
                     asChild
                     onClick={() => setDrawerOpen(false)}
