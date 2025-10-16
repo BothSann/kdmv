@@ -141,8 +141,8 @@ export default function CartItem({ item }) {
       </div>
 
       {/* Product Info */}
-      <div className="flex-1 space-y-1 lg:space-y-2">
-        <div className="flex items-center justify-between">
+      <div className="flex-1 lg:space-y-2">
+        <div className="flex justify-between">
           <h4 className="font-jost text-base lg:text-lg line-clamp-1">
             {product.name}{" "}
             <span className="text-sm text-muted-foreground">
@@ -183,7 +183,7 @@ export default function CartItem({ item }) {
           </p>
         )}
 
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between mt-2">
           <div className="flex items-center">
             <Button
               variant="ghost lg:outline"
