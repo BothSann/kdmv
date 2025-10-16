@@ -51,8 +51,10 @@ export default function CartDrawer() {
         className="md:max-w-lg px-4 lg:px-8 py-6 dark:bg-primary-foreground"
         onOpenAutoFocus={(e) => e.preventDefault()}
       >
-        <SheetHeader className="px-0">
-          <SheetTitle className="text-2xl font-bold ">Your Cart</SheetTitle>
+        <SheetHeader className="px-0 py-0 lg:py-4">
+          <SheetTitle className="text-xl lg:text-2xl font-bold">
+            Your Cart
+          </SheetTitle>
         </SheetHeader>
 
         {items.length === 0 && (
@@ -82,35 +84,36 @@ export default function CartDrawer() {
             <SheetFooter className="px-0 pb-0 pt-6 border-t border-border">
               <div className="space-y-1.5">
                 <div className="flex justify-between items-center">
-                  <span className="uppercase text-xl font-bold tracking-widest">
+                  <span className="uppercase text-base lg:text-xl font-bold tracking-widest">
                     Subtotal
                   </span>
-                  <span className="text-xl font-jost">
+                  <span className="text-lg lg:text-xl font-jost">
                     {formatCurrency(total)}
                   </span>
                 </div>
 
-                <SheetDescription className="text-sm font-jost w-80 leading-tight">
+                <SheetDescription className="text-sm font-jost w-full lg:w-80 leading-tight">
                   Shipping, taxes, and coupon codes calculated at checkout.
                 </SheetDescription>
 
                 <div className="space-y-1.5">
                   <Button
-                    className="w-full py-6 mt-4 text-base"
+                    className="w-full gap-1 lg:gap-2  py-4 lg:py-6 mt-4 text-sm lg:text-base"
                     size="lg"
                     asChild
                     onClick={() => setDrawerOpen(false)}
                   >
                     <Link href="/checkouts">
-                      <DollarSign className="scale-105" />
+                      <DollarSign className="scale-90 lg:scale-105" />
                       Checkout
                     </Link>
                   </Button>
+
                   <Button
                     variant="link"
                     size="sm"
                     asChild
-                    className="w-full font-normal"
+                    className="w-full font-normal text-xs lg:text-sm"
                   >
                     <Link href="/">Continue Shopping</Link>
                   </Button>
