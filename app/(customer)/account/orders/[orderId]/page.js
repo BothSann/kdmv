@@ -182,7 +182,7 @@ export default async function OrderDetailPage({ params }) {
         <CardContent>
           <div className="flex items-center justify-between">
             {/* Step 1: Processing (PENDING) */}
-            <div className="flex flex-col items-center gap-1 lg:gap-2">
+            <div className="flex flex-col items-center gap-2">
               <div
                 className={`rounded-full p-1.5 lg:p-2 flex items-center justify-center ${processingStep.className}`}
               >
@@ -192,7 +192,7 @@ export default async function OrderDetailPage({ params }) {
             </div>
 
             {/* Step 2: Preparing Order (CONFIRMED) */}
-            <div className="flex flex-col items-center gap-1 lg:gap-2">
+            <div className="flex flex-col items-center gap-2">
               <div
                 className={`rounded-full p-1.5 lg:p-2 flex items-center justify-center ${preparingStep.className}`}
               >
@@ -202,7 +202,7 @@ export default async function OrderDetailPage({ params }) {
             </div>
 
             {/* Step 3: Shipped (SHIPPED) */}
-            <div className="flex flex-col items-center gap-1 lg:gap-2">
+            <div className="flex flex-col items-center gap-2">
               <div
                 className={`rounded-full p-1.5 lg:p-2 flex items-center justify-center ${shippedStep.className}`}
               >
@@ -212,7 +212,7 @@ export default async function OrderDetailPage({ params }) {
             </div>
 
             {/* Step 4: Delivered (DELIVERED) */}
-            <div className="flex flex-col items-center gap-1 lg:gap-2">
+            <div className="flex flex-col items-center gap-2">
               <div
                 className={`rounded-full p-1.5 lg:p-2 flex items-center justify-center ${deliveredStep.className}`}
               >
