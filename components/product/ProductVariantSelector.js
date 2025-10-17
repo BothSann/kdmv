@@ -171,7 +171,7 @@ export default function ProductVariantSelector({
               </div>
             ))
           ) : (
-            <p className="text-base text-muted-foreground">
+            <p className="text-sm text-muted-foreground">
               {isCustomer
                 ? "Please select a color first"
                 : "Please select a color first to see available sizes"}
