@@ -69,6 +69,7 @@ export default function ProductImageSlider({ product }) {
                       src={image.image_url}
                       alt={image.image_url}
                       fill
+                      sizes="100vw"
                       quality={100}
                       className="object-cover object-center cursor-zoom-in"
                     />
@@ -95,7 +96,7 @@ export default function ProductImageSlider({ product }) {
             {imagesToUse.map((image, index) => (
               <CarouselItem
                 key={index}
-                className="basis-1/5"
+                className="basis-1/4 lg:basis-1/5"
                 onClick={() => handleGalleryClick(index)}
               >
                 <div
@@ -109,6 +110,7 @@ export default function ProductImageSlider({ product }) {
                     src={image.image_url}
                     alt={image.image_url}
                     fill
+                    sizes="100vw"
                     quality={100}
                     className="object-cover object-center cursor-pointer active:cursor-grabbing"
                   />

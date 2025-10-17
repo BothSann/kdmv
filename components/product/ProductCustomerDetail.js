@@ -153,8 +153,8 @@ export default function ProductCustomerDetail({ product }) {
 
   return (
     <div>
-      <div className="space-y-4.5">
-        <h1 className="text-5xl font-bold font-poppins leading-14">
+      <div className="space-y-2.5 lg:space-y-4.5">
+        <h1 className="text-4xl lg:text-5xl font-bold font-poppins leading-14">
           {product.name}
         </h1>
         <div className="flex items-center gap-4">
@@ -220,7 +220,9 @@ export default function ProductCustomerDetail({ product }) {
           <Label className="text-sm font-bold font-poppins uppercase tracking-widest">
             Description
           </Label>
-          <p className="text-foreground">{product.description}</p>
+          <p className="text-foreground text-sm lg:text-base">
+            {product.description}
+          </p>
         </div>
 
         {/* Add to Cart Button */}

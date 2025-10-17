@@ -30,7 +30,7 @@ export default async function ProductDetailPage({ params }) {
   }
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-[1fr_1fr] gap-20 items-start">
+    <div className="grid grid-cols-1 lg:grid-cols-[1fr_1fr] gap-8 items-start">
       <ProductImageSlider product={product} />
 
       {/* Suspense required for useSearchParams in Next.js 15 */}

@@ -24,7 +24,6 @@ const useAuthStore = create((set, get) => ({
 
   // 3. Initialize auth with event listeners
   initializeAuth: async () => {
-    console.log("Initializing auth...");
     // 1. Get the current user (verified from server)
     // Use getUser() instead of getSession() for security
     // getUser() validates the JWT with the Auth server
