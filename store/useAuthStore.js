@@ -65,9 +65,8 @@ const useAuthStore = create((set, get) => ({
 
                 if (!error && profile) {
                   set({ profile, role: profile.role });
+                  await useCartStore.getState().fetchCart();
                 }
-
-                // useCartStore.getState().fetchCart(); // Fire-and-forget (no await)
               } catch (error) {
                 console.error("Error fetching user profile:", error);
               }
