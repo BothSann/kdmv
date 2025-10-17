@@ -287,7 +287,7 @@ export default function CheckoutsPage() {
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 font-poppins">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 font-poppins">
       {showKHQRModal && paymentData && (
         <BakongKHQRModal
           isOpen={showKHQRModal}
@@ -299,7 +299,7 @@ export default function CheckoutsPage() {
         />
       )}
 
-      <div className="space-y-10 pr-10 border-r border-border">
+      <div className="space-y-10 pr-0 lg:pr-10 border-none lg:border-r lg:border-border">
         {/* Delivery Address */}
         <div>
           <h2 className="text-2xl font-bold mb-4 font-poppins">
@@ -336,7 +336,7 @@ export default function CheckoutsPage() {
         </div>
       </div>
 
-      <div className="space-y-10 pl-10">
+      <div className="space-y-10 pl-0 lg:pl-10">
         <div>
           {/* Payment Method */}
           <h2 className="text-2xl font-bold mb-4 font-poppins">
