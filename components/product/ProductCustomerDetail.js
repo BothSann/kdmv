@@ -154,7 +154,7 @@ export default function ProductCustomerDetail({ product }) {
   return (
     <div>
       <div className="space-y-2.5 lg:space-y-4.5">
-        <h1 className="text-4xl lg:text-5xl font-bold font-poppins leading-14">
+        <h1 className="text-5xl font-bold font-poppins leading-14">
           {product.name}
         </h1>
         <div className="flex items-center gap-4">
