@@ -5,10 +5,16 @@ import Image from "next/image";
 import { Badge } from "../ui/badge";
 import Link from "next/link";
 import { Button } from "../ui/button";
-import { Eye } from "lucide-react";
+import { Eye, MoreHorizontal, MoreVertical, View } from "lucide-react";
+
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "../ui/dropdown-menu";
 
 export default function OrderRow({ order }) {
-  console.log(order);
   const orderNumber = order.order_number;
   const totalAmount = formatCurrency(order.total_amount);
   const customerName = order.customer_name;
@@ -89,11 +95,19 @@ export default function OrderRow({ order }) {
         </Badge>
       </TableCell>
       <TableCell>
-        <Link href={`/admin/orders/${order.id}`}>
-          <Button variant="ghost" size="sm">
-            <Eye />
-          </Button>
-        </Link>
+        <DropdownMenu>
+          <DropdownMenuTrigger className="flex cursor-pointer items-center text-sm font-medium">
+            <MoreHorizontal />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuItem asChild>
+              <Link href={`/admin/orders/${order.id}`}>
+                <View />
+                View Details
+              </Link>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </TableCell>
     </TableRow>
   );

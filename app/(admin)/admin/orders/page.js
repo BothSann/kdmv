@@ -3,7 +3,7 @@ import PaginationStateManager from "@/components/PaginationStateManager";
 import TableSkeleton from "@/components/TableSkeleton";
 import { Suspense } from "react";
 
-export default function OrdersPage({ searchParams }) {
+export default function AdminOrdersPage({ searchParams }) {
   return (
     <>
       <PaginationStateManager />

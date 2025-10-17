@@ -35,6 +35,7 @@ const useAuthStore = create((set, get) => ({
       set({ user });
       // console.log("User set:", user);
       await get().fetchAndSetUserProfile(user.id);
+      await useCartStore.getState().fetchCart();
     } else {
       // No user or error - clear auth and cart
       // This handles logout in other browsers/tabs
@@ -67,7 +68,7 @@ const useAuthStore = create((set, get) => ({
                   set({ profile, role: profile.role });
                 }
 
-                useCartStore.getState().fetchCart(); // Fire-and-forget (no await)
+                // useCartStore.getState().fetchCart(); // Fire-and-forget (no await)
               } catch (error) {
                 console.error("Error fetching user profile:", error);
               }
