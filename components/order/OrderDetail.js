@@ -343,12 +343,9 @@ export function OrderSummaryCard({
             <span>Order Summary</span>
           </div>
 
-          <Badge
-            variant={paymentStatusBadgeVariant}
-            className="lg:text-base lg:px-4 gap-2"
-          >
+          <Badge variant={paymentStatusBadgeVariant} className="gap-2 text-xs">
             {paymentStatus}
-            <BadgeCheck className="scale-125 lg:scale-150" />
+            <BadgeCheck className="scale-125" />
           </Badge>
         </CardTitle>
       </CardHeader>
