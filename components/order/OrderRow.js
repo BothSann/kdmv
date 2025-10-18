@@ -34,9 +34,8 @@ export default function OrderRow({ order }) {
       case "PENDING":
         return "warning";
       case "CONFIRMED":
-        return "outline";
       case "SHIPPED":
-        return "default";
+        return "tertiary";
       case "DELIVERED":
         return "success";
       case "CANCELLED":

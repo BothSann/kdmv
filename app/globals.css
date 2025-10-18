@@ -23,6 +23,7 @@
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
   --color-success: var(--success);
+  --color-tertiary: var(--tertiary);
   --color-warning: var(--warning);
   --color-warning-bg: var(--warning-bg); /* New: Background color for warning */
   --color-warning-border: var(
@@ -75,8 +76,9 @@
   --muted-foreground: oklch(0.556 0 0);
   --accent: oklch(0.97 0 0);
   --accent-foreground: oklch(0.205 0 0);
-  --success: oklch(62.7% 0.194 149.214);
-  --warning: oklch(68.1% 0.162 75.834);
+  --success: oklch(52.7% 0.154 150.069);
+  --tertiary: oklch(52% 0.105 223.128);
+  --warning: oklch(55.4% 0.135 66.442);
   --warning-bg: oklch(0.985 0.027 75.834); /* ~bg-orange-50 */
   --warning-border: oklch(0.922 0.081 75.834); /* ~border-orange-200 */
   --warning-text: oklch(0.556 0.122 75.834); /* ~text-orange-700 */
@@ -85,7 +87,7 @@
     0.556 0.122 75.834
   ); /* ~dark:border-orange-800 */
   --warning-dark-text: oklch(0.708 0.122 75.834); /* ~dark:text-orange-300 */
-  --destructive: oklch(0.577 0.245 27.325);
+  --destructive: oklch(50.5% 0.213 27.518);
   --border: oklch(0.922 0 0);
   --input: oklch(0.922 0 0);
   --ring: oklch(0.708 0 0);
@@ -278,6 +280,23 @@
 
 .dark .custom-bullet:hover {
   background: var(--foreground);
+}
+
+/* styles.css or in a style tag */
+/* Example: Add a line to the *first* step only, starting from its top */
+.timeline-step::before {
+  content: "";
+  position: absolute;
+  top: 0; /* Start at the very top of the first step container */
+  left: 1.2rem; /* Align with the center of the icon */
+  width: 2px;
+  height: calc(100% + 2rem); /* Or a specific height if needed */
+  background-color: #d1d5db;
+  z-index: 0;
+}
+
+.timeline-step > :first-child {
+  z-index: 10; /* Ensure the icon container is above the line */
 }
 
 @keyframes animloader {

@@ -2,11 +2,20 @@
 
 import { validateCartStock } from "@/lib/api/server/carts";
 import { decodeKHQR, generateIndividualKHQR } from "@/lib/bakong-khqr";
+import {
+  getOrderById,
+  updateOrder,
+  addOrderStatusHistory,
+} from "@/lib/api/server/orders";
 
-import { generateUniqueOrderNumber } from "@/lib/utils";
+import {
+  generateUniqueOrderNumber,
+  generateStatusChangeNote,
+} from "@/lib/utils";
 import { supabaseAdmin } from "@/utils/supabase/supabaseAdmin";
+import { revalidatePath } from "next/cache";
 
-export async function createOrderAndInitiatePayment(orderData) {
+export async function createOrderAndInitiatePaymentAction(orderData) {
   try {
     // PHASE 1: VALIDATE
     if (!orderData.cartItems || orderData.cartItems.length === 0) {
@@ -134,7 +143,7 @@ export async function createOrderAndInitiatePayment(orderData) {
     await supabaseAdmin.from("order_status_history").insert({
       order_id: order.id,
       status: "PENDING",
-      notes: "Order created",
+      notes: "Order has been placed",
       changed_by: orderData.customerId,
     });
 
@@ -160,5 +169,83 @@ export async function createOrderAndInitiatePayment(orderData) {
   } catch (error) {
     console.error("Error creating order:", error);
     return { error: "An unexpected error occurred during order creation" };
+  }
+}
+
+export async function updateOrderStatusAction(
+  orderId,
+  newStatus,
+  notes = "",
+  adminId
+) {
+  try {
+    // STEP 1: Validate status
+    const validStatuses = [
+      "PENDING",
+      "CONFIRMED",
+      "SHIPPED",
+      "DELIVERED",
+      "CANCELLED",
+    ];
+
+    // STEP 2: Get current order (for validation)
+    const { data: currentOrder, error: fetchError } = await getOrderById(
+      orderId
+    );
+
+    if (fetchError) {
+      console.error("Order fetch error:", fetchError);
+      return { error: "Failed to fetch order" };
+    }
+
+    if (!validStatuses.includes(newStatus)) {
+      return { error: "Invalid order status" };
+    }
+
+    // Prevent redundant updates
+    if (currentOrder.status === newStatus) {
+      return { error: `Order is already ${newStatus}` };
+    }
+
+    // STEP 3: Update orders.status (CURRENT STATE) ✅
+    const { data: updatedOrder, error: updateError } = await updateOrder(
+      orderId,
+      {
+        status: newStatus,
+        updated_at: new Date().toISOString(),
+      }
+    );
+
+    if (updateError) {
+      return { error: updateError };
+    }
+
+    // STEP 4: Insert into order_status_history (AUDIT TRAIL)
+    const defaultNotes =
+      notes || generateStatusChangeNote(currentOrder.status, newStatus);
+    const { error: historyError } = await addOrderStatusHistory(
+      orderId,
+      newStatus,
+      defaultNotes,
+      adminId
+    );
+
+    if (historyError) {
+      console.error("History insert error:", historyError);
+      // Don't fail the whole operation - history is optional
+    }
+
+    // STEP 5: Revalidate the order detail page
+    revalidatePath(`/admin/orders/${orderId}`);
+    revalidatePath(`/account/orders/${orderId}`);
+
+    return {
+      success: true,
+      message: `Order status updated to ${newStatus}`,
+      order: updatedOrder,
+    };
+  } catch (error) {
+    console.error("Error updating order status:", error);
+    return { error: "Failed to update order status" };
   }
 }

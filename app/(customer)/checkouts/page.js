@@ -29,7 +29,7 @@ import useAuthStore from "@/store/useAuthStore";
 
 // 6. Actions/Services
 import { applyCouponAction } from "@/actions/coupon-action";
-import { createOrderAndInitiatePayment } from "@/actions/order-action";
+import { createOrderAndInitiatePaymentAction } from "@/actions/order-action";
 import { checkPaymentStatus } from "@/actions/payment-action";
 
 // 7. Utilities
@@ -220,7 +220,7 @@ export default function CheckoutsPage() {
           country: "Cambodia",
         },
       };
-      const result = await createOrderAndInitiatePayment(orderData);
+      const result = await createOrderAndInitiatePaymentAction(orderData);
 
       if (result.error) {
         toast.error(result.error);

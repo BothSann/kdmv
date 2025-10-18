@@ -19,15 +19,22 @@ export default async function AdminOrderDetailPage({ params }) {
     return <NotFound href="/admin/orders" title="Order" />;
   }
 
+  const orderWithAdminId = {
+    ...order,
+    admin_id: userId, // Current admin user ID
+  };
+
   return (
     <>
       <Header order={order} />
-      <OrderDetail order={order} role={role} />
+      <OrderDetail order={orderWithAdminId} role={role} />
     </>
   );
 }
 
 function Header({ order }) {
+  const orderNumber = order.order_number;
+
   return (
     <div className="flex justify-between items-center mb-10">
       <div className="flex items-center gap-4">
@@ -36,7 +43,7 @@ function Header({ order }) {
             <ChevronLeft />
           </Link>
         </Button>
-        <h2 className="text-3xl font-bold">{order.order_number}</h2>
+        <h2 className="text-3xl font-bold">{orderNumber}</h2>
       </div>
     </div>
   );
