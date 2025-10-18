@@ -8,10 +8,12 @@ import {
   ChevronLeft,
   CircleCheckBig,
   CircleDollarSign,
+  Clock,
   Contact,
   MapPinHouse,
   PackageCheck,
   PackageOpen,
+  ShoppingBag,
   TruckElectric,
 } from "lucide-react";
 
@@ -21,6 +23,7 @@ import OrderStatusUpdateDialog from "./OrderStatusUpdateDialog";
 export default function OrderDetail({ order, role }) {
   // console.log("Order Status History", order?.order_status_history);
   const isAdmin = role === "admin";
+  const adminId = order?.admin_id;
 
   const paymentStatus = order?.payment_status;
   const paymentMethod = order?.payment_method;
@@ -36,11 +39,13 @@ export default function OrderDetail({ order, role }) {
   const promoCode = order?.promo_codes?.code;
   const promoDiscount = order?.promo_codes?.discount_percentage;
 
-  const deliveryStatus = order?.status;
+  const deliveryStatus = order?.status; // Status inside order table
 
   const customerName = order?.customer_name;
   const customerEmail = order?.customer_email;
   const customerPhone = order?.customer_phone;
+
+  const orderHistory = order?.order_status_history || [];
 
   // Helper function to determine styling and icon components for each step
   const getStepConfig = (stepKey) => {
@@ -119,10 +124,15 @@ export default function OrderDetail({ order, role }) {
         shippedStep={shippedStep}
         deliveredStep={deliveredStep}
         isAdmin={isAdmin}
+        order={order}
+        adminId={adminId}
       />
 
       <div className="grid grid-cols-1 lg:grid-cols-[1.55fr_1fr] gap-4 items-start">
-        <OrderItemsCard orderItems={orderItems} />
+        <div>
+          <OrderItemsCard orderItems={orderItems} />
+          <OrderHistoryTimeline orderHistory={orderHistory} />
+        </div>
 
         <div className="flex flex-col gap-4">
           <OrderSummaryCard
@@ -163,13 +173,17 @@ export function OrderDeliveryStatusCard({
   shippedStep,
   deliveredStep,
   isAdmin,
+  order,
+  adminId,
 }) {
   return (
     <Card className="mb-4">
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
           Delivery Status
-          {isAdmin && <OrderStatusUpdateDialog />}
+          {isAdmin && (
+            <OrderStatusUpdateDialog order={order} adminId={adminId} />
+          )}
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -183,7 +197,6 @@ export function OrderDeliveryStatusCard({
             </div>
             <span className="text-xs lg:text-sm">Processing</span>
           </div>
-
           {/* Step 2: Preparing Order (CONFIRMED) */}
           <div className="flex flex-col items-center gap-2">
             <div
@@ -193,7 +206,6 @@ export function OrderDeliveryStatusCard({
             </div>
             <span className="text-xs lg:text-sm">Preparing Order</span>
           </div>
-
           {/* Step 3: Shipped (SHIPPED) */}
           <div className="flex flex-col items-center gap-2">
             <div
@@ -203,7 +215,6 @@ export function OrderDeliveryStatusCard({
             </div>
             <span className="text-xs lg:text-sm">Shipped</span>
           </div>
-
           {/* Step 4: Delivered (DELIVERED) */}
           <div className="flex flex-col items-center gap-2">
             <div
@@ -225,7 +236,7 @@ export function OrderItemsCard({ orderItems }) {
       <CardHeader className="border-b border-border">
         <CardTitle className="flex items-center gap-4">
           <PackageOpen className="w-6 h-6" />
-          Order Items
+          Product Details
         </CardTitle>
       </CardHeader>
       <>
@@ -454,6 +465,38 @@ export function OrderShippingAddressCard({
           <span className="text-muted-foreground">
             {cityProvince}, {country}
           </span>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+export function OrderHistoryTimeline({ orderHistory }) {
+  return (
+    <Card>
+      <CardHeader className="border-b border-border">
+        <CardTitle className="flex items-center gap-2.5">
+          <Clock />
+          Order History
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="flex flex-col space-y-8">
+        <div className="flex items-start gap-4 relative timeline-step">
+          <div className="bg-success rounded-full p-2 text-white flex items-center justify-center">
+            <ShoppingBag className="w-6 h-6" />
+          </div>
+          <div className="space-y-1">
+            <p className="text-base font-medium">Order Placed</p>
+
+            <div className="space-y-0.5">
+              <p className="text-sm font-medium text-muted-foreground">
+                An order has been placed.
+              </p>
+              <p className="text-xs text-muted-foreground">
+                Wed, 15 Dec 2021 - 05:34PM
+              </p>
+            </div>
+          </div>
         </div>
       </CardContent>
     </Card>
