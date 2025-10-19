@@ -514,7 +514,7 @@ export function OrderHistoryTimeline({ orderHistory }) {
       case "PENDING":
         return "Order Placed";
       case "CONFIRMED":
-        return "Payment Confirmed";
+        return "Order Confirmed";
       case "SHIPPED":
         return "Order Shipped";
       case "DELIVERED":
