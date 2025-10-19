@@ -23,7 +23,7 @@ export default function ProductItem({ product, className }) {
           {hasDiscount && (
             <Badge
               variant="destructive"
-              className="absolute top-0 right-0 z-10 text-base font-jost font-normal tracking-widest py-1 px-3"
+              className="absolute top-0 right-0 z-10 text-sm lg:text-base uppercase font-jost font-normal tracking-widest lg:px-2.5"
             >
               {discountPercentage}% off
             </Badge>
