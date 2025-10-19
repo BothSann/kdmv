@@ -135,7 +135,7 @@
   /* Example: Slightly lighter background/border for dark theme */
   /* --warning-bg: oklch(0.25 0.081 75.834); */
   /* --warning-border: oklch(0.6 0.122 75.834); */
-  --destructive: oklch(0.704 0.191 22.216);
+  --destructive: oklch(57.7% 0.245 27.325);
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
   --ring: oklch(0.556 0 0);
@@ -288,7 +288,7 @@
   content: "";
   position: absolute;
   top: 0; /* Start at the very top of the first step container */
-  left: 1.2rem; /* Align with the center of the icon */
+  left: 0; /* Align with the center of the icon */
   width: 2px;
   height: calc(100% + 2rem); /* Or a specific height if needed */
   background-color: #d1d5db;
