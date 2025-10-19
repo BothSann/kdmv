@@ -1,27 +1,30 @@
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { formatCurrency } from "@/lib/utils";
+import {
+  formatCurrency,
+  formatISODateToDayDateMonthYearWithAtTime,
+} from "@/lib/utils";
 
 import {
   BadgeCheck,
-  ChevronLeft,
   CircleCheckBig,
   CircleDollarSign,
-  Clock,
   Contact,
   MapPinHouse,
   PackageCheck,
   PackageOpen,
   ShoppingBag,
   TruckElectric,
+  CircleX,
+  History,
+  Package,
 } from "lucide-react";
 
 import Image from "next/image";
 import OrderStatusUpdateDialog from "./OrderStatusUpdateDialog";
 
 export default function OrderDetail({ order, role }) {
-  // console.log("Order Status History", order?.order_status_history);
+  console.log("Order Status History", order?.order_status_history);
   const isAdmin = role === "admin";
   const adminId = order?.admin_id;
 
@@ -68,7 +71,7 @@ export default function OrderDetail({ order, role }) {
           deliveryStatus === "CONFIRMED" ||
           deliveryStatus === "SHIPPED" ||
           deliveryStatus === "DELIVERED";
-        IconComponent = isComplete ? CircleCheckBig : PackageCheck;
+        IconComponent = isComplete ? CircleCheckBig : Package;
         break;
       case "shipped":
         isComplete =
@@ -77,7 +80,11 @@ export default function OrderDetail({ order, role }) {
         break;
       case "delivered":
         isComplete = deliveryStatus === "DELIVERED";
-        IconComponent = isComplete ? CircleCheckBig : PackageCheck; // Or another icon
+        IconComponent = isComplete ? CircleCheckBig : PackageCheck;
+        break;
+      case "cancelled":
+        isComplete = deliveryStatus === "CANCELLED";
+        IconComponent = isComplete ? CircleCheckBig : CircleX;
         break;
       default:
         break;
@@ -115,6 +122,7 @@ export default function OrderDetail({ order, role }) {
   const preparingStep = getStepConfig("preparing");
   const shippedStep = getStepConfig("shipped");
   const deliveredStep = getStepConfig("delivered");
+  const cancelledStep = getStepConfig("cancelled");
 
   return (
     <>
@@ -123,6 +131,7 @@ export default function OrderDetail({ order, role }) {
         preparingStep={preparingStep}
         shippedStep={shippedStep}
         deliveredStep={deliveredStep}
+        cancelledStep={cancelledStep}
         isAdmin={isAdmin}
         order={order}
         adminId={adminId}
@@ -168,10 +177,12 @@ export default function OrderDetail({ order, role }) {
 }
 
 export function OrderDeliveryStatusCard({
+  deliveryStatus,
   processingStep,
   preparingStep,
   shippedStep,
   deliveredStep,
+  cancelledStep,
   isAdmin,
   order,
   adminId,
@@ -224,6 +235,17 @@ export function OrderDeliveryStatusCard({
             </div>
             <span className="text-xs lg:text-sm">Delivered</span>
           </div>
+          {/* Step 5: Cancelled (CANCELLED) */}
+          {deliveryStatus === "CANCELLED" && (
+            <div className="flex flex-col items-center gap-2">
+              <div
+                className={`rounded-full p-2 flex items-center justify-center ${cancelledStep.className}`}
+              >
+                <cancelledStep.IconComponent className="w-5 h-5 lg:w-6 lg:h-6" />
+              </div>
+              <span className="text-xs lg:text-sm">Cancelled</span>
+            </div>
+          )}
         </div>
       </CardContent>
     </Card>
@@ -469,30 +491,133 @@ export function OrderShippingAddressCard({
 }
 
 export function OrderHistoryTimeline({ orderHistory }) {
+  const getStatusIcon = (status) => {
+    switch (status) {
+      case "PENDING":
+        return ShoppingBag;
+      case "CONFIRMED":
+        return PackageCheck;
+      case "SHIPPED":
+        return TruckElectric;
+      case "DELIVERED":
+        return PackageCheck;
+      case "CANCELLED":
+        return CircleX;
+      default:
+        return PackageCheck;
+    }
+  };
+
+  // Helper function to get status label
+  const getStatusLabel = (status) => {
+    switch (status) {
+      case "PENDING":
+        return "Order Placed";
+      case "CONFIRMED":
+        return "Payment Confirmed";
+      case "SHIPPED":
+        return "Order Shipped";
+      case "DELIVERED":
+        return "Order Delivered";
+      case "CANCELLED":
+        return "Order Cancelled";
+      default:
+        return status;
+    }
+  };
+
+  // Helper function to get icon background color
+  const getStatusIconColor = (status) => {
+    switch (status) {
+      case "PENDING":
+        return "bg-warning text-white";
+      case "CONFIRMED":
+        return "bg-primary text-primary-foreground";
+      case "SHIPPED":
+        return "bg-tertiary text-white";
+      case "DELIVERED":
+        return "bg-success text-white";
+      case "CANCELLED":
+        return "bg-destructive text-white";
+      default:
+        return "bg-muted text-muted-foreground";
+    }
+  };
+
+  // Check if orderHistory exists and has items
+  if (!orderHistory || orderHistory.length === 0) {
+    return null; // Don't render if no history
+  }
+
+  // Sort history by changed_at (oldest first)
+  const sortedHistory = [...orderHistory].sort(
+    (a, b) => new Date(a.changed_at) - new Date(b.changed_at)
+  );
+
   return (
     <Card>
       <CardHeader className="border-b border-border">
         <CardTitle className="flex items-center gap-2.5">
-          <Clock />
+          <History />
           Order History
         </CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col space-y-8">
-        <div className="flex items-start gap-4 relative timeline-step">
-          <div className="bg-success rounded-full p-2 text-white flex items-center justify-center">
-            <ShoppingBag className="w-6 h-6" />
-          </div>
-          <div className="space-y-1">
-            <p className="text-base font-medium">Order Placed</p>
+        <div className="relative">
+          {/* Timeline vertical line */}
+          <div className="absolute left-4.5 top-0 bottom-0 w-0.5 bg-border" />
 
-            <div className="space-y-0.5">
-              <p className="text-sm font-medium text-muted-foreground">
-                An order has been placed.
-              </p>
-              <p className="text-xs text-muted-foreground">
-                Wed, 15 Dec 2021 - 05:34PM
-              </p>
-            </div>
+          {/* Timeline items */}
+          <div className="space-y-8">
+            {sortedHistory.map((history, index) => {
+              const StatusIcon = getStatusIcon(history.status);
+              const iconColor = getStatusIconColor(history.status);
+              const statusLabel = getStatusLabel(history.status);
+              const changedBy = history.profiles
+                ? `${history.profiles.first_name} ${history.profiles.last_name}`
+                : "System";
+              const isLast = index === sortedHistory.length - 1;
+
+              return (
+                <div
+                  key={history.id}
+                  className={`flex items-start gap-4 ${!isLast ? "pb-4" : ""}`}
+                >
+                  {/* Icon */}
+                  <div
+                    className={`${iconColor} rounded-full p-2 flex items-center justify-center relative z-10`}
+                  >
+                    <StatusIcon className="w-5 h-5 lg:w-6 lg:h-6" />
+                  </div>
+
+                  {/* Content */}
+                  <div className="flex-1 space-y-2">
+                    {/* Status label */}
+                    <p className="text-base font-semibold">{statusLabel}</p>
+
+                    {/* Notes and timestamp */}
+                    <div className="space-y-0.5">
+                      {history.notes && (
+                        <p className="text-sm text-muted-foreground">
+                          {history.notes}
+                        </p>
+                      )}
+                      <p className="text-xs text-muted-foreground">
+                        {formatISODateToDayDateMonthYearWithAtTime(
+                          history.changed_at
+                        )}
+                      </p>
+                    </div>
+
+                    {/* Changed by */}
+                    <p className="text-xs text-muted-foreground">
+                      Modified by:{" "}
+                      <span className="font-medium">{changedBy}</span>
+                    </p>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       </CardContent>

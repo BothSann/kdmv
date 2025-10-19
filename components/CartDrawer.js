@@ -61,7 +61,7 @@ export default function CartDrawer() {
           <div className="flex flex-col items-center justify-center h-full text-center">
             <ShoppingCart className="w-16 h-16 text-muted-foreground mb-4" />
             <div>
-              <p className="text-lg font-medium">Your cart is empty</p>
+              <p className="text-base font-medium">Your cart is empty</p>
               <p className="text-sm text-muted-foreground">
                 Add some items to get started
               </p>
