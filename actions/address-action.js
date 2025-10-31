@@ -40,6 +40,45 @@ export async function createAddressAction(customerId, addressData) {
   };
 }
 
+export async function updateAddressAction(addressId, addressData) {
+  const cleanFirstName = sanitizeName(addressData.first_name);
+  const cleanLastName = sanitizeName(addressData.last_name);
+
+  if (!isValidCambodiaPhoneNumber(addressData.phone_number)) {
+    return { error: "Invalid Cambodian telephone number format" };
+  }
+
+  const { data, error } = await supabaseAdmin
+    .from("customer_addresses")
+    .update({
+      first_name: cleanFirstName,
+      last_name: cleanLastName,
+      phone_number: addressData.phone_number,
+      street_address: addressData.street_address,
+      apartment: addressData.apartment,
+      country: addressData.country,
+      city_province: addressData.city_province,
+      is_default: addressData.is_default,
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", addressId)
+    .select()
+    .single();
+
+  if (error) {
+    console.error("Error updating address:", error);
+    return { error: "Failed to update address" };
+  }
+
+  revalidatePath("/account/address");
+
+  return {
+    success: true,
+    address: data,
+    message: "Address updated successfully",
+  };
+}
+
 export async function deleteAddressAction(addressId) {
   const { error } = await supabaseAdmin
     .from("customer_addresses")

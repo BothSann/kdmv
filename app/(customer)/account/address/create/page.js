@@ -1,4 +1,4 @@
-import AddressForm from "@/components/address/AddressForm";
+import AddressCreateEditForm from "@/components/address/AddressCreateEditForm";
 import NotFound from "@/components/NotFound";
 import { Button } from "@/components/ui/button";
 import { getCurrentUser } from "@/lib/api/server/users";
@@ -23,7 +23,7 @@ export default async function AddressCreatePage() {
         <h2 className="text-3xl font-bold">Add New Address</h2>
       </div>
 
-      <AddressForm customerId={customerId} />
+      <AddressCreateEditForm customerId={customerId} />
     </>
   );
 }

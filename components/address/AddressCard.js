@@ -63,11 +63,11 @@ export default function AddressCard({ address, customerId }) {
         <div className="ml-auto flex flex-col items-end gap-4">
           {isDefault && <Badge variant="default">Default</Badge>}
           <div className="flex items-center">
-            <Button variant="ghost" size="sm">
-              <Link href={`/account/address/${address.id}/edit`}>
+            <Link href={`/account/address/${address.id}/edit`}>
+              <Button variant="ghost" size="sm">
                 <PencilIcon />
-              </Link>
-            </Button>
+              </Button>
+            </Link>
             {!isDefault && (
               <>
                 <Button

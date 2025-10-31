@@ -15,13 +15,44 @@ import { ScrollArea } from "../ui/scroll-area";
 import { Checkbox } from "../ui/checkbox";
 import { Button } from "../ui/button";
 import { useState } from "react";
-import { createAddressAction } from "@/actions/address-action";
+import {
+  createAddressAction,
+  updateAddressAction,
+} from "@/actions/address-action";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
-export default function AddressForm({ customerId }) {
-  const [country, setCountry] = useState(COUNTRIES[0].value);
-  const [isDefault, setIsDefault] = useState(false);
+export default function AddressCreateEditForm({
+  customerId,
+  existingAddress = null,
+}) {
+  const isEditMode = Boolean(existingAddress);
+
+  const [firstName, setFirstName] = useState(existingAddress?.first_name || "");
+
+  const [lastName, setLastName] = useState(existingAddress?.last_name || "");
+
+  const [phoneNumber, setPhoneNumber] = useState(
+    existingAddress?.phone_number || ""
+  );
+
+  const [streetAddress, setStreetAddress] = useState(
+    existingAddress?.street_address || ""
+  );
+
+  const [apartment, setApartment] = useState(existingAddress?.apartment || "");
+
+  const [country, setCountry] = useState(
+    existingAddress?.country || COUNTRIES[0].value
+  );
+
+  const [cityProvince, setCityProvince] = useState(
+    existingAddress?.city_province || ""
+  );
+
+  const [isDefault, setIsDefault] = useState(
+    existingAddress?.is_default || false
+  );
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const router = useRouter();
@@ -33,7 +64,9 @@ export default function AddressForm({ customerId }) {
     const formData = new FormData(event.target);
 
     const addressData = {
-      customer_id: customerId,
+      // In EDIT mode: include ID
+      ...(isEditMode && { id: existingAddress.id }),
+
       first_name: formData.get("first_name"),
       last_name: formData.get("last_name"),
       phone_number: formData.get("phone_number"),
@@ -44,23 +77,32 @@ export default function AddressForm({ customerId }) {
       is_default: isDefault,
     };
 
-    const toastId = toast.loading("Creating address...");
+    const actionToUse = isEditMode ? updateAddressAction : createAddressAction;
+
+    const loadingMessage = isEditMode
+      ? "Updating address..."
+      : "Creating address...";
+
+    const toastId = toast.loading(loadingMessage);
+
     try {
-      const result = await createAddressAction(customerId, addressData);
+      const result = await actionToUse(
+        isEditMode ? existingAddress.id : customerId,
+        addressData
+      );
 
       if (result.error) {
         toast.error(result.error, { id: toastId });
-      } else {
-        toast.success(result.message, { id: toastId });
-        event.target.reset();
+        return;
       }
+
+      toast.success(result.message, { id: toastId });
     } catch (error) {
       toast.error(error.message, { id: toastId });
     } finally {
       setIsSubmitting(false);
+      router.push(`/account/address`);
     }
-
-    setIsSubmitting(false);
   };
   return (
     <Card className="w-full lg:w-3/4">
@@ -82,6 +124,8 @@ export default function AddressForm({ customerId }) {
               name="first_name"
               placeholder="Your first name"
               required
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
             />
           </div>
           <div className="space-y-4">
@@ -94,6 +138,8 @@ export default function AddressForm({ customerId }) {
               name="last_name"
               placeholder="Your last name"
               required
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
             />
           </div>
           <div className="space-y-4 col-span-2">
@@ -110,6 +156,8 @@ export default function AddressForm({ customerId }) {
                 name="phone_number"
                 placeholder="0123456789"
                 required
+                value={phoneNumber}
+                onChange={(e) => setPhoneNumber(e.target.value)}
               />
             </div>
           </div>
@@ -124,6 +172,8 @@ export default function AddressForm({ customerId }) {
               placeholder="Street, Building, Floor"
               className="truncate"
               required
+              value={streetAddress}
+              onChange={(e) => setStreetAddress(e.target.value)}
             />
           </div>
           <div className="space-y-4">
@@ -133,6 +183,8 @@ export default function AddressForm({ customerId }) {
               id="apartment"
               name="apartment"
               placeholder="Apt 5B"
+              value={apartment}
+              onChange={(e) => setApartment(e.target.value)}
             />
           </div>
           <div className="space-y-4">
@@ -161,11 +213,16 @@ export default function AddressForm({ customerId }) {
             <Label htmlFor="city_province">
               City/Province<span className="text-destructive">*</span>
             </Label>
-            <Select name="city_province" required>
+            <Select
+              name="city_province"
+              value={cityProvince}
+              onValueChange={setCityProvince}
+              required
+            >
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="Select a city/province" />
               </SelectTrigger>
-              <SelectContent position="bottom">
+              <SelectContent>
                 <ScrollArea className="h-48">
                   {CAMBODIA_PROVINCES.map((province) => (
                     <SelectItem key={province.value} value={province.value}>
@@ -181,6 +238,7 @@ export default function AddressForm({ customerId }) {
               id="default_address"
               checked={isDefault}
               onCheckedChange={setIsDefault}
+              disabled={isSubmitting}
             />
             <Label htmlFor="default_address">Set as default address</Label>
           </div>
