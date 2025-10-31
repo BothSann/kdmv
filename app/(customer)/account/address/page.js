@@ -1,3 +1,52 @@
-export default function AddressPage() {
-  return <h2 className="text-3xl font-bold">Address</h2>;
+import { Button } from "@/components/ui/button";
+import { MapPin, PlusIcon } from "lucide-react";
+import Link from "next/link";
+import AddressList from "@/components/address/AddressList";
+import { getCustomerAddresses } from "@/lib/api/server/addresses";
+import { getCurrentUser } from "@/lib/api/server/users";
+import NotFound from "@/components/NotFound";
+import EmptyState from "@/components/EmptyState";
+
+export default async function AddressPage() {
+  const { user, error: userError } = await getCurrentUser();
+  const customerId = user?.id;
+  const { addresses, error: addressesError } = await getCustomerAddresses(
+    customerId
+  );
+
+  if (userError || addressesError) {
+    return <NotFound href="/account/address" title="Addresses" />;
+  }
+
+  if (addresses.length === 0) {
+    return (
+      <>
+        <EmptyState
+          icon={MapPin}
+          title="You have no addresses yet"
+          description="Add an address to get started"
+          action={{
+            href: "/account/address/create",
+            label: "Add Address",
+          }}
+        />
+      </>
+    );
+  }
+
+  return (
+    <>
+      <div className="flex justify-between items-center">
+        <h2 className="text-3xl font-bold">Address</h2>
+        <Button asChild>
+          <Link href="/account/address/create">
+            <PlusIcon className="scale-80" />
+            Add Address
+          </Link>
+        </Button>
+      </div>
+
+      <AddressList addresses={addresses} customerId={customerId} />
+    </>
+  );
 }

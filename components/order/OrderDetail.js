@@ -565,7 +565,7 @@ export function OrderHistoryTimeline({ orderHistory }) {
       <CardContent className="flex flex-col space-y-8">
         <div className="relative">
           {/* Timeline vertical line */}
-          <div className="absolute left-[17px] top-0 bottom-0 w-0.5 bg-border" />
+          <div className="absolute left-[19px] top-0 bottom-0 w-0.5 bg-border" />
 
           {/* Timeline items */}
           <div className="space-y-8">

@@ -15,6 +15,7 @@ import { Badge } from "./ui/badge";
 import CartItem from "./CartItem";
 import { formatCurrency } from "@/lib/utils";
 import Link from "next/link";
+import EmptyState from "./EmptyState";
 
 export default function CartDrawer() {
   const { items, itemCount, totalPrice, isDrawerOpen, setDrawerOpen } =
@@ -58,15 +59,11 @@ export default function CartDrawer() {
         </SheetHeader>
 
         {items.length === 0 && (
-          <div className="flex flex-col items-center justify-center h-full text-center">
-            <ShoppingCart className="w-16 h-16 text-muted-foreground mb-4" />
-            <div>
-              <p className="text-base font-medium">Your cart is empty</p>
-              <p className="text-sm text-muted-foreground">
-                Add some items to get started
-              </p>
-            </div>
-          </div>
+          <EmptyState
+            icon={ShoppingCart}
+            title="Your cart is empty"
+            description="Add some items to get started"
+          />
         )}
 
         {items.length > 0 && (

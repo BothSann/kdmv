@@ -54,7 +54,6 @@ export default function RegisterForm() {
       const { success, error, message, authData } = await registerUserAction(
         registerData
       );
-      console.log("Auth data:", authData);
 
       if (error) {
         toast.error(error, { id: toastId });

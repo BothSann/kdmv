@@ -1,3 +1,4 @@
+import EmptyState from "@/components/EmptyState";
 import NotFound from "@/components/NotFound";
 import OrdersList from "@/components/order/OrdersList";
 import Spinner from "@/components/Spinner";
@@ -20,15 +21,11 @@ export default async function OrdersPage() {
 
   if (orders.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center h-full text-center">
-        <Package className="w-16 h-16 text-muted-foreground mb-4" />
-        <div>
-          <p className="text-base font-medium">You have no orders yet</p>
-          <p className="text-sm text-muted-foreground">
-            Browse our products and place an order
-          </p>
-        </div>
-      </div>
+      <EmptyState
+        icon={Package}
+        title="You have no orders yet"
+        description="Browse our products and place an order"
+      />
     );
   }
 

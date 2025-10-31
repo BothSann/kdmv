@@ -305,22 +305,6 @@ export default function CheckoutsPage() {
           <h2 className="text-2xl font-bold mb-4 font-poppins">
             Delivery Address
           </h2>
-
-          <Card>
-            <CardContent className="flex gap-5 items-start">
-              <Checkbox checked={true} className="mt-2" />
-              <div className="flex flex-col gap-0.5">
-                <p className="text-lg font-semibold">{fullName}</p>
-
-                <div>
-                  <p className="text-sm text-muted-foreground">
-                    {cityProvince}, Cambodia
-                  </p>
-                  <p className="text-sm text-muted-foreground">{telephone}</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
         </div>
 
         {/* Your Items */}
