@@ -45,8 +45,8 @@ export default function Footer() {
             </ul>
           </div>
 
-          <div className="flex items-center w-full">
-            <ul className="flex items-center space-x-6">
+          <div className="flex items-center w-full self-start">
+            <ul className="flex items-center space-x-4">
               <Link href="/">
                 <FaFacebookF size={26} />
               </Link>
