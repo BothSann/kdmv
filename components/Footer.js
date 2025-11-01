@@ -13,7 +13,7 @@ import {
 
 export default function Footer() {
   return (
-    <footer className="bg-foreground text-background dark:bg-primary-foreground dark:text-foreground pt-16 lg:pb-32 pb-16">
+    <footer className="bg-foreground text-background dark:bg-primary-foreground dark:text-foreground pt-16 lg:pb-32 pb-16 border-t border-border">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-10 lg:gap-0 items-center">
           <div className="flex flex-col items-start">
