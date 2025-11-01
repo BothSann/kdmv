@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 
-export default function Logo({ width = "w-26" }) {
+export default function Logo({ width = "w-26", className = "" }) {
   return (
     <Link href="/">
       <div className={`relative aspect-video ${width}`}>
@@ -12,7 +12,7 @@ export default function Logo({ width = "w-26" }) {
           fill
           quality={100}
           loading="lazy"
-          className="object-contain dark:invert"
+          className={`object-contain dark:invert ${className}`}
         />
       </div>
     </Link>
