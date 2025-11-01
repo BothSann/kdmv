@@ -87,7 +87,8 @@ export default function AddressCreateEditForm({
 
     try {
       const result = await actionToUse(
-        isEditMode ? existingAddress.id : customerId,
+        existingAddress?.id,
+        customerId,
         addressData
       );
 
@@ -111,7 +112,7 @@ export default function AddressCreateEditForm({
       </CardHeader>
       <CardContent>
         <form
-          className="grid grid-cols-1 lg:grid-cols-2 gap-4 space-y-4"
+          className="grid grid-cols-2 gap-4 space-y-4"
           onSubmit={handleSubmit}
         >
           <div className="space-y-4">

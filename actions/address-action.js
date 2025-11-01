@@ -1,7 +1,7 @@
 "use server";
 
 import { isValidCambodiaPhoneNumber, sanitizeName } from "@/lib/utils";
-import { supabaseAdmin } from "@/utils/supabase/supabaseAdmin";
+import { createSupabaseServerClient } from "@/utils/supabase/server";
 import { revalidatePath } from "next/cache";
 
 export async function createAddressAction(customerId, addressData) {
@@ -12,7 +12,8 @@ export async function createAddressAction(customerId, addressData) {
     return { error: "Invalid Cambodian telephone number format" };
   }
 
-  const { data, error } = await supabaseAdmin
+  const supabase = await createSupabaseServerClient();
+  const { data, error } = await supabase
     .from("customer_addresses")
     .insert({
       customer_id: customerId,
@@ -40,7 +41,7 @@ export async function createAddressAction(customerId, addressData) {
   };
 }
 
-export async function updateAddressAction(addressId, addressData) {
+export async function updateAddressAction(addressId, customerId, addressData) {
   const cleanFirstName = sanitizeName(addressData.first_name);
   const cleanLastName = sanitizeName(addressData.last_name);
 
@@ -48,7 +49,8 @@ export async function updateAddressAction(addressId, addressData) {
     return { error: "Invalid Cambodian telephone number format" };
   }
 
-  const { data, error } = await supabaseAdmin
+  const supabase = await createSupabaseServerClient();
+  const { data, error } = await supabase
     .from("customer_addresses")
     .update({
       first_name: cleanFirstName,
@@ -62,6 +64,7 @@ export async function updateAddressAction(addressId, addressData) {
       updated_at: new Date().toISOString(),
     })
     .eq("id", addressId)
+    .eq("customer_id", customerId)
     .select()
     .single();
 
@@ -79,11 +82,13 @@ export async function updateAddressAction(addressId, addressData) {
   };
 }
 
-export async function deleteAddressAction(addressId) {
-  const { error } = await supabaseAdmin
+export async function deleteAddressAction(addressId, customerId) {
+  const supabase = await createSupabaseServerClient();
+  const { error } = await supabase
     .from("customer_addresses")
     .delete()
-    .eq("id", addressId);
+    .eq("id", addressId)
+    .eq("customer_id", customerId);
 
   if (error) {
     console.error("Error deleting address:", error);
@@ -96,7 +101,8 @@ export async function deleteAddressAction(addressId) {
 }
 
 export async function setDefaultAddressAction(addressId, customerId) {
-  const { error } = await supabaseAdmin
+  const supabase = await createSupabaseServerClient();
+  const { error } = await supabase
     .from("customer_addresses")
     .update({ is_default: true })
     .eq("id", addressId)
