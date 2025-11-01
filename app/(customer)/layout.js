@@ -1,4 +1,3 @@
-import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 
 export default function CustomerLayout({ children }) {
@@ -8,7 +7,6 @@ export default function CustomerLayout({ children }) {
       <main className="max-w-7xl mx-auto w-full p-8 px-6 lg:px-8">
         {children}
       </main>
-      <Footer />
     </div>
   );
 }
