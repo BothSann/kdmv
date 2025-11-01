@@ -1,13 +1,11 @@
 import Link from "next/link";
 import Logo from "./Logo";
-import { Facebook } from "lucide-react";
+
 import {
   FaFacebookF,
   FaInstagram,
-  FaSnapchat,
   FaTelegram,
   FaTiktok,
-  FaXTwitter,
   FaYoutube,
 } from "react-icons/fa6";
 
