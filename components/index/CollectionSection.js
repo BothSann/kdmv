@@ -30,7 +30,7 @@ export default function CollectionSection({ collection, products, index }) {
         </div>
       </div>
 
-      <ProductList products={products} />
+      <ProductList products={products} variant="scroll" />
     </div>
   );
 }

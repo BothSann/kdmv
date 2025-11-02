@@ -9,14 +9,14 @@ export default function ShopAllSection({ products }) {
         Shop All
       </h2>
 
-      <ProductList products={products} />
+      <ProductList products={products} variant="scroll" />
 
       <div className="flex justify-center group">
         <Button
           size="lg"
           className="font-semibold text-sm lg:text-base hidden lg:inline-flex"
         >
-          <Link href="/">View all</Link>
+          <Link href="/products">View all</Link>
         </Button>
       </div>
     </div>
