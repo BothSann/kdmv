@@ -89,7 +89,7 @@ export default function Footer() {
             {/* Logo Section */}
             <AccordionItem value="logo">
               <AccordionTrigger className="uppercase tracking-[0.15em] text-2xl font-bold">
-                <Logo width="w-30" className="invert object-top" />
+                <Logo width="w-30" className="invert object-center" />
               </AccordionTrigger>
               <AccordionContent>
                 <Link
