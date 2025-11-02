@@ -14,13 +14,13 @@ export default function Navigation() {
   return (
     <nav className="z-10">
       <ul className="flex items-center lg:gap-2">
-        <>
+        {/* <>
           <Button variant="ghost" asChild>
             <Link href="/dashboard">
               <Heart className="scale-125" />
             </Link>
           </Button>
-        </>
+        </> */}
 
         {user && <CartDrawer />}
         <CustomerProfileDropdownMenu />
