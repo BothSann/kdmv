@@ -106,8 +106,6 @@ export default function Footer() {
   );
 }
 
-// Shared Sub-Components (DRY):
-
 // Define links ONCE
 const FOOTER_LINKS = {
   support: [
@@ -145,11 +143,11 @@ function FooterSocialIcons() {
   ];
 
   return (
-    <ul className="flex items-center space-x-4 self-start">
+    <ul className="flex items-center space-x-4 self-start justify-end lg:justify-start">
       {icons.map(({ Icon, href }, idx) => (
         <li key={idx}>
           <Link href={href}>
-            <Icon size={26} />
+            <Icon size={24} />
           </Link>
         </li>
       ))}
