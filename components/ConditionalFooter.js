@@ -5,16 +5,9 @@ import Footer from "./Footer";
 
 export default function ConditionalFooter() {
   const pathname = usePathname();
+  const shouldHide = ["/account", "/admin"].some((p) => pathname.startsWith(p));
 
-  // List of path patterns where Footer should NOT appear
-  const hideOnPaths = ["/account", "/admin"];
-
-  // Check if current path matches any exclusion
-  const shouldHide = hideOnPaths.some((path) => pathname.startsWith(path));
-
-  // Don't render if should hide
   if (shouldHide) return null;
 
-  // Otherwise render Footer
   return <Footer />;
 }
