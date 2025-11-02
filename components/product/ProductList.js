@@ -35,7 +35,7 @@ export default function ProductList({
 
         {/* Only show placeholder for scroll variant */}
         {variant === "scroll" && (
-          <li className="flex-shrink-0 w-64 pointer-events-none lg:hidden">
+          <li className="flex-shrink-0 w-64 lg:hidden">
             <div className="h-full w-full flex flex-col items-center justify-center group">
               <Button size="lg" className="font-semibold text-sm lg:text-base">
                 <Link href="/products">View all</Link>
