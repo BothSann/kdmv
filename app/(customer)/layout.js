@@ -5,7 +5,7 @@ export default function CustomerLayout({ children }) {
   return (
     <div className="h-screen font-poppins">
       <Header />
-      <main className="max-w-7xl mx-auto w-full p-8 px-6 lg:px-8">
+      <main className="max-w-7xl mx-auto w-full py-12 lg:py-16 px-6 lg:px-0">
         {children}
       </main>
       <ConditionalFooter />
