@@ -28,11 +28,19 @@ export const FOOTER_SECTIONS = {
 };
 
 export const SOCIAL_LINKS = [
-  { Icon: FaFacebookF, href: "https://facebook.com/kdmv", label: "Facebook" },
-  { Icon: FaInstagram, href: "https://instagram.com/kdmv", label: "Instagram" },
-  { Icon: FaYoutube, href: "https://youtube.com/@kdmv", label: "YouTube" },
-  { Icon: FaTiktok, href: "https://tiktok.com/@kdmv", label: "TikTok" },
-  { Icon: FaTelegram, href: "https://t.me/kdmv", label: "Telegram" },
+  {
+    Icon: FaFacebookF,
+    href: "https://facebook.com/bothsann",
+    label: "Facebook",
+  },
+  {
+    Icon: FaInstagram,
+    href: "https://instagram.com/bothsann",
+    label: "Instagram",
+  },
+  { Icon: FaYoutube, href: "https://youtube.com/@bothsann", label: "YouTube" },
+  { Icon: FaTiktok, href: "https://tiktok.com/@bothsann", label: "TikTok" },
+  { Icon: FaTelegram, href: "https://t.me/", label: "Telegram" },
 ];
 
 export function FooterLinks({ section }) {
