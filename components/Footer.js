@@ -102,7 +102,7 @@ export default function Footer() {
               <AccordionContent>
                 <Link
                   href="/"
-                  className="font-jost tracking-wide text-base hover:underline"
+                  className="font-jost tracking-wide text-muted/90 dark:text-accent-foreground/85 hover:underline"
                 >
                   Powered by Both Sann
                 </Link>
