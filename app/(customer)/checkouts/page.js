@@ -222,7 +222,6 @@ export default function CheckoutsPage() {
         },
       };
       const result = await createOrderAndInitiatePaymentAction(orderData);
-      console.log("Result", result);
 
       if (result.error) {
         toast.error(result.error);
