@@ -58,7 +58,7 @@ export async function checkPaymentStatus(transactionId) {
     }
   } catch (error) {
     console.error("Error checking payment status:", error);
-    return { error: "Failed to check payment status" };
+    return { error: "Failed to check payment status", paymentCheckResult };
   }
 }
 
