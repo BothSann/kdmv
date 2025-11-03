@@ -130,6 +130,7 @@ export default function CheckoutsPage() {
 
       try {
         const result = await checkPaymentStatus(transactionId);
+        console.log("Result", result);
 
         if (result.status === "COMPLETED") {
           stopPolling();
@@ -231,8 +232,6 @@ export default function CheckoutsPage() {
 
         setPaymentData(result.paymentData);
         setShowKHQRModal(true); // Open modal automatically
-
-        console.log("Payment data", result.paymentData);
 
         // Start polling for payment status
         pollPaymentStatus(
