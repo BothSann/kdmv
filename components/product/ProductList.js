@@ -19,7 +19,7 @@ export default function ProductList({
 
   const itemClasses =
     variant === "scroll"
-      ? "flex-shrink-0 w-64" // Fixed width for scroll
+      ? "flex-shrink-0 w-64 lg:w-full" // Fixed width for scroll
       : ""; // Responsive width for grid
 
   return (
