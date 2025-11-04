@@ -1,6 +1,6 @@
 "use server";
 
-import { getBaseUrl } from "@/lib/config";
+import { getBakongProxyUrl, getBaseUrl } from "@/lib/config";
 import { supabaseAdmin } from "@/utils/supabase/supabaseAdmin";
 import { revalidatePath } from "next/cache";
 
@@ -24,13 +24,16 @@ export async function checkPaymentStatus(transactionId) {
 
     // Call Bakong API to check payment status using MD5
     const md5Hash = transaction.hash;
+    const bakongApiUrl = getBakongProxyUrl();
     const paymentCheckResult = await fetch(
-      `${process.env.BAKONG_API_URL}/v1/check_transaction_by_md5`,
+      `${bakongApiUrl}/v1/check_transaction_by_md5`,
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${process.env.BAKONG_ACCESS_TOKEN}`,
+          // Add proxy authentication
+          "X-API-Key": process.env.KHQR_PROXY_API_KEY,
         },
         body: JSON.stringify({ md5: md5Hash }),
       }
