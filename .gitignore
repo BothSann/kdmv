@@ -66,5 +66,8 @@ generate-khqr-clientside-sdk.md
 how-khqr-works.md
 how-to-use-khqr-sdk.md
 supabase-functions.sql
+duanpenhdatacenter-vps.md
+khqr-proxy.md
+payment-response-vpn.md
 
 temp/
