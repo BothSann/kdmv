@@ -1,5 +1,6 @@
 "use server";
 
+import { getCustomerAddresses } from "@/lib/api/server/addresses";
 import { isValidCambodiaPhoneNumber, sanitizeName } from "@/lib/utils";
 import { createSupabaseServerClient } from "@/utils/supabase/server";
 import { revalidatePath } from "next/cache";
@@ -116,4 +117,8 @@ export async function setDefaultAddressAction(addressId, customerId) {
   revalidatePath("/account/address");
 
   return { success: true, message: "Default address set successfully" };
+}
+
+export async function getCustomerAddressesAction(customerId) {
+  return await getCustomerAddresses(customerId);
 }

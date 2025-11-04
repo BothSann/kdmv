@@ -7,12 +7,11 @@ import Image from "next/image";
 
 // 2. Third-party libraries
 import { toast } from "sonner";
-import { ShoppingCart, TicketCheck } from "lucide-react";
+import { PlusIcon, ShoppingCart, TicketCheck } from "lucide-react";
 
 // 3. UI Components
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -22,6 +21,8 @@ import CheckoutItem from "@/components/CheckoutItem";
 import Spinner from "@/components/Spinner";
 import SpinnerV2 from "@/components/SpinnerV2";
 import BakongKHQRModal from "@/components/BakongKHQRModal";
+import AddressDisplayCard from "@/components/address/AddressDisplayCard";
+import AddressSelectorDialog from "@/components/address/AddressSelectorDialog";
 
 // 5. Store/State Management
 import useCartStore from "@/store/useCartStore";
@@ -34,6 +35,7 @@ import { checkPaymentStatus } from "@/actions/payment-action";
 
 // 7. Utilities
 import { formatCurrency } from "@/lib/utils";
+import { getCustomerAddressesAction } from "@/actions/address-action";
 
 export default function CheckoutsPage() {
   // 1. Router and refs
@@ -60,6 +62,11 @@ export default function CheckoutsPage() {
   const [couponCode, setCouponCode] = useState("");
   const [appliedCoupon, setAppliedCoupon] = useState(null);
   const [isValidatingCoupon, setIsValidatingCoupon] = useState(false);
+
+  const [addresses, setAddresses] = useState([]);
+  const [selectedAddress, setSelectedAddress] = useState(null);
+  const [showAddressSelector, setShowAddressSelector] = useState(false);
+  const [isLoadingAddresses, setIsLoadingAddresses] = useState(true);
 
   const paymentMethods = [
     {
@@ -88,9 +95,36 @@ export default function CheckoutsPage() {
   // Calculate the final total amount to pay
   const finalTotal = totalAfterItemDiscounts - couponDiscountAmount;
 
-  const fullName = `${profile?.first_name} ${profile?.last_name}`;
-  const telephone = profile?.telephone;
-  const cityProvince = profile?.city_province;
+  useEffect(() => {
+    async function loadAddresses() {
+      if (!profile?.id) return;
+
+      setIsLoadingAddresses(true);
+      try {
+        const { addresses, error } = await getCustomerAddressesAction(
+          profile.id
+        );
+
+        if (!error && addresses) {
+          setAddresses(addresses);
+
+          // Auto-select default address (or first address)
+          const defaultAddr =
+            addresses.find((a) => a.is_default) || addresses[0];
+          if (defaultAddr) {
+            setSelectedAddress(defaultAddr);
+          }
+        }
+      } catch (error) {
+        console.error("Error loading addresses:", error);
+        toast.error("Failed to load addresses");
+      } finally {
+        setIsLoadingAddresses(false);
+      }
+    }
+
+    loadAddresses();
+  }, [profile?.id]);
 
   // ✅ CLEANUP: Stop polling when component unmounts
   useEffect(() => {
@@ -193,6 +227,10 @@ export default function CheckoutsPage() {
   };
 
   const handleCheckout = async () => {
+    if (!selectedAddress) {
+      toast.error("Please select a delivery address");
+      return;
+    }
     setIsProcessing(true);
 
     try {
@@ -215,10 +253,12 @@ export default function CheckoutsPage() {
 
         // Shipping address (from profile)
         shippingAddress: {
-          fullName: fullName,
-          cityProvince: cityProvince,
-          telephone: telephone,
-          country: "Cambodia",
+          fullName: `${selectedAddress.first_name} ${selectedAddress.last_name}`,
+          streetAddress: selectedAddress.street_address,
+          apartment: selectedAddress.apartment || "",
+          cityProvince: selectedAddress.city_province,
+          country: selectedAddress.country,
+          telephone: selectedAddress.phone_number,
         },
       };
       const result = await createOrderAndInitiatePaymentAction(orderData);
@@ -286,7 +326,7 @@ export default function CheckoutsPage() {
   }
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 font-poppins">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-y-10 font-poppins">
       {showKHQRModal && paymentData && (
         <BakongKHQRModal
           isOpen={showKHQRModal}
@@ -304,6 +344,32 @@ export default function CheckoutsPage() {
           <h2 className="text-2xl font-bold mb-4 font-poppins">
             Delivery Address
           </h2>
+
+          {isLoadingAddresses ? (
+            <Card>
+              <CardContent className="py-8 text-center">
+                <Spinner />
+              </CardContent>
+            </Card>
+          ) : (
+            <>
+              <AddressDisplayCard
+                address={selectedAddress}
+                onChangeClick={() => setShowAddressSelector(true)}
+              />
+
+              {addresses.length === 0 && (
+                <div className="mt-4 text-center">
+                  <Button asChild variant="outline">
+                    <Link href="/account/address/create">
+                      <PlusIcon className="w-4 h-4 mr-2" />
+                      Add Your First Address
+                    </Link>
+                  </Button>
+                </div>
+              )}
+            </>
+          )}
         </div>
 
         {/* Your Items */}
@@ -318,6 +384,19 @@ export default function CheckoutsPage() {
           </div>
         </div>
       </div>
+
+      {/* Address Selector Dialog */}
+      <AddressSelectorDialog
+        isOpen={showAddressSelector}
+        onClose={() => setShowAddressSelector(false)}
+        addresses={addresses}
+        selectedAddressId={selectedAddress?.id}
+        onSelect={(address) => {
+          setSelectedAddress(address);
+          setShowAddressSelector(false);
+          toast.success("Delivery address updated");
+        }}
+      />
 
       <div className="space-y-10 pl-0 lg:pl-10">
         <div>
@@ -426,8 +505,6 @@ export default function CheckoutsPage() {
           <h2 className="text-2xl font-bold mb-2.5 font-poppins">
             Order Summary
           </h2>
-
-          {/* <BakongKHQRModal url={"https://www.google.com"} /> */}
 
           <Card>
             <CardContent className="space-y-2.5">

@@ -98,11 +98,11 @@ export default function AddressCreateEditForm({
       }
 
       toast.success(result.message, { id: toastId });
+      router.push(`/account/address`);
     } catch (error) {
       toast.error(error.message, { id: toastId });
     } finally {
       setIsSubmitting(false);
-      router.push(`/account/address`);
     }
   };
   return (
