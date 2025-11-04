@@ -300,11 +300,7 @@ export default function CheckoutsPage() {
   // This prevents hydration mismatch between server-rendered empty state
   // and client-side persisted state
   if (!hasHydrated || isLoading) {
-    return (
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-        <Spinner />
-      </div>
-    );
+    return <Spinner />;
   }
 
   if (items.length === 0) {
