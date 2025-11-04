@@ -170,24 +170,24 @@ export default function BakongKHQRModal({
             <Button
               onClick={onClose}
               variant="ghost"
-              className="absolute top-4 right-4 z-10"
+              className="absolute top-0 right-0 z-10"
             >
               <XIcon />
             </Button>
 
             {/* Countdown Timer - Top Center */}
             {expiresAt && (
-              <div className="absolute left-1/2 -translate-x-[60%] bottom-7 z-10 bg-background dark:bg-card border shadow-sm rounded-full px-6 py-2">
-                <div className="flex items-center gap-2 dark:text-foreground/90 text-foreground/90">
-                  <Clock size={18} />
-                  <span className={`text-base`}>
+              <div className="absolute -top-0.5 bottom-0 lg:top-auto lg:left-1/2 lg:-translate-x-[60%] lg:bottom-7 border-none shadow-none bg-background dark:bg-card lg:border lg:shadow-sm rounded-full px-6 py-2">
+                <div className="flex items-center lg:gap-2 gap-1 dark:text-foreground/90 text-foreground/90">
+                  <Clock size={16} />
+                  <span className={`lg:text-base text-sm`}>
                     {isExpired ? "Expired" : formatTime()}
                   </span>
                 </div>
               </div>
             )}
 
-            <p className="absolute right-8 bottom-8 text-muted-foreground tracking-wide">
+            <p className="absolute right-8 bottom-8 text-muted-foreground tracking-wide hidden lg:block">
               KHQR | Scan, Pay, Done
             </p>
 
@@ -249,7 +249,7 @@ export default function BakongKHQRModal({
               </div>
 
               {/* Instructions Section */}
-              <div className="font-poppins space-y-8 w-full lg:w-auto lg:flex-1 py-4">
+              <div className="font-poppins space-y-8 w-full lg:w-auto lg:flex-1 py-4 hidden lg:block">
                 <h2 className="text-[1.8rem] font-bold">
                   How to make payment?
                 </h2>
