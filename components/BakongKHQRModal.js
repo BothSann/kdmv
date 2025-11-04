@@ -177,7 +177,7 @@ export default function BakongKHQRModal({
 
             {/* Countdown Timer - Top Center */}
             {expiresAt && (
-              <div className="absolute -top-0.5 lg:top-auto lg:left-1/2 lg:-translate-x-[60%] lg:bottom-7 border-none shadow-none bg-background dark:bg-card lg:border lg:shadow-sm rounded-full px-6 py-2">
+              <div className="absolute left-1/2 -translate-x-[60%] bottom-7 border-none bg-background dark:bg-card border shadow-sm rounded-full px-6 py-2 hidden lg:block">
                 <div className="flex items-center gap-2 dark:text-foreground/90 text-foreground/90">
                   <Clock size={16} />
                   <span className={`lg:text-base text-sm`}>
@@ -243,7 +243,7 @@ export default function BakongKHQRModal({
                 <div className="flex items-center justify-center gap-2 absolute bottom-4 left-0 right-0 text-xs">
                   <MiniSpinner />
                   <span className="dark:text-primary-foreground font-medium">
-                    Waiting for payment
+                    Waiting for payment ({isExpired ? "Expired" : formatTime()})
                   </span>
                 </div>
               </div>
