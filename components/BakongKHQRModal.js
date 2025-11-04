@@ -177,8 +177,8 @@ export default function BakongKHQRModal({
 
             {/* Countdown Timer - Top Center */}
             {expiresAt && (
-              <div className="absolute -top-0.5 bottom-0 lg:top-auto lg:left-1/2 lg:-translate-x-[60%] lg:bottom-7 border-none shadow-none bg-background dark:bg-card lg:border lg:shadow-sm rounded-full px-6 py-2">
-                <div className="flex items-center lg:gap-2 gap-1 dark:text-foreground/90 text-foreground/90">
+              <div className="absolute bottom-0 right-1.5 lg:top-auto lg:right-auto lg:left-1/2 lg:-translate-x-[60%] lg:bottom-7 border-none shadow-none bg-background dark:bg-card lg:border lg:shadow-sm rounded-full px-6 py-2">
+                <div className="flex items-center gap-2 dark:text-foreground/90 text-foreground/90">
                   <Clock size={16} />
                   <span className={`lg:text-base text-sm`}>
                     {isExpired ? "Expired" : formatTime()}
