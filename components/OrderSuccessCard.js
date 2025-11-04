@@ -57,7 +57,7 @@ export default function OrderSuccessCard({
 
       <CardFooter className="pt-8 flex justify-center items-center">
         <Button asChild>
-          <Link href={`/orders/${orderNumber}`}>View Order</Link>
+          <Link href={`/account/orders/${orderNumber}`}>View Order</Link>
         </Button>
       </CardFooter>
     </Card>
