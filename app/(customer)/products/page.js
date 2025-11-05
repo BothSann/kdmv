@@ -38,7 +38,7 @@ export default async function AllProductsPage({ searchParams }) {
   return (
     <div className="space-y-16">
       <div className="space-y-4">
-        <h1 className="text-5xl font-bold">All Products</h1>
+        <h2 className="text-5xl font-bold">All Products</h2>
         <p>
           Showing {products.length} of {pagination.count} products
         </p>

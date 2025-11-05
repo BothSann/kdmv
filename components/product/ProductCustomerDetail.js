@@ -153,13 +153,13 @@ export default function ProductCustomerDetail({ product }) {
 
   return (
     <div>
-      <div className="space-y-2.5 lg:space-y-4.5">
+      <div className="space-y-3 lg:space-y-4.5">
         <h1 className="text-5xl font-bold font-poppins leading-14">
           {product.name}
         </h1>
         <div className="flex items-center gap-4">
           {hasDiscount > 0 && (
-            <span className="text-2xl text-foreground/80 tracking-wide flex items-center gap-2">
+            <span className="text-[1.4rem] lg:text-2xl text-foreground/80 tracking-wide flex items-center gap-2">
               <span className="line-through">
                 {formatCurrency(product.base_price)}
               </span>
