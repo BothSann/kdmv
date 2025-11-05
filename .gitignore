@@ -73,5 +73,8 @@ payment-response-vpn.md
 access-duanpenh-vps.md
 putty-readme.md
 DEPLOYMENT_GUIDE.md
+middleware-to-proxy-nextjs16.md
+optimistic-checks-with-proxy.md
+supabase-middleware.md
 
 temp/
