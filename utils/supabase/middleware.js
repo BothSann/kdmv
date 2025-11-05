@@ -1,5 +1,12 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse } from "next/server";
+import {
+  isPublicRoute,
+  isAuthRoute,
+  requiresAuth,
+  isAdminRoute,
+} from "@/lib/routes-config";
+import { getUserRole } from "@/lib/api/server/users";
 
 export async function updateSession(request) {
   let supabaseResponse = NextResponse.next({
@@ -37,29 +44,70 @@ export async function updateSession(request) {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (
-    !user &&
-    !request.nextUrl.pathname.startsWith("/login") &&
-    !request.nextUrl.pathname.startsWith("/auth") &&
-    !request.nextUrl.pathname.startsWith("/error")
-  ) {
-    // no user, potentially respond by redirecting the user to the login page
-    const url = request.nextUrl.clone();
-    url.pathname = "/login";
-    return NextResponse.redirect(url);
+
+  // Get current pathname
+  const pathname = request.nextUrl.pathname;
+
+  // Allow public routes for everyone
+  if (isPublicRoute(pathname)) {
+    return supabaseResponse;
   }
-  // IMPORTANT: You *must* return the supabaseResponse object as it is.
-  // If you're creating a new response object with NextResponse.next() make sure to:
-  // 1. Pass the request in it, like so:
-  //    const myNewResponse = NextResponse.next({ request })
-  // 2. Copy over the cookies, like so:
-  //    myNewResponse.cookies.setAll(supabaseResponse.cookies.getAll())
-  // 3. Change the myNewResponse object to fit your needs, but avoid changing
-  //    the cookies!
-  // 4. Finally:
-  //    return myNewResponse
-  // If this is not done, you may be causing the browser and server to go out
-  // of sync and terminate the user's session prematurely!
+
+  // Handle auth routes (login, register)
+  if (isAuthRoute(pathname)) {
+    if (user) {
+      // User is logged in but trying to access login/register
+      // Redirect to appropriate dashboard
+      const url = request.nextUrl.clone();
+      url.pathname = "/";
+
+      return NextResponse.redirect(url);
+    }
+
+    // Guest accessing login/register → Allow
+    return supabaseResponse;
+  }
+
+  // if (isAdminRoute(pathname)) {
+  //   if (!user) {
+  //     const url = request.nextUrl.clone();
+  //     url.pathname = "/auth/login";
+  //     return NextResponse.redirect(url);
+  //   }
+  //   const { data: profile } = await getUserProfile(user.id);
+  //   if (profile?.role !== "admin") {
+  //     const url = request.nextUrl.clone();
+  //     url.pathname = "/";
+  //     return NextResponse.redirect(url);
+  //   }
+  //   return supabaseResponse;
+  // }
+  if (user && isAdminRoute(pathname)) {
+    const { role } = await getUserRole(user.id); // ← DATABASE QUERY
+
+    if (role !== "admin") {
+      const url = request.nextUrl.clone();
+      url.pathname = "/unauthorized";
+      return NextResponse.redirect(url);
+    }
+  }
+
+  // Protected routes requiring authentication
+  if (requiresAuth(pathname)) {
+    if (!user) {
+      // Not authenticated → Redirect to login
+      const url = request.nextUrl.clone();
+      url.pathname = "/auth/login";
+
+      // Add redirect parameter to return after login
+      url.searchParams.set("redirect", pathname);
+
+      return NextResponse.redirect(url);
+    }
+
+    // User is authenticated → Allow (role check happens in layout)
+    return supabaseResponse;
+  }
 
   return supabaseResponse;
 }

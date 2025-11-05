@@ -6,6 +6,7 @@ import { getCustomerAddresses } from "@/lib/api/server/addresses";
 import { getCurrentUser } from "@/lib/api/server/users";
 import NotFound from "@/components/NotFound";
 import EmptyState from "@/components/EmptyState";
+import { redirect } from "next/navigation";
 
 export default async function AddressPage() {
   const { user, error: userError } = await getCurrentUser();
@@ -13,6 +14,10 @@ export default async function AddressPage() {
   const { addresses, error: addressesError } = await getCustomerAddresses(
     customerId
   );
+
+  if (!user) {
+    redirect("/auth/login");
+  }
 
   if (userError || addressesError) {
     return <NotFound href="/account/address" title="Addresses" />;
