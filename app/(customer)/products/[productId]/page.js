@@ -50,7 +50,7 @@ export default async function ProductDetailPage({ params }) {
       </div>
 
       <div className="pt-16 space-y-12">
-        <RelatedProducts products={relatedProducts} title="You May Also Like" />
+        <RelatedProducts products={relatedProducts} title="You may also like" />
       </div>
     </div>
   );

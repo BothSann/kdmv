@@ -5,7 +5,7 @@ import ProductList from "./ProductList";
 
 export default function RelatedProducts({
   products,
-  title = "You May Also like",
+  title = "You may also like",
 }) {
   if (!products || products.length === 0) {
     return null;
