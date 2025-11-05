@@ -4,8 +4,22 @@ import ProtectedRoute from "@/components/ProtectedRoute";
 import { AdminSidebar } from "@/components/admin/AdminSidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import PageOverlay from "@/components/PageOverlay";
+import { getCurrentUser, getUserRole } from "@/lib/api/server/users";
+import { redirect } from "next/navigation";
 
-export default function AdminLayout({ children }) {
+export default async function AdminLayout({ children }) {
+  const { user } = await getCurrentUser();
+
+  if (!user) {
+    redirect("/auth/login");
+  }
+
+  const { role } = await getUserRole(user.id);
+
+  if (role !== "admin") {
+    redirect("/unauthorized");
+  }
+
   return (
     <ProtectedRoute allowedRoles={["admin"]} redirectTo="/unauthorized">
       <SidebarProvider>
