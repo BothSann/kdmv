@@ -16,10 +16,12 @@ import useAuthStore from "@/store/useAuthStore";
 import { useState } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { Eye, EyeOff } from "lucide-react";
 
 export default function LoginForm() {
   const { signInUser } = useAuthStore();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
 
   const handleSubmit = async (event) => {
@@ -48,6 +50,11 @@ export default function LoginForm() {
       setIsSubmitting(false);
     }
   };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword((prev) => !prev);
+  };
+
   return (
     <div className="flex flex-col gap-6">
       <Card className="space-y-4">
@@ -65,7 +72,11 @@ export default function LoginForm() {
         <CardContent>
           <form onSubmit={handleSubmit}>
             <div className="flex flex-col gap-6">
-              <LoginFormField isSubmitting={isSubmitting} />
+              <LoginFormField
+                isSubmitting={isSubmitting}
+                showPassword={showPassword}
+                togglePasswordVisibility={togglePasswordVisibility}
+              />
             </div>
             <div className="mt-4 text-sm text-center">
               Don&apos;t have an account?{" "}
@@ -83,7 +94,11 @@ export default function LoginForm() {
   );
 }
 
-function LoginFormField({ isSubmitting }) {
+function LoginFormField({
+  isSubmitting,
+  showPassword,
+  togglePasswordVisibility,
+}) {
   return (
     <>
       <div className="grid gap-3">
@@ -107,13 +122,29 @@ function LoginFormField({ isSubmitting }) {
             Forgot your password?
           </a>
         </div>
-        <Input
-          id="password"
-          name="password"
-          type="password"
-          disabled={isSubmitting}
-          required
-        />
+        <div className="relative">
+          <Input
+            id="password"
+            name="password"
+            type={showPassword ? "text" : "password"}
+            placeholder="Password"
+            disabled={isSubmitting}
+            required
+          />
+          {showPassword ? (
+            <Eye
+              size={20}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground cursor-pointer"
+              onClick={togglePasswordVisibility}
+            />
+          ) : (
+            <EyeOff
+              size={20}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground cursor-pointer"
+              onClick={togglePasswordVisibility}
+            />
+          )}
+        </div>
       </div>
 
       <Button type="submit" className="w-full" disabled={isSubmitting}>

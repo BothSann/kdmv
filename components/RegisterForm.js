@@ -24,12 +24,18 @@ import { useState } from "react";
 
 import Logo from "@/components/Logo";
 import Link from "next/link";
+import { Eye, EyeOff } from "lucide-react";
 
 export default function RegisterForm() {
   const [gender, setGender] = useState("");
   const [country, setCountry] = useState("Cambodia");
   const [cityProvince, setCityProvince] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setShowPassword((prev) => !prev);
+  };
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -120,13 +126,29 @@ export default function RegisterForm() {
             </div>
             <div className="space-y-4">
               <Label htmlFor="password">Password</Label>
-              <Input
-                name="password"
-                id="password"
-                type="password"
-                required
-                disabled={isSubmitting}
-              />
+              <div className="relative">
+                <Input
+                  name="password"
+                  id="password"
+                  placeholder="Password"
+                  type={showPassword ? "text" : "password"}
+                  required
+                  disabled={isSubmitting}
+                />
+                {showPassword ? (
+                  <Eye
+                    size={20}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground cursor-pointer"
+                    onClick={togglePasswordVisibility}
+                  />
+                ) : (
+                  <EyeOff
+                    size={20}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground cursor-pointer"
+                    onClick={togglePasswordVisibility}
+                  />
+                )}
+              </div>
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-4">

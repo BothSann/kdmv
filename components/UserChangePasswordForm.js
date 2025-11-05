@@ -7,17 +7,27 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { verifyAndUpdateUserPasswordAction } from "@/actions/user-action";
 import { toast } from "sonner";
+import { Eye, EyeOff } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function UserChangePasswordForm() {
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isPending, setIsPending] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+
+  const router = useRouter();
+
+  const togglePasswordVisibility = () => {
+    setShowPassword((prev) => !prev);
+  };
 
   const handleCancel = () => {
     setCurrentPassword("");
     setNewPassword("");
     setConfirmPassword("");
+    router.back();
   };
 
   const handleSubmit = async (event) => {
@@ -61,20 +71,35 @@ export default function UserChangePasswordForm() {
       <div className="grid grid-cols-1 gap-6">
         <div className="space-y-4">
           <Label htmlFor="current_password">Current Password</Label>
-          <Input
-            type="password"
-            name="current_password"
-            placeholder="Current Password"
-            value={currentPassword}
-            onChange={(e) => setCurrentPassword(e.target.value)}
-            disabled={isPending}
-            required
-          />
+          <div className="relative">
+            <Input
+              type={showPassword ? "text" : "password"}
+              name="current_password"
+              placeholder="Current Password"
+              value={currentPassword}
+              onChange={(e) => setCurrentPassword(e.target.value)}
+              disabled={isPending}
+              required
+            />
+            {showPassword ? (
+              <Eye
+                size={20}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground cursor-pointer"
+                onClick={togglePasswordVisibility}
+              />
+            ) : (
+              <EyeOff
+                size={20}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground cursor-pointer"
+                onClick={togglePasswordVisibility}
+              />
+            )}
+          </div>
         </div>
         <div className="space-y-4">
           <Label htmlFor="new_password">New Password</Label>
           <Input
-            type="password"
+            type={showPassword ? "text" : "password"}
             name="new_password"
             placeholder="New Password"
             value={newPassword}
@@ -86,7 +111,7 @@ export default function UserChangePasswordForm() {
         <div className="space-y-4">
           <Label htmlFor="confirm_password">Confirm Password</Label>
           <Input
-            type="password"
+            type={showPassword ? "text" : "password"}
             name="confirm_password"
             placeholder="Re-type New Password"
             value={confirmPassword}
