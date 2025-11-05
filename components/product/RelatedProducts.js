@@ -14,7 +14,7 @@ export default function RelatedProducts({
   return (
     <>
       {/* Section Title */}
-      <h2 className="text-[2.7rem] font-bold">{title}</h2>
+      <h2 className="text-4xl lg:text-[2.7rem] font-bold">{title}</h2>
 
       <ProductList products={products} variant="grid" />
     </>
