@@ -32,6 +32,7 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+!.env.production
 
 # vercel
 .vercel
@@ -71,5 +72,6 @@ khqr-proxy.md
 payment-response-vpn.md
 access-duanpenh-vps.md
 putty-readme.md
+DEPLOYMENT_GUIDE.md
 
 temp/

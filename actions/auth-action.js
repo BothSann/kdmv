@@ -5,6 +5,7 @@ import { createSupabaseServerClient } from "@/utils/supabase/server";
 
 import { revalidatePath } from "next/cache";
 import { isValidCambodiaPhoneNumber, sanitizeName } from "@/lib/utils";
+import { getBaseUrl } from "@/lib/config";
 
 import {
   cleanUpCreatedAdmin,
@@ -50,7 +51,7 @@ export async function registerUserAction(formData) {
             telephone: formData.telephone,
             city_province: formData.city_province,
           },
-          emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/confirm`,
+          emailRedirectTo: `${getBaseUrl()}/auth/confirm`,
         },
       });
 
