@@ -68,20 +68,6 @@ export async function updateSession(request) {
     return supabaseResponse;
   }
 
-  // if (isAdminRoute(pathname)) {
-  //   if (!user) {
-  //     const url = request.nextUrl.clone();
-  //     url.pathname = "/auth/login";
-  //     return NextResponse.redirect(url);
-  //   }
-  //   const { data: profile } = await getUserProfile(user.id);
-  //   if (profile?.role !== "admin") {
-  //     const url = request.nextUrl.clone();
-  //     url.pathname = "/";
-  //     return NextResponse.redirect(url);
-  //   }
-  //   return supabaseResponse;
-  // }
   if (user && isAdminRoute(pathname)) {
     const { role } = await getUserRole(user.id); // ← DATABASE QUERY
 

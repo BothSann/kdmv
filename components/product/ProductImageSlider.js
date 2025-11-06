@@ -70,7 +70,8 @@ export default function ProductImageSlider({ product }) {
                       alt={image.image_url}
                       fill
                       sizes="100vw"
-                      quality={100}
+                      quality={80}
+                      loading="lazy"
                       className="object-cover object-center cursor-zoom-in"
                     />
                   </PhotoView>
@@ -111,7 +112,7 @@ export default function ProductImageSlider({ product }) {
                     alt={image.image_url}
                     fill
                     sizes="100vw"
-                    quality={100}
+                    loading="lazy"
                     className="object-cover object-center cursor-pointer active:cursor-grabbing"
                   />
                 </div>

@@ -63,6 +63,7 @@ export default function CartDrawer() {
             icon={ShoppingCart}
             title="Your cart is empty"
             description="Add some items to get started"
+            className="h-full"
           />
         )}
 

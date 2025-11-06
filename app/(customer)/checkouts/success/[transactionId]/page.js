@@ -1,18 +1,28 @@
 import { Suspense } from "react";
-import { getPayment } from "@/lib/api/server/payments";
+import { getPayment, getPaymentWithOwnership } from "@/lib/api/server/payments";
 
 import NotFound from "@/components/NotFound";
 import OrderSuccessCard from "@/components/OrderSuccessCard";
 import Spinner from "@/components/Spinner";
+import { getCurrentUser } from "@/lib/api/server/users";
+import { redirect } from "next/navigation";
 
 export default async function CheckoutsSuccessPage({ params }) {
   const resolvedParams = await params;
-  const { payment, orderItems, error } = await getPayment(
-    resolvedParams.transactionId
+
+  const { user } = await getCurrentUser();
+
+  if (!user) {
+    return redirect("/auth/login");
+  }
+
+  const { payment, orderItems, error } = await getPaymentWithOwnership(
+    resolvedParams.transactionId,
+    user.id
   );
 
   if (!payment || !orderItems || error) {
-    return <NotFound href="/checkouts" title="Order" />;
+    return <NotFound href="/" title="Order" />;
   }
 
   const orderNumber = payment.orders.order_number;

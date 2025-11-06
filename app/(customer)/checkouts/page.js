@@ -36,6 +36,7 @@ import { checkPaymentStatus } from "@/actions/payment-action";
 // 7. Utilities
 import { formatCurrency } from "@/lib/utils";
 import { getCustomerAddressesAction } from "@/actions/address-action";
+import EmptyState from "@/components/EmptyState";
 
 export default function CheckoutsPage() {
   // 1. Router and refs
@@ -305,19 +306,13 @@ export default function CheckoutsPage() {
 
   if (items.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center space-y-4">
-        <ShoppingCart className="w-18 h-18 text-muted-foreground mb-4" />
-        <div className="space-y-1 text-center">
-          <p className="text-2xl font-bold">Your cart is empty</p>
-          <p className="text-muted-foreground">
-            Check out our latest arrivals stay up-to-date with latest styles
-          </p>
-        </div>
-
-        <Button asChild>
-          <Link href="/">Continue Shopping</Link>
-        </Button>
-      </div>
+      <EmptyState
+        className="min-h-[calc(100dvh-10rem)]"
+        icon={ShoppingCart}
+        title="Your cart is empty"
+        description="Check out our latest arrivals stay up-to-date with latest styles"
+        action={{ href: "/", label: "Continue Shopping" }}
+      />
     );
   }
 

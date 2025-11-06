@@ -17,6 +17,8 @@ export default function ProductItem({ product, className }) {
             alt={product.name}
             src={product.banner_image_url}
             fill
+            loading="lazy"
+            quality={50}
             className="object-cover object-center"
           />
 
