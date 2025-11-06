@@ -63,7 +63,7 @@ export default function HeroCarousel() {
                 src={slide.image}
                 alt={slide.title}
                 fill
-                quality={70}
+                loading="lazy"
                 className="object-cover object-top"
                 priority={slide.id === "1"}
               />
