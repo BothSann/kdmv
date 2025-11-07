@@ -9,6 +9,8 @@ export async function createAddressAction(customerId, addressData) {
   const cleanFirstName = sanitizeName(addressData.first_name);
   const cleanLastName = sanitizeName(addressData.last_name);
 
+  console.log("addressData", addressData);
+  console.log("phone number", addressData.phone_number);
   if (!isValidCambodiaPhoneNumber(addressData.phone_number)) {
     return { error: "Invalid Cambodian telephone number format" };
   }

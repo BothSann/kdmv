@@ -11,7 +11,11 @@ import {
   deleteUnselectedProductImages,
   deleteAllProductImages,
 } from "@/lib/api/server/products";
-import { getCurrentUser, getUserProfile } from "@/lib/api/server/users";
+import {
+  getCurrentUser,
+  getUserProfile,
+  getUserRole,
+} from "@/lib/api/server/users";
 import {
   addProductToCollection,
   removeProductFromCollection,
@@ -438,23 +442,63 @@ export async function deleteProductByIdAction(productId) {
       };
     }
 
-    // PRODUCT DELETION: Remove the product from the database
-    const { error: deleteProductError } = await supabaseAdmin
+    // SOFT DELETE: Mark product as deleted instead of hard delete
+    const { error: softDeleteError } = await supabaseAdmin
       .from("products")
-      .delete()
+      .update({
+        deleted_at: new Date().toISOString(), // Mark as deleted
+        is_active: false, // Also deactivate
+        updated_at: new Date().toISOString(),
+      })
       .eq("id", productId);
 
-    if (deleteProductError) {
-      console.error("Delete product error:", deleteProductError);
+    if (softDeleteError) {
+      console.error("Soft delete product error:", softDeleteError);
       return { error: "Failed to delete product" };
     }
 
     // CACHE INVALIDATION: Clear cached pages to reflect deletion
+    revalidatePath("/");
+    revalidatePath("/products");
     revalidatePath("/admin/products");
     return { success: true, message: "Product deleted successfully" };
   } catch (err) {
     console.error("Unexpected error:", err);
     return { error: "An unexpected error occurred during product deletion" };
+  }
+}
+
+export async function restoreProductAction(productId) {
+  try {
+    const { user, error: getCurrentUserError } = await getCurrentUser();
+    if (getCurrentUserError) return { error: getCurrentUserError };
+
+    const { role } = await getUserRole(user?.id);
+    if (role !== "admin") {
+      return {
+        error: "Unauthorized - Please login as admin to restore product",
+      };
+    }
+
+    const { error: restoreError } = await supabaseAdmin
+      .from("products")
+      .update({
+        deleted_at: null, // Unmark as deleted
+        is_active: true, // Reactivate
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", productId);
+
+    if (restoreError) {
+      console.error("Restore error:", restoreError);
+      return { error: "Failed to restore product" };
+    }
+
+    revalidatePath("/admin/products");
+    return { success: true, message: "Product restored successfully" };
+  } catch (err) {
+    console.error("Unexpected error:", err);
+    return { error: "An unexpected error occurred" };
   }
 }
 
@@ -481,17 +525,25 @@ export async function bulkDeleteProductsAction(productIds) {
       };
     }
 
-    const { error: bulkDeleteError } = await supabaseAdmin
+    // ✅ SOFT DELETE: Mark all products as deleted
+    const { error: bulkSoftDeleteError } = await supabaseAdmin
       .from("products")
-      .delete()
+      .update({
+        deleted_at: new Date().toISOString(),
+        is_active: false,
+        updated_at: new Date().toISOString(),
+      })
       .in("id", productIds);
 
-    if (bulkDeleteError) {
-      console.error("Bulk delete error:", bulkDeleteError);
+    if (bulkSoftDeleteError) {
+      console.error("Bulk soft delete error:", bulkSoftDeleteError);
       return { error: "Failed to delete products" };
     }
 
+    revalidatePath("/");
+    revalidatePath("/products");
     revalidatePath("/admin/products");
+
     return {
       success: true,
       message: `Successfully deleted ${productIds.length} product${

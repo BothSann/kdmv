@@ -13,15 +13,15 @@ const slides = [
   {
     id: "1",
     image: "/carousel4.jpg",
-    title: "Straight Edge 2.0",
+    title: "Childhood Nostalgia",
     subtitle: "Hoodies back for good!",
     link: "/collections/new-products",
-    linkText: "Shop Straight Edge",
+    linkText: "Shop Childhood Nostalgia",
   },
   {
     id: "2",
     image: "/carousel5.jpg",
-    title: "OFF THE PIER MERCH",
+    title: "Tourist Vs Purist 2.0",
     subtitle: "",
     link: "/collections/off-the-pier",
     linkText: "Shop Now",
@@ -63,7 +63,7 @@ export default function HeroCarousel() {
                 src={slide.image}
                 alt={slide.title}
                 fill
-                loading="lazy"
+                quality={100}
                 className="object-cover object-top"
                 priority={slide.id === "1"}
               />

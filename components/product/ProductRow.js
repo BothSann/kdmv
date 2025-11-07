@@ -7,7 +7,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal, Pencil, Trash2, View } from "lucide-react";
+import { MoreHorizontal, Pencil, RotateCcw, Trash2, View } from "lucide-react";
 import { useState } from "react";
 import { formatCurrency } from "@/lib/utils";
 
@@ -16,13 +16,41 @@ import Link from "next/link";
 import DeleteProductDialog from "./DeleteProductDialog";
 import { Checkbox } from "../ui/checkbox";
 import { useProductTableStore } from "@/store/useTableSelectionStore";
+import { restoreProductAction } from "@/actions/product-action";
+import { toast } from "sonner";
 
 export default function ProductRow({ product }) {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [isRestoring, setIsRestoring] = useState(false);
   const { toggleItem, isSelected } = useProductTableStore();
+
+  const isInStock = product.total_stock > 0;
+  const isDeleted = product.isDeleted;
 
   const handleSelect = () => {
     toggleItem(product.id);
+  };
+
+  const handleRestoreProduct = async () => {
+    const toastId = toast.loading("Restoring product...");
+    try {
+      setIsRestoring(true);
+      const { success, error, message } = await restoreProductAction(
+        product.id
+      );
+
+      if (success) {
+        toast.success(message, { id: toastId });
+      } else {
+        toast.error(error, { id: toastId });
+        return;
+      }
+    } catch (error) {
+      console.error("Error restoring product:", error);
+      toast.error(error, { id: toastId });
+    } finally {
+      setIsRestoring(false);
+    }
   };
 
   return (
@@ -59,7 +87,9 @@ export default function ProductRow({ product }) {
       <TableCell>{product.total_stock}</TableCell>
       <TableCell>{product.product_code || "No Code"}</TableCell>
       <TableCell>
-        {product.is_active ? (
+        {isDeleted ? (
+          <span className="text-destructive">Deleted</span>
+        ) : isInStock ? (
           <span className="text-success">In Stock</span>
         ) : (
           <span className="text-destructive">Out Of Stock</span>
@@ -83,13 +113,25 @@ export default function ProductRow({ product }) {
                 Edit
               </Link>
             </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() => setIsDeleteDialogOpen(true)}
-              variant="destructive"
-            >
-              <Trash2 />
-              Delete
-            </DropdownMenuItem>
+            {!isDeleted && (
+              <DropdownMenuItem
+                onClick={() => setIsDeleteDialogOpen(true)}
+                variant="destructive"
+              >
+                <Trash2 />
+                Delete
+              </DropdownMenuItem>
+            )}
+            {isDeleted && (
+              <DropdownMenuItem
+                onClick={handleRestoreProduct}
+                variant="default"
+                disabled={isRestoring}
+              >
+                <RotateCcw />
+                Restore
+              </DropdownMenuItem>
+            )}
           </DropdownMenuContent>
         </DropdownMenu>
 

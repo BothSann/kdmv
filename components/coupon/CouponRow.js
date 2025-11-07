@@ -7,7 +7,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal, TicketPercent } from "lucide-react";
+import { MoreHorizontal, RotateCcw, TicketPercent } from "lucide-react";
 import Link from "next/link";
 import { Pencil, Trash2, View } from "lucide-react";
 import { useState } from "react";
@@ -15,10 +15,33 @@ import { cn, formatISODateToDayDateMonthYear } from "@/lib/utils";
 import DeleteCouponDialog from "./DeleteCouponDialog";
 import { useCouponTableStore } from "@/store/useTableSelectionStore";
 import { Checkbox } from "../ui/checkbox";
+import { restoreCouponAction } from "@/actions/coupon-action";
+import { toast } from "sonner";
 
 export default function CouponRow({ coupon }) {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [isRestoring, setIsRestoring] = useState(false);
   const { toggleItem, isSelected } = useCouponTableStore();
+
+  const handleRestoreCoupon = async () => {
+    const toastId = toast.loading("Restoring coupon...");
+    try {
+      setIsRestoring(true);
+      const { success, error, message } = await restoreCouponAction(coupon.id);
+
+      if (success) {
+        toast.success(message, { id: toastId });
+      } else {
+        toast.error(error, { id: toastId });
+        return;
+      }
+    } catch (error) {
+      console.error("Error restoring coupon:", error);
+      toast.error(error, { id: toastId });
+    } finally {
+      setIsRestoring(false);
+    }
+  };
 
   return (
     <TableRow className="text-sm">
@@ -36,7 +59,11 @@ export default function CouponRow({ coupon }) {
             className="text-background dark:text-foreground"
           />
         </div>
-        <span>{coupon.code}</span>
+        {coupon.isDeleted ? (
+          <span className="text-destructive line-through">{coupon.code}</span>
+        ) : (
+          <span>{coupon.code}</span>
+        )}
       </TableCell>
       <TableCell>{coupon.discount_percentage}%</TableCell>
       <TableCell>{coupon.total_uses}</TableCell>
@@ -46,14 +73,18 @@ export default function CouponRow({ coupon }) {
       </TableCell>
       <TableCell
         className={cn(
-          coupon.isReachedUsageLimit || coupon.isExpired
+          coupon.isDeleted
+            ? "text-destructive" // Show deleted state
+            : coupon.isReachedUsageLimit || coupon.isExpired
             ? "text-destructive"
             : coupon.isNotYetValid
             ? "text-warning"
             : "text-success"
         )}
       >
-        {coupon.isReachedUsageLimit || coupon.isExpired
+        {coupon.isDeleted
+          ? "Deleted" // NEW status
+          : coupon.isReachedUsageLimit || coupon.isExpired
           ? "Inactive"
           : coupon.isNotYetValid
           ? "Not Yet Active"
@@ -78,13 +109,26 @@ export default function CouponRow({ coupon }) {
                 Edit
               </Link>
             </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() => setIsDeleteDialogOpen(true)}
-              variant="destructive"
-            >
-              <Trash2 />
-              Delete
-            </DropdownMenuItem>
+            {!coupon.isDeleted && (
+              <DropdownMenuItem
+                onClick={() => setIsDeleteDialogOpen(true)}
+                variant="destructive"
+              >
+                <Trash2 />
+                Delete
+              </DropdownMenuItem>
+            )}
+
+            {coupon.isDeleted && (
+              <DropdownMenuItem
+                onClick={handleRestoreCoupon}
+                variant="default"
+                disabled={isRestoring}
+              >
+                <RotateCcw />
+                Restore
+              </DropdownMenuItem>
+            )}
           </DropdownMenuContent>
         </DropdownMenu>
 

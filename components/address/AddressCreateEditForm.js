@@ -77,6 +77,8 @@ export default function AddressCreateEditForm({
       is_default: isDefault,
     };
 
+    console.log(addressData);
+
     const actionToUse = isEditMode ? updateAddressAction : createAddressAction;
 
     const loadingMessage = isEditMode
@@ -87,8 +89,7 @@ export default function AddressCreateEditForm({
 
     try {
       const result = await actionToUse(
-        existingAddress?.id,
-        customerId,
+        isEditMode ? existingAddress.id : customerId,
         addressData
       );
 

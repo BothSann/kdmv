@@ -5,7 +5,11 @@ import { supabaseAdmin } from "@/utils/supabase/supabaseAdmin";
 import { revalidatePath } from "next/cache";
 import { sanitizeCode } from "@/lib/utils";
 
-import { getCurrentUser, getUserProfile } from "@/lib/api/server/users";
+import {
+  getCurrentUser,
+  getUserProfile,
+  getUserRole,
+} from "@/lib/api/server/users";
 import {
   isCouponCodeTaken,
   isCouponCodeTakenByOther,
@@ -185,21 +189,64 @@ export async function deleteCouponByIdAction(couponId) {
       return { error: "Unauthorized - Please login as admin to delete coupon" };
     }
 
-    const { error: deleteCouponError } = await supabaseAdmin
+    // SOFT DELETE: Mark coupon as deleted instead of hard delete
+    const { error: softDeleteError } = await supabaseAdmin
       .from("promo_codes")
-      .delete()
+      .update({
+        deleted_at: new Date().toISOString(), // Mark as deleted
+        is_active: false, // Also deactivate
+        updated_at: new Date().toISOString(),
+      })
       .eq("id", couponId);
 
-    if (deleteCouponError) {
-      console.error("Delete coupon error:", deleteCouponError);
+    if (softDeleteError) {
+      console.error("Soft delete coupon error:", softDeleteError);
       return { error: "Failed to delete coupon" };
     }
 
     revalidatePath("/admin/coupons");
+
     return { success: true, message: "Coupon deleted successfully" };
   } catch (err) {
     console.error("Unexpected error:", err);
     return { error: "An unexpected error occurred during coupon deletion" };
+  }
+}
+
+export async function restoreCouponAction(couponId) {
+  try {
+    const { user, error: getCurrentUserError } = await getCurrentUser();
+    if (getCurrentUserError) {
+      return { error: getCurrentUserError };
+    }
+
+    const { role } = await getUserRole(user?.id);
+    if (role !== "admin") {
+      return {
+        error: "Unauthorized - Please login as admin to restore coupon",
+      };
+    }
+
+    //  Restore coupon
+    const { error: restoreError } = await supabaseAdmin
+      .from("promo_codes")
+      .update({
+        deleted_at: null, // Unmark as deleted
+        is_active: true, // Reactivate
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", couponId);
+
+    if (restoreError) {
+      console.error("Restore coupon error:", restoreError);
+      return { error: "Failed to restore coupon" };
+    }
+
+    revalidatePath("/admin/coupons");
+    return { success: true, message: "Coupon restored successfully" };
+  } catch (err) {
+    console.error("Unexpected error:", err);
+    return { error: "An unexpected error occurred" };
   }
 }
 
@@ -226,17 +273,23 @@ export async function bulkDeleteCouponsAction(couponIds) {
       };
     }
 
-    const { error: bulkDeleteError } = await supabaseAdmin
+    // SOFT DELETE: Mark all coupons as deleted
+    const { error: bulkSoftDeleteError } = await supabaseAdmin
       .from("promo_codes")
-      .delete()
+      .update({
+        deleted_at: new Date().toISOString(),
+        is_active: false,
+        updated_at: new Date().toISOString(),
+      })
       .in("id", couponIds);
 
-    if (bulkDeleteError) {
-      console.error("Bulk delete coupons error:", bulkDeleteError);
+    if (bulkSoftDeleteError) {
+      console.error("Bulk soft delete coupons error:", bulkSoftDeleteError);
       return { error: "Failed to delete coupons" };
     }
 
     revalidatePath("/admin/coupons");
+
     return {
       success: true,
       message: `Successfully deleted ${couponIds.length} coupon${

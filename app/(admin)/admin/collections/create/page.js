@@ -3,7 +3,9 @@ import CollectionProductSelector from "@/components/collection/CollectionProduct
 import { getAllProducts } from "@/lib/api/server/products";
 
 export default async function AdminCreateCollectionPage() {
-  const { products } = await getAllProducts({ perPage: 100 });
+  const { products } = await getAllProducts({
+    perPage: 100,
+  });
 
   return (
     <CollectionCreateEditForm>
