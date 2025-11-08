@@ -37,9 +37,11 @@ export default function ProductList({
         {variant === "scroll" && (
           <li className="flex-shrink-0 w-64 lg:hidden">
             <div className="h-full w-full flex flex-col items-center justify-center group">
-              <Button size="lg" className="font-semibold text-sm lg:text-base">
-                <Link href="/products">View all</Link>
-              </Button>
+              <Link href="/products">
+                <Button className="font-semibold text-sm lg:text-base">
+                  View all
+                </Button>
+              </Link>
             </div>
           </li>
         )}
