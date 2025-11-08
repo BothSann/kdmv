@@ -14,9 +14,7 @@ export default async function CollectionsPage() {
   return (
     <div className="space-y-10">
       <div className="space-y-4">
-        <h2 className="leading-none text-[2.6rem] md:text-5xl font-bold">
-          All Collections
-        </h2>
+        <h2 className="text-5xl font-bold">All Collections</h2>
         <p>
           Showing {collections.length} of {pagination.count} collections
         </p>
