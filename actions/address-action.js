@@ -1,6 +1,6 @@
 "use server";
 
-import { getCustomerAddresses } from "@/lib/api/server/addresses";
+import { getCustomerAddresses } from "@/lib/api/addresses";
 import { isValidCambodiaPhoneNumber, sanitizeName } from "@/lib/utils";
 import { createSupabaseServerClient } from "@/utils/supabase/server";
 import { revalidatePath } from "next/cache";

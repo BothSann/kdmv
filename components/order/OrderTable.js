@@ -1,6 +1,6 @@
 import NotFound from "@/components/NotFound";
 import OrderTableClient from "./OrderTableClient";
-import { getAllOrders } from "@/lib/api/server/orders";
+import { getAllOrders } from "@/lib/api/orders";
 
 export default async function OrderTable({ searchParams }) {
   const resolvedSearchParams = await searchParams;

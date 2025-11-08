@@ -1,8 +1,8 @@
 import NotFound from "@/components/NotFound";
 import OrderDetail from "@/components/order/OrderDetail";
 import { Button } from "@/components/ui/button";
-import { getOrderDetails } from "@/lib/api/server/orders";
-import { getCurrentUser } from "@/lib/api/server/users";
+import { getOrderDetails } from "@/lib/api/orders";
+import { getCurrentUser } from "@/lib/api/users";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 

@@ -5,16 +5,12 @@ import { supabaseAdmin } from "@/utils/supabase/supabaseAdmin";
 import { revalidatePath } from "next/cache";
 import { sanitizeCode } from "@/lib/utils";
 
-import {
-  getCurrentUser,
-  getUserProfile,
-  getUserRole,
-} from "@/lib/api/server/users";
+import { getCurrentUser, getUserProfile, getUserRole } from "@/lib/api/users";
 import {
   isCouponCodeTaken,
   isCouponCodeTakenByOther,
   validateCoupon,
-} from "@/lib/api/server/coupons";
+} from "@/lib/api/coupons";
 
 export async function createNewCouponAction(formData) {
   try {

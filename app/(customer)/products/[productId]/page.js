@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import NotFound from "@/app/not-found";
 import ProductCustomerDetail from "@/components/product/ProductCustomerDetail";
 import ProductImageSlider from "@/components/product/ProductImageSlider";
-import { getProductById, getRelatedProducts } from "@/lib/api/server/products";
+import { getProductById, getRelatedProducts } from "@/lib/api/products";
 import Spinner from "@/components/Spinner";
 import RelatedProducts from "@/components/product/RelatedProducts";
 

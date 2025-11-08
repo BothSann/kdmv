@@ -1,6 +1,6 @@
-import { getAllCoupons } from "@/lib/api/server/coupons";
+import { getAllCoupons } from "@/lib/api/coupons";
 import CouponTableClient from "./CouponTableClient";
-import { getCurrentUser, getUserRole } from "@/lib/api/server/users";
+import { getCurrentUser, getUserRole } from "@/lib/api/users";
 
 export default async function CouponTable({ searchParams }) {
   const resolvedSearchParams = await searchParams;

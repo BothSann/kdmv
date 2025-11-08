@@ -6,7 +6,7 @@ import {
   requiresAuth,
   isAdminRoute,
 } from "@/lib/routes-config";
-import { getUserRole } from "@/lib/api/server/users";
+import { getUserRole } from "@/lib/api/users";
 
 export async function updateSession(request) {
   let supabaseResponse = NextResponse.next({

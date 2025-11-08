@@ -13,7 +13,7 @@ import {
   getCurrentUser,
   getUserProfile,
   isPhoneNumberTaken,
-} from "@/lib/api/server/users";
+} from "@/lib/api/users";
 
 export async function registerUserAction(formData) {
   try {

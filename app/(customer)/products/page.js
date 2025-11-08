@@ -3,7 +3,7 @@ import NotFound from "@/components/NotFound";
 import Pagination from "@/components/Pagination";
 import CustomerPagination from "@/components/product/CustomerPagination";
 import ProductList from "@/components/product/ProductList";
-import { getAllProducts } from "@/lib/api/server/products";
+import { getAllProducts } from "@/lib/api/products";
 
 // METADATA (SEO)
 export const metadata = {

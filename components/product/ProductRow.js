@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal, Pencil, RotateCcw, Trash2, View } from "lucide-react";
 import { useState } from "react";
-import { formatCurrency } from "@/lib/utils";
+import { cn, formatCurrency } from "@/lib/utils";
 
 import Image from "next/image";
 import Link from "next/link";
@@ -54,7 +54,9 @@ export default function ProductRow({ product }) {
   };
 
   return (
-    <TableRow className="text-sm">
+    <TableRow
+      className={cn(isDeleted && "opacity-50 line-through text-destructive")}
+    >
       <TableCell>
         <Checkbox
           checked={isSelected(product.id)}
@@ -88,7 +90,7 @@ export default function ProductRow({ product }) {
       <TableCell>{product.product_code || "No Code"}</TableCell>
       <TableCell>
         {isDeleted ? (
-          <span className="text-destructive">Deleted</span>
+          <span>Deleted</span>
         ) : isInStock ? (
           <span className="text-success">In Stock</span>
         ) : (

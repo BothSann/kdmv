@@ -22,7 +22,7 @@ import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
 
 import Link from "next/link";
-import { getCouponById } from "@/lib/api/server/coupons";
+import { getCouponById } from "@/lib/api/coupons";
 import {
   cn,
   formatISODateToDayDateMonthYearWithAtTime,

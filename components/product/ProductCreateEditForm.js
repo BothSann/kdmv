@@ -88,6 +88,7 @@ export default function ProductCreateEditForm({
       ) {
         const formattedVariants = existingProduct.product_variants.map(
           (variant) => ({
+            id: variant.id, // Include variant ID for proper update matching
             color_id: variant.colors?.id || "",
             size_id: variant.sizes?.id || "",
             quantity: variant.quantity || 0,

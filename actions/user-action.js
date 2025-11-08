@@ -6,7 +6,7 @@ import { createSupabaseServerClient } from "@/utils/supabase/server";
 import { revalidatePath } from "next/cache";
 import { isValidCambodiaPhoneNumber, sanitizeName } from "@/lib/utils";
 
-import { getCurrentUser, getUserProfile } from "@/lib/api/server/users";
+import { getCurrentUser, getUserProfile } from "@/lib/api/users";
 
 export async function updateCurrentUserProfileAction(formData) {
   try {

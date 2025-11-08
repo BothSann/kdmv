@@ -7,19 +7,15 @@ import {
   cleanUpCreatedProduct,
   generateUniqueProductCode,
   generateSKU,
+} from "@/lib/api/products/helpers";
+import {
   uploadProductGalleryImages,
-  deleteUnselectedProductImages,
-  deleteAllProductImages,
-} from "@/lib/api/server/products";
-import {
-  getCurrentUser,
-  getUserProfile,
-  getUserRole,
-} from "@/lib/api/server/users";
-import {
-  addProductToCollection,
-  removeProductFromCollection,
-} from "@/lib/api/server/collections";
+  handleBannerImageUpload,
+  handleGalleryImagesUpdate,
+} from "@/lib/api/products/imageService";
+import { getCurrentUser, getUserProfile, getUserRole } from "@/lib/api/users";
+import { syncProductVariants } from "@/lib/api/products/variantService";
+import { updateProductCollections } from "@/lib/api/products/collectionService";
 
 export async function createNewProductAction(formData) {
   try {
@@ -155,46 +151,24 @@ export async function updateProductAction(formData) {
 
     const productId = formData.id;
 
-    // BANNER IMAGE HANDLING: Upload new banner image if provided, otherwise keep existing
-    let imagePath = formData.existing_banner_image_url; // Keep existing image by default
+    // BANNER IMAGE HANDLING: Upload new banner using image service
+    const { imagePath, error: bannerError } = await handleBannerImageUpload(
+      formData.banner_file,
+      formData.existing_banner_image_url
+    );
 
-    if (formData.banner_file && formData.banner_file.size > 0) {
-      const imageName = generateUniqueImageName(formData.banner_file);
-      const bannerImagePath = `banners/${imageName}`;
-      imagePath = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/product-images/${bannerImagePath}`;
-
-      // Upload new banner image to storage
-      const { error: storageError } = await supabaseAdmin.storage
-        .from("product-images")
-        .upload(bannerImagePath, formData.banner_file);
-
-      if (storageError) {
-        console.error("Storage error:", storageError);
-        return { error: storageError.message };
-      }
+    if (bannerError) {
+      return { error: bannerError };
     }
 
-    // COLLECTION MANAGEMENT: Handle product collection assignments
-    if (formData.collection_id !== undefined) {
-      // First, remove product from any existing collections
-      const removeResult = await removeProductFromCollection(productId);
-      if (!removeResult.success) {
-        console.error("Remove from collections error:", removeResult.error);
-        return { error: removeResult.error };
-      }
+    // COLLECTION MANAGEMENT: Handle product collection assignments using service
+    const { error: collectionError } = await updateProductCollections(
+      productId,
+      formData.collection_id
+    );
 
-      // Then add to new collection if specified
-      if (formData.collection_id) {
-        const addResult = await addProductToCollection(
-          productId,
-          formData.collection_id
-        );
-
-        if (!addResult.success) {
-          console.error("Add to collections error:", addResult.error);
-          return { error: addResult.error };
-        }
-      }
+    if (collectionError) {
+      return { error: collectionError };
     }
 
     // PRODUCT CORE DATA UPDATE: Update main product information
@@ -219,186 +193,27 @@ export async function updateProductAction(formData) {
       return { error: productError.message };
     }
 
-    // GALLERY IMAGE MANAGEMENT: Delete unselected existing images and upload new ones
-    // Delete images that are no longer selected by the user
-    if (formData.existing_image_ids !== undefined) {
-      // User wants to keep some images - delete the rest
-      if (formData.existing_image_ids.length > 0) {
-        const deleteImagesResult = await deleteUnselectedProductImages(
-          productId,
-          formData.existing_image_ids
-        );
+    // GALLERY IMAGE MANAGEMENT: Handle deletions and uploads using image service
+    const { error: galleryError } = await handleGalleryImagesUpdate(
+      productId,
+      formData.existing_image_ids,
+      formData.image_files
+    );
 
-        if (!deleteImagesResult.success) {
-          console.error("Delete images error:", deleteImagesResult.error);
-          return { error: deleteImagesResult.error };
-        }
-      } else {
-        // User wants to delete ALL existing images (empty array means delete all)
-        const deleteAllImagesResult = await deleteAllProductImages(productId);
-
-        if (!deleteAllImagesResult.success) {
-          console.error(
-            "Delete all images error:",
-            deleteAllImagesResult.error
-          );
-          return { error: deleteAllImagesResult.error };
-        }
-      }
+    if (galleryError) {
+      return { error: galleryError };
     }
 
-    // Upload new gallery images if any were added during edit
-    if (formData.image_files && formData.image_files.length > 0) {
-      const galleryResult = await uploadProductGalleryImages(
-        productId,
-        formData.image_files
-      );
+    // VARIANTS MANAGEMENT: Sync variants using modular service
+    const { error: variantError } = await syncProductVariants(
+      productId,
+      product.product_code,
+      formData.variants
+    );
 
-      if (!galleryResult.success) {
-        console.error("Gallery upload error:", galleryResult.error);
-        return { error: galleryResult.error };
-      }
-    }
-
-    // VARIANTS MANAGEMENT: Smart update with foreign key constraint handling
-    // Instead of deleting all variants, we UPDATE existing ones and INSERT new ones
-    // This prevents foreign key violations from orders that reference variants
-
-    // 1. Fetch existing variants
-    const { data: existingVariants, error: fetchVariantsError } =
-      await supabaseAdmin
-        .from("product_variants")
-        .select("id, color_id, size_id, sku")
-        .eq("product_id", productId);
-
-    if (fetchVariantsError) {
-      console.error("Fetch variants error:", fetchVariantsError);
-      return { error: fetchVariantsError.message };
-    }
-
-    // 2. Process new variants from form - separate into update vs insert
-    const variantsToUpdate = [];
-    const variantsToInsert = [];
-    const variantIdsToKeep = [];
-
-    for (const newVariant of formData.variants) {
-      // Find matching existing variant (same color + size combination)
-      const existing = existingVariants?.find(
-        (v) =>
-          v.color_id === newVariant.color_id && v.size_id === newVariant.size_id
-      );
-
-      if (existing) {
-        // Variant exists - prepare UPDATE
-        variantsToUpdate.push({
-          id: existing.id,
-          quantity: parseInt(newVariant.quantity),
-          sku:
-            newVariant.sku ||
-            existing.sku ||
-            (await generateSKU(
-              product.product_code,
-              newVariant.color_id,
-              newVariant.size_id
-            )),
-        });
-        variantIdsToKeep.push(existing.id);
-      } else {
-        // New variant - prepare INSERT
-        variantsToInsert.push({
-          product_id: productId,
-          color_id: newVariant.color_id,
-          size_id: newVariant.size_id,
-          quantity: parseInt(newVariant.quantity),
-          sku:
-            newVariant.sku ||
-            (await generateSKU(
-              product.product_code,
-              newVariant.color_id,
-              newVariant.size_id
-            )),
-        });
-      }
-    }
-
-    // 3. Update existing variants (preserves foreign key references)
-    for (const variant of variantsToUpdate) {
-      const { error: updateVariantError } = await supabaseAdmin
-        .from("product_variants")
-        .update({
-          quantity: variant.quantity,
-          sku: variant.sku,
-          updated_at: new Date().toISOString(),
-        })
-        .eq("id", variant.id);
-
-      if (updateVariantError) {
-        console.error("Update variant error:", updateVariantError);
-        return { error: updateVariantError.message };
-      }
-    }
-
-    // 4. Insert new variants
-    if (variantsToInsert.length > 0) {
-      const { error: insertVariantsError } = await supabaseAdmin
-        .from("product_variants")
-        .insert(variantsToInsert);
-
-      if (insertVariantsError) {
-        console.error("Insert variants error:", insertVariantsError);
-        return { error: insertVariantsError.message };
-      }
-    }
-
-    // 5. Handle variants no longer in the list (safe deletion)
-    const variantIdsToRemove =
-      existingVariants
-        ?.filter((v) => !variantIdsToKeep.includes(v.id))
-        .map((v) => v.id) || [];
-
-    if (variantIdsToRemove.length > 0) {
-      // Check if any variants are used in past orders
-      const { data: usedInOrders, error: checkOrdersError } =
-        await supabaseAdmin
-          .from("order_items")
-          .select("product_variant_id")
-          .in("product_variant_id", variantIdsToRemove);
-
-      if (checkOrdersError) {
-        console.error("Check order items error:", checkOrdersError);
-        // Continue anyway - better to skip deletion than fail entire update
-      }
-
-      const usedVariantIds =
-        usedInOrders?.map((item) => item.product_variant_id) || [];
-
-      // Delete ONLY variants not used in orders
-      const safeToDelete = variantIdsToRemove.filter(
-        (id) => !usedVariantIds.includes(id)
-      );
-
-      if (safeToDelete.length > 0) {
-        const { error: deleteVariantsError } = await supabaseAdmin
-          .from("product_variants")
-          .delete()
-          .in("id", safeToDelete);
-
-        if (deleteVariantsError) {
-          console.error("Delete unused variants error:", deleteVariantsError);
-          // Don't return error - product is already updated successfully
-        }
-      }
-
-      // Log variants that couldn't be deleted (used in past orders)
-      const protectedVariants = variantIdsToRemove.filter((id) =>
-        usedVariantIds.includes(id)
-      );
-
-      if (protectedVariants.length > 0) {
-        console.warn(
-          `Note: ${protectedVariants.length} variant(s) could not be deleted because they are referenced in past orders. These variants are preserved for order history.`
-        );
-      }
+    if (variantError) {
+      console.error("Variant sync error:", variantError);
+      return { error: variantError };
     }
 
     // CACHE INVALIDATION: Clear cached pages to show updated data

@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/table";
 
 import AdminRow from "@/components/admin/AdminRow";
-import { getAllAdmins } from "@/lib/api/server/users";
+import { getAllAdmins } from "@/lib/api/users";
 
 export default async function AdminTable() {
   const { admins } = await getAllAdmins();
