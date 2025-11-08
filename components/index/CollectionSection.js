@@ -27,7 +27,7 @@ export default function CollectionSection({ collection, products, index }) {
         </div>
       </div>
 
-      <ProductList products={products} variant="scroll" />
+      <ProductList products={products} href="/collections" variant="scroll" />
     </div>
   );
 }

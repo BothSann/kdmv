@@ -5,6 +5,7 @@ import ProductItem from "./ProductItem";
 export default function ProductList({
   products,
   variant = "grid", // "scroll" | "grid"
+  href = "/products",
 }) {
   // Layout classes based on variant
   const containerClasses =
@@ -37,7 +38,7 @@ export default function ProductList({
         {variant === "scroll" && (
           <li className="flex-shrink-0 w-64 lg:hidden">
             <div className="h-full w-full flex flex-col items-center justify-center group">
-              <Link href="/products">
+              <Link href={href}>
                 <Button className="font-semibold text-sm lg:text-base">
                   View all
                 </Button>
