@@ -18,7 +18,7 @@ export default function CollectionSection({ collection, products, index }) {
         </h2>
 
         <div className="flex justify-center group self-start">
-          <Link href="/" className="flex items-center gap-1.5">
+          <Link href="/collections" className="flex items-center gap-1.5">
             <Button variant="link" className="hidden lg:inline-flex text-base">
               View all
               <MoveRight className="scale-0 translate-x-2 group-hover:scale-100 group-hover:translate-x-0 transition-all duration-300 ease-in-out" />
