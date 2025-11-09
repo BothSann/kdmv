@@ -96,7 +96,7 @@ export default async function CollectionPage({ params, searchParams }) {
       </section>
 
       <div className="space-y-4">
-        <h2 className="text-[2.45rem] lg:text-5xl leading-none font-bold">
+        <h2 className="text-4xl lg:text-5xl leading-none font-bold">
           {products[0].collection_name}
         </h2>
         {products[0].collection_description && (
