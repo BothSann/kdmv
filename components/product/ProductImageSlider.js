@@ -56,7 +56,7 @@ export default function ProductImageSlider({ product }) {
           opts={{
             align: "center",
             loop: true,
-            duration: 250,
+            duration: 25,
           }}
           plugins={[Autoplay({ delay: 2500, stopOnMouseEnter: true })]}
         >
@@ -90,7 +90,7 @@ export default function ProductImageSlider({ product }) {
             align: "center",
             loop: true,
             dragFree: true, // Makes thumbnails snap without momentum
-            duration: 250,
+            duration: 25,
           }}
         >
           <CarouselContent>
