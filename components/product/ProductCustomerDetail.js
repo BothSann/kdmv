@@ -178,7 +178,7 @@ export default function ProductCustomerDetail({ product }) {
             <Badge variant="destructive">Sold Out</Badge>
           )}
 
-          {selectedVariant && quantityInCart > 0 && remainingStock > 0 && (
+          {selectedVariant && quantityInCart > 0 && remainingStock <= 10 && (
             <Badge variant="secondary">
               {quantityInCart} in cart ({remainingStock} left)
             </Badge>

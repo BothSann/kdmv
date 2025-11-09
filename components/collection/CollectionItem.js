@@ -4,7 +4,7 @@ import Link from "next/link";
 export default function CollectionItem({ collection }) {
   return (
     <li className="group overflow-hidden transition-transform duration-300 hover:scale-[1.02]">
-      <Link href={`/collections/${collection.id}`}>
+      <Link href={`/collections/${collection.slug}`}>
         <div className="relative aspect-square overflow-hidden">
           {/* Dark overlay */}
           <div className="absolute inset-0 bg-black/40 group-hover:bg-black/30 transition-colors duration-300 z-10" />

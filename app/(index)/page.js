@@ -1,6 +1,6 @@
 import HomePageClient from "@/components/index/HomePageClient";
+import { getCollectionProducts } from "@/lib/api/collections";
 import {
-  getCollectionProducts,
   getFeaturedCollections,
   getFeaturedProducts,
 } from "@/lib/api/products";
@@ -30,6 +30,8 @@ export default async function Home() {
         try {
           const { products } = await getCollectionProducts(collection.slug, {
             limit: 4,
+            page: 1,
+            perPage: 4,
           });
           return { ...collection, products, error: false };
         } catch (error) {

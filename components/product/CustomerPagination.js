@@ -9,13 +9,14 @@ export default function CustomerPagination({
   totalPages,
   hasNextPage,
   hasPreviousPage,
+  basePath = "/products", // Dynamic base path, defaults to /products for backwards compatibility
 }) {
   return (
     <div className="flex justify-center gap-4 items-center">
       {/* Previous Button */}
       <PaginationArrow
         direction="prev"
-        href={`/products?page=${currentPage - 1}`}
+        href={`${basePath}?page=${currentPage - 1}`}
         disabled={!hasPreviousPage}
         icon={ChevronLeft}
       />
@@ -28,7 +29,7 @@ export default function CustomerPagination({
       {/* Next Button */}
       <PaginationArrow
         direction="next"
-        href={`/products?page=${currentPage + 1}`}
+        href={`${basePath}?page=${currentPage + 1}`}
         disabled={!hasNextPage}
         icon={ChevronRight}
       />

@@ -47,7 +47,8 @@ export default function ProductVariantSelector({
     return product.variants_lookup
       .filter((v) => v.colors?.id === selectedColorId)
       .map((v) => v.sizes)
-      .filter(Boolean);
+      .filter(Boolean)
+      .sort((a, b) => a.display_order - b.display_order);
   }, [selectedColorId, product.variants_lookup]);
 
   // Notify parent when variant changes
