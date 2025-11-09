@@ -96,7 +96,9 @@ export default async function CollectionPage({ params, searchParams }) {
       </section>
 
       <div className="space-y-4">
-        <h1 className="text-5xl font-bold">{products[0].collection_name}</h1>
+        <h2 className="text-[2.45rem] lg:text-5xl leading-none font-bold">
+          {products[0].collection_name}
+        </h2>
         {products[0].collection_description && (
           <p className="text-lg text-muted-foreground">
             {products[0].collection_description}
