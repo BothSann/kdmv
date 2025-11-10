@@ -68,8 +68,6 @@ export async function registerUserAction(formData) {
       };
     }
 
-    console.log("Auth data:", authData);
-
     // 7. Return success - profile will be created after email confirmation
     return {
       authData,
@@ -123,8 +121,6 @@ export async function registerAdminAction(formData) {
       return { error: authError.message };
     }
 
-    console.log("Auth data:", authData);
-
     const profileResult = await createProfileForAdmin(authData.user);
 
     if (profileResult.error) {
@@ -136,8 +132,6 @@ export async function registerAdminAction(formData) {
     if (profileResult.success) {
       console.log("Profile creation success:", profileResult.message);
     }
-
-    console.log("Profile result:", profileResult);
 
     revalidatePath("/admin/users");
     return {
