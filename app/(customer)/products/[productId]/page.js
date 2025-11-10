@@ -17,7 +17,7 @@ export async function generateMetadata({ params }) {
   }
 
   return {
-    title: `KDMV | ${product.name}`,
+    title: `${product.name} | KDMV`,
   };
 }
 
