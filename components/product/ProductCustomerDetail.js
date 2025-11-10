@@ -216,14 +216,16 @@ export default function ProductCustomerDetail({ product }) {
         )}
 
         {/* Description */}
-        <div className="space-y-2.5 mt-4">
-          <Label className="text-sm font-bold font-poppins uppercase tracking-widest">
-            Description
-          </Label>
-          <p className="text-foreground text-sm lg:text-base">
-            {product.description}
-          </p>
-        </div>
+        {product.description && (
+          <div className="space-y-2.5 mt-4">
+            <Label className="text-sm font-bold font-poppins uppercase tracking-widest">
+              Description
+            </Label>
+            <p className="text-foreground text-sm lg:text-base">
+              {product.description}
+            </p>
+          </div>
+        )}
 
         {/* Add to Cart Button */}
         <Button
