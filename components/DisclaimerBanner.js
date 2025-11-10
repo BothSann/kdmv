@@ -3,13 +3,13 @@ import Link from "next/link";
 
 export default function DisclaimerBanner() {
   return (
-    <div className="h-auto w-full bg-warning-bg text-warning-text lg:py-4 py-4 lg:px-6 px-4.5 text-center">
+    <div className="h-auto w-full bg-warning-bg text-warning-text lg:py-6 py-5 lg:px-6 px-4.5 text-center">
       <div className="flex items-center justify-center gap-2">
         <span className="text-xs lg:text-sm text-center">
           <Megaphone className="size-4 inline-block mr-1" />
           <span>
-            This is not the official KDMV website. Please visit the official
-            website at
+            This is not the official KDMV website. To visit the official site,
+            please go to
           </span>
           <Link
             href="https://www.kdmv.io"
