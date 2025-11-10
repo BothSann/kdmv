@@ -94,6 +94,7 @@ export default function RegisterForm() {
                 <Label htmlFor="first_name">First Name</Label>
                 <Input
                   name="first_name"
+                  minLength={3}
                   id="first_name"
                   type="text"
                   placeholder="KDMV"
@@ -105,6 +106,7 @@ export default function RegisterForm() {
                 <Label htmlFor="last_name">Last Name</Label>
                 <Input
                   name="last_name"
+                  minLength={3}
                   id="last_name"
                   type="text"
                   placeholder="Digital"
