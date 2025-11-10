@@ -192,7 +192,7 @@ export default function RegisterForm() {
                       >
                         <SelectValue placeholder="Select a gender" />
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent position="popper">
                         <SelectItem value="male">Male</SelectItem>
                         <SelectItem value="female">Female</SelectItem>
                         <SelectItem value="prefer not to say">
@@ -242,7 +242,7 @@ export default function RegisterForm() {
                       >
                         <SelectValue />
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent position="popper">
                         {COUNTRIES.map((country) => (
                           <SelectItem key={country.code} value={country.value}>
                             {country.label}
@@ -276,7 +276,7 @@ export default function RegisterForm() {
                       >
                         <SelectValue placeholder="Select a city/province" />
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent position="popper">
                         <ScrollArea className="h-48">
                           {CAMBODIA_PROVINCES.map((province) => (
                             <SelectItem

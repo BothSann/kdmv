@@ -224,7 +224,7 @@ export default function AddressCreateEditForm({
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="Select a city/province" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent position="popper">
                 <ScrollArea className="h-48">
                   {CAMBODIA_PROVINCES.map((province) => (
                     <SelectItem key={province.value} value={province.value}>
