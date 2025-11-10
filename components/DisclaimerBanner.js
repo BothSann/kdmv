@@ -9,11 +9,11 @@ export default function DisclaimerBanner() {
           <Megaphone className="size-4 inline-block mr-1" />
           <span>
             This is not the official KDMV website. Please visit the official
-            website at{" "}
+            website at
           </span>
           <Link
             href="https://www.kdmv.io"
-            className="group font-bold text-warning-text transition-all duration-300 inline-flex items-center gap-1 px-1 hover:underline hover:scale-105"
+            className="group font-bold text-warning-text transition-all duration-300 inline-flex items-center gap-1 px-2 underline hover:scale-105"
             target="_blank"
             rel="noopener noreferrer"
           >
