@@ -25,55 +25,59 @@ import { useState } from "react";
 import Logo from "@/components/Logo";
 import Link from "next/link";
 import { Eye, EyeOff } from "lucide-react";
+import { Controller, useForm } from "react-hook-form";
+import { registerSchema } from "@/lib/validations/auth";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { cn } from "@/lib/utils";
+import FormError from "./FormError";
+import { CAMBODIA_PROVINCES, COUNTRIES } from "@/lib/constants";
+import { ScrollArea } from "./ui/scroll-area";
 
 export default function RegisterForm() {
-  const [gender, setGender] = useState("");
-  const [country, setCountry] = useState("Cambodia");
-  const [cityProvince, setCityProvince] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+
+  const {
+    register, // Register input fields
+    handleSubmit, // Handle form submission
+    control, // For complex components (Select)
+    formState: { errors, isSubmitting }, // Access errors and submit state
+    reset, // Reset form after success
+  } = useForm({
+    mode: "onBlur",
+    resolver: zodResolver(registerSchema),
+    defaultValues: {
+      first_name: "",
+      last_name: "",
+      email: "",
+      password: "",
+      gender: "",
+      telephone: "",
+      country: "Cambodia",
+      city_province: "",
+    },
+  });
 
   const togglePasswordVisibility = () => {
     setShowPassword((prev) => !prev);
   };
 
-  async function handleSubmit(event) {
-    event.preventDefault();
-    setIsSubmitting(true);
-
-    const formData = new FormData(event.target);
-
-    const registerData = {
-      first_name: formData.get("first_name"),
-      last_name: formData.get("last_name"),
-      email: formData.get("email"),
-      password: formData.get("password"),
-      gender: formData.get("gender"),
-      telephone: formData.get("telephone"),
-      country: formData.get("country"),
-      city_province: formData.get("city_province"),
-    };
-
+  const onSubmit = async (data) => {
     const toastId = toast.loading("Registering...");
 
     try {
-      const { success, error, message, authData } = await registerUserAction(
-        registerData
-      );
+      const { success, error, message } = await registerUserAction(data);
 
       if (error) {
         toast.error(error, { id: toastId });
       }
       if (success) {
         toast.success(message, { id: toastId });
-        event.target.reset();
+        reset();
       }
     } catch (error) {
       toast.error(error.message, { id: toastId });
-    } finally {
-      setIsSubmitting(false);
     }
-  }
+  };
 
   return (
     <Card className="space-y-4">
@@ -87,139 +91,209 @@ export default function RegisterForm() {
         </div>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <div className="flex flex-col gap-6">
             <div className="grid grid-cols-2 gap-4">
-              <div className="grid gap-3">
+              <div className="space-y-2.5">
                 <Label htmlFor="first_name">First Name</Label>
                 <Input
-                  name="first_name"
-                  minLength={3}
+                  {...register("first_name")}
                   id="first_name"
                   type="text"
                   placeholder="KDMV"
-                  required
                   disabled={isSubmitting}
+                  className={cn(
+                    "w-full",
+                    errors.first_name && "border-destructive"
+                  )}
                 />
+                {errors.first_name && (
+                  <FormError message={errors.first_name.message} />
+                )}
               </div>
-              <div className="grid gap-3">
+              <div className="space-y-2.5">
                 <Label htmlFor="last_name">Last Name</Label>
                 <Input
-                  name="last_name"
-                  minLength={3}
+                  {...register("last_name")}
                   id="last_name"
                   type="text"
                   placeholder="Digital"
-                  required
+                  disabled={isSubmitting}
+                  className={cn(
+                    "w-full",
+                    errors.last_name && "border-destructive"
+                  )}
                 />
+                {errors.last_name && (
+                  <FormError message={errors.last_name.message} />
+                )}
               </div>
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-2.5">
               <Label htmlFor="email">Email</Label>
               <Input
-                name="email"
+                {...register("email")}
                 id="email"
                 type="email"
                 placeholder="m@example.com"
-                required
                 disabled={isSubmitting}
+                className={cn("w-full", errors.email && "border-destructive")}
               />
+              {errors.email && <FormError message={errors.email.message} />}
             </div>
-            <div className="space-y-4">
+            <div className="space-y-2.5 relative">
               <Label htmlFor="password">Password</Label>
-              <div className="relative">
-                <Input
-                  name="password"
-                  id="password"
-                  placeholder="Password"
-                  type={showPassword ? "text" : "password"}
-                  required
-                  disabled={isSubmitting}
+              <Input
+                {...register("password")}
+                id="password"
+                type={showPassword ? "text" : "password"}
+                placeholder="Password"
+                disabled={isSubmitting}
+                className={cn(
+                  "w-full",
+                  errors.password && "border-destructive"
+                )}
+              />
+              {errors.password && (
+                <FormError message={errors.password.message} />
+              )}
+              {showPassword ? (
+                <Eye
+                  size={20}
+                  className="absolute right-3 top-8 text-muted-foreground cursor-pointer"
+                  onClick={togglePasswordVisibility}
                 />
-                {showPassword ? (
-                  <Eye
-                    size={20}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground cursor-pointer"
-                    onClick={togglePasswordVisibility}
-                  />
-                ) : (
-                  <EyeOff
-                    size={20}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground cursor-pointer"
-                    onClick={togglePasswordVisibility}
-                  />
+              ) : (
+                <EyeOff
+                  size={20}
+                  className="absolute right-3 top-8 text-muted-foreground cursor-pointer"
+                  onClick={togglePasswordVisibility}
+                />
+              )}
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2.5">
+                <Label htmlFor="gender">Gender</Label>
+                <Controller
+                  name="gender"
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      value={field.value}
+                      onValueChange={field.onChange}
+                      disabled={isSubmitting}
+                    >
+                      <SelectTrigger
+                        className={cn(
+                          "w-full",
+                          errors.gender && "border-destructive"
+                        )}
+                      >
+                        <SelectValue placeholder="Select a gender" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="male">Male</SelectItem>
+                        <SelectItem value="female">Female</SelectItem>
+                        <SelectItem value="prefer not to say">
+                          Prefer not to say
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
+                {errors.gender && <FormError message={errors.gender.message} />}
+              </div>
+              <div className="space-y-2.5">
+                <Label htmlFor="telephone">Telephone</Label>
+                <Input
+                  {...register("telephone")}
+                  id="telephone"
+                  type="tel"
+                  placeholder="0123456789"
+                  disabled={isSubmitting}
+                  className={cn(
+                    "w-full",
+                    errors.telephone && "border-destructive"
+                  )}
+                />
+                {errors.telephone && (
+                  <FormError message={errors.telephone.message} />
                 )}
               </div>
             </div>
             <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-4">
-                <Label htmlFor="gender">Gender</Label>
-                <Select
-                  name="gender"
-                  value={gender}
-                  onValueChange={setGender}
-                  disabled={isSubmitting}
-                >
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Select a gender" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="male">Male</SelectItem>
-                    <SelectItem value="female">Female</SelectItem>
-                    <SelectItem value="prefer not to say">
-                      Prefer not to say
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="space-y-4">
-                <Label htmlFor="telephone">Telephone</Label>
-                <Input
-                  name="telephone"
-                  id="telephone"
-                  type="tel"
-                  placeholder="0123456789"
-                  required
-                  disabled={isSubmitting}
-                />
-              </div>
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-4">
+              <div className="space-y-2.5">
                 <Label htmlFor="country">Country</Label>
-                <Select
+                <Controller
                   name="country"
-                  value={country}
-                  onValueChange={setCountry}
-                  disabled={isSubmitting}
-                >
-                  <SelectTrigger className="w-full">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Cambodia">Cambodia</SelectItem>
-                  </SelectContent>
-                </Select>
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      value={field.value}
+                      onValueChange={field.onChange}
+                      disabled={isSubmitting}
+                    >
+                      <SelectTrigger
+                        className={cn(
+                          "w-full",
+                          errors.country && "border-destructive"
+                        )}
+                      >
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {COUNTRIES.map((country) => (
+                          <SelectItem key={country.code} value={country.value}>
+                            {country.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
+                {errors.country && (
+                  <FormError message={errors.country.message} />
+                )}
               </div>
-              <div className="space-y-4">
+
+              <div className="space-y-2.5">
                 <Label htmlFor="city_province">City/Province</Label>
-                <Select
+                <Controller
                   name="city_province"
-                  value={cityProvince}
-                  onValueChange={setCityProvince}
-                  required
-                  disabled={isSubmitting}
-                >
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Select a city/province" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Phnom Penh">Phnom Penh</SelectItem>
-                    <SelectItem value="Siem Reap">Siem Reap</SelectItem>
-                    <SelectItem value="Battambang">Battambang</SelectItem>
-                  </SelectContent>
-                </Select>
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      value={field.value}
+                      onValueChange={field.onChange}
+                      disabled={isSubmitting}
+                    >
+                      <SelectTrigger
+                        className={cn(
+                          "w-full",
+                          errors.city_province && "border-destructive"
+                        )}
+                      >
+                        <SelectValue placeholder="Select a city/province" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <ScrollArea className="h-48">
+                          {CAMBODIA_PROVINCES.map((province) => (
+                            <SelectItem
+                              key={province.value}
+                              value={province.value}
+                            >
+                              {province.label}
+                            </SelectItem>
+                          ))}
+                        </ScrollArea>
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
+                {errors.city_province && (
+                  <FormError message={errors.city_province.message} />
+                )}
               </div>
             </div>
             <div className="flex flex-col gap-3">
