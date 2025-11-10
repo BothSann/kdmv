@@ -8,7 +8,8 @@ import "./globals.css";
 
 export const metadata = {
   title: "KDMV",
-  description: "KDMV",
+  description:
+    "KDMV is a leading local digital marketing agency in Cambodia, specializing in video content and social media marketing, with an e-commerce component for its own in-house lifestyle/apparel brand.",
 };
 
 export default async function RootLayout({ children }) {
