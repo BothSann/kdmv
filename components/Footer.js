@@ -65,7 +65,7 @@ export function FooterSocialIcons() {
     <ul className="flex items-center space-x-4 self-start justify-end lg:justify-start">
       {SOCIAL_LINKS.map(({ Icon, href, label }) => (
         <li key={label}>
-          <Link href={href} aria-label={label}>
+          <Link href={href} aria-label={label} target="_blank">
             <Icon size={24} />
           </Link>
         </li>
@@ -144,7 +144,8 @@ export default function Footer() {
           <div className="flex flex-col items-start">
             <Logo width="lg:w-32 w-30" className="invert object-top" />
             <Link
-              href="/"
+              href="https://facebook.com/bothsann"
+              target="_blank"
               className="font-jost tracking-wide font-medium text-muted/90 dark:text-accent-foreground/85 hover:underline"
             >
               Powered by Both Sann
