@@ -11,6 +11,14 @@ import { MoveRight } from "lucide-react";
 
 const slides = [
   {
+    id: "4",
+    image: "/carousel7.webp",
+    title: "KDMV Presents: The Revenge",
+    subtitle: "Sdach Game Ft. Tena",
+    link: "https://www.facebook.com/share/v/17VHMwU4Gy/",
+    linkText: "Watch Now",
+  },
+  {
     id: "1",
     image: "/carousel4.jpg",
     title: "Childhood Nostalgia",
