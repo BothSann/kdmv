@@ -23,8 +23,9 @@ export async function registerUserAction(formData) {
     // ========================================
     const validation = registerSchema.safeParse(formData);
 
+    // The  standard property name that Zod uses for validation errors. When you call safeParse() on a Zod schema and validation fails, Zod returns an object with a success: false property and an error property that contains a ZodError instance. This ZodError instance has an issues array that contains all the validation errors.
     if (!validation.success) {
-      const firstError = validation.error.errors[0];
+      const firstError = validation.error.issues[0];
       return {
         error: firstError.message,
         field: firstError.path[0],
