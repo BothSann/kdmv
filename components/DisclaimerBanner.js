@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export default function DisclaimerBanner() {
   return (
-    <div className="h-auto w-full bg-chart-5 text-chart-5-foreground lg:py-6 py-5 lg:px-6 px-4.5 text-center">
+    <div className="h-auto w-full bg-warning-bg text-warning-text lg:py-6 py-5 lg:px-6 px-4.5 text-center">
       <div className="flex items-center justify-center gap-2">
         <span className="text-xs lg:text-sm text-center">
           <Megaphone className="size-4 inline-block mr-1" />
@@ -13,7 +13,7 @@ export default function DisclaimerBanner() {
           </span>
           <Link
             href="https://www.kdmv.io"
-            className="group font-bold text-chart-5-foreground transition-all duration-300 inline-flex items-center gap-1 px-2 underline hover:scale-105"
+            className="group font-bold text-warning-text transition-all duration-300 inline-flex items-center gap-1 px-2 underline hover:scale-105"
             target="_blank"
             rel="noopener noreferrer"
           >
