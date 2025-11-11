@@ -4,7 +4,7 @@ import { supabaseAdmin } from "@/utils/supabase/supabaseAdmin";
 import { createSupabaseServerClient } from "@/utils/supabase/server";
 
 import { revalidatePath } from "next/cache";
-import { isValidCambodiaPhoneNumber, sanitizeName } from "@/lib/utils";
+import { sanitizeName } from "@/lib/utils";
 import { getBaseUrl } from "@/lib/config";
 
 import {
@@ -14,21 +14,48 @@ import {
   getUserProfile,
   isPhoneNumberTaken,
 } from "@/lib/api/users";
+import { registerSchema } from "@/lib/validations/auth";
 
 export async function registerUserAction(formData) {
   try {
-    // 2. Validate phone number format
-    if (!isValidCambodiaPhoneNumber(formData.telephone)) {
-      return { error: "Invalid Cambodian telephone number format" };
+    // ========================================
+    // STEP 1: VALIDATE WITH ZOD SCHEMA
+    // ========================================
+    const validation = registerSchema.safeParse(formData);
+
+    if (!validation.success) {
+      const firstError = validation.error.errors[0];
+      return {
+        error: firstError.message,
+        field: firstError.path[0],
+      };
     }
-    // 3. Check if telephone is already used by confirmed users
+
+    // ========================================
+    // STEP 2: SANITIZE VALIDATED DATA
+    // ========================================
+    const validatedData = validation.data;
+
+    const sanitizedData = {
+      ...validatedData,
+      first_name: sanitizeName(validatedData.first_name),
+      last_name: sanitizeName(validatedData.last_name),
+      email: validatedData.email.toLowerCase().trim(),
+      telephone: validatedData.telephone.trim(),
+    };
+
+    // ========================================
+    // STEP 3: BUSINESS LOGIC VALIDATIONS
+    // ========================================
+
+    // Check if telephone is already taken
     const { isTaken, error: phoneNumberError } = await isPhoneNumberTaken(
-      formData.telephone
+      sanitizedData.telephone
     );
 
     if (phoneNumberError) {
-      console.error("Phone number error:", phoneNumberError);
-      return { error: phoneNumberError.message };
+      console.error("Phone number check error:", phoneNumberError);
+      return { error: "Failed to verify telephone number" };
     }
 
     if (isTaken) {
@@ -38,45 +65,50 @@ export async function registerUserAction(formData) {
       };
     }
 
-    // 4. Try to sign up - Supabase handles existing users automatically
+    // ========================================
+    // STEP 4: CREATE USER ACCOUNT
+    // ========================================
+
     const { data: authData, error: authError } =
       await supabaseAdmin.auth.signUp({
-        email: formData.email,
-        password: formData.password,
+        email: sanitizedData.email,
+        password: sanitizedData.password, // Never log passwords!
         options: {
           data: {
-            first_name: formData.first_name,
-            last_name: formData.last_name,
-            gender: formData.gender,
-            telephone: formData.telephone,
-            city_province: formData.city_province,
+            first_name: sanitizedData.first_name,
+            last_name: sanitizedData.last_name,
+            gender: sanitizedData.gender,
+            telephone: sanitizedData.telephone,
+            city_province: sanitizedData.city_province,
           },
           emailRedirectTo: `${getBaseUrl()}/auth/confirm`,
         },
       });
 
-    // 5. Handle auth errors
     if (authError) {
       console.error("Auth error:", authError);
       return { error: authError.message };
     }
 
-    // 6.There is no email_verified in user_metadata when user is already registered and confirmed
+    // Check if email already exists (Supabase specific)
     if (authData.user?.user_metadata?.email_verified === undefined) {
       return {
         error: "This email is already registered. Please login instead.",
       };
     }
 
-    // 7. Return success - profile will be created after email confirmation
+    // ========================================
+    // STEP 5: SUCCESS RESPONSE
+    // ========================================
+
     return {
-      authData,
       success: true,
       message:
         "The confirmation email has been sent. Please check your email to confirm your account.",
+      authData,
     };
   } catch (err) {
-    console.error("Unexpected error:", err);
+    console.error("Unexpected error in registerUserAction:", err);
     return { error: "An unexpected error occurred during registration" };
   }
 }
