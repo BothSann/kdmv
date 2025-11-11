@@ -9,77 +9,89 @@ import { verifyAndUpdateUserPasswordAction } from "@/actions/user-action";
 import { toast } from "sonner";
 import { Eye, EyeOff } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { changePasswordSchema } from "@/lib/validations/password";
+import { cn } from "@/lib/utils";
+import FormError from "@/components/FormError";
 
 export default function UserChangePasswordForm() {
-  const [currentPassword, setCurrentPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [isPending, setIsPending] = useState(false);
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
 
-  const router = useRouter();
+  // Initialize React Hook Form with Zod validation
+  const {
+    register,
+    handleSubmit,
+    control,
+    formState: { errors, isSubmitting },
+    reset,
+    watch,
+  } = useForm({
+    resolver: zodResolver(changePasswordSchema),
+    mode: "onBlur", // Validate on blur for better UX
+    defaultValues: {
+      current_password: "",
+      new_password: "",
+      confirm_password: "",
+      logout_other_devices: false,
+    },
+  });
+
+  // Watch password fields for real-time feedback
+  const newPassword = watch("new_password");
+  const confirmPassword = watch("confirm_password");
 
   const togglePasswordVisibility = () => {
     setShowPassword((prev) => !prev);
   };
 
   const handleCancel = () => {
-    setCurrentPassword("");
-    setNewPassword("");
-    setConfirmPassword("");
+    reset(); // Clear all form fields
     router.back();
   };
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-
-    const formData = new FormData(event.target);
-    const changePasswordData = {
-      new_password: formData.get("new_password"),
-      confirm_password: formData.get("confirm_password"),
-      current_password: formData.get("current_password"),
-      logout_other_devices: formData.get("logout_other_devices"),
-    };
-
+  // Form submission handler - receives validated data from React Hook Form
+  const onSubmit = async (data) => {
+    // data is already validated by Zod at this point!
     const toastId = toast.loading("Updating password...");
-    setIsPending(true);
 
     try {
       const { success, error, message } =
-        await verifyAndUpdateUserPasswordAction(changePasswordData);
+        await verifyAndUpdateUserPasswordAction(data);
 
       if (error) {
         toast.error(error, { id: toastId });
+        return;
       }
 
       if (success) {
         toast.success(message, { id: toastId });
-        event.target.reset();
-        setCurrentPassword("");
-        setNewPassword("");
-        setConfirmPassword("");
+        reset(); // Clear all form fields
       }
     } catch (error) {
       toast.error(error.message, { id: toastId });
-    } finally {
-      setIsPending(false);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="w-full lg:w-3/4 mt-8 lg:mt-10">
+    <form onSubmit={handleSubmit(onSubmit)} className="w-full lg:w-3/4 mt-8 lg:mt-10">
       <div className="grid grid-cols-1 gap-6">
-        <div className="space-y-4">
-          <Label htmlFor="current_password">Current Password</Label>
+        <div className="space-y-2.5">
+          <Label htmlFor="current_password">
+            Current Password<span className="text-destructive">*</span>
+          </Label>
           <div className="relative">
             <Input
+              {...register("current_password")}
+              id="current_password"
               type={showPassword ? "text" : "password"}
-              name="current_password"
-              placeholder="Current Password"
-              value={currentPassword}
-              onChange={(e) => setCurrentPassword(e.target.value)}
-              disabled={isPending}
-              required
+              placeholder="Enter current password"
+              disabled={isSubmitting}
+              className={cn(
+                "pr-10",
+                errors.current_password && "border-destructive"
+              )}
             />
             {showPassword ? (
               <Eye
@@ -95,46 +107,74 @@ export default function UserChangePasswordForm() {
               />
             )}
           </div>
+          {errors.current_password && (
+            <FormError message={errors.current_password.message} />
+          )}
         </div>
-        <div className="space-y-4">
-          <Label htmlFor="new_password">New Password</Label>
+        <div className="space-y-2.5">
+          <Label htmlFor="new_password">
+            New Password<span className="text-destructive">*</span>
+          </Label>
           <Input
+            {...register("new_password")}
+            id="new_password"
             type={showPassword ? "text" : "password"}
-            name="new_password"
-            placeholder="New Password"
-            value={newPassword}
-            onChange={(e) => setNewPassword(e.target.value)}
-            disabled={isPending}
-            required
-          />
-        </div>
-        <div className="space-y-4">
-          <Label htmlFor="confirm_password">Confirm Password</Label>
-          <Input
-            type={showPassword ? "text" : "password"}
-            name="confirm_password"
-            placeholder="Re-type New Password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            disabled={isPending}
-            required
-          />
-          {newPassword !== confirmPassword &&
-            newPassword &&
-            confirmPassword && (
-              <p className="text-destructive text-sm mt-3">
-                Passwords do not match!
-              </p>
+            placeholder="Enter new password"
+            disabled={isSubmitting}
+            className={cn(
+              "w-full",
+              errors.new_password && "border-destructive"
             )}
+          />
+          {errors.new_password && (
+            <FormError message={errors.new_password.message} />
+          )}
+          {/* Password strength indicator */}
+          {newPassword && !errors.new_password && (
+            <p className="text-xs text-green-600">✓ Password meets requirements</p>
+          )}
+        </div>
+        <div className="space-y-2.5">
+          <Label htmlFor="confirm_password">
+            Confirm New Password<span className="text-destructive">*</span>
+          </Label>
+          <Input
+            {...register("confirm_password")}
+            id="confirm_password"
+            type={showPassword ? "text" : "password"}
+            placeholder="Re-enter new password"
+            disabled={isSubmitting}
+            className={cn(
+              "w-full",
+              errors.confirm_password && "border-destructive"
+            )}
+          />
+          {errors.confirm_password && (
+            <FormError message={errors.confirm_password.message} />
+          )}
+          {/* Real-time password match indicator */}
+          {newPassword && confirmPassword && !errors.confirm_password && (
+            newPassword === confirmPassword ? (
+              <p className="text-xs text-green-600">✓ Passwords match</p>
+            ) : (
+              <p className="text-xs text-amber-600">⚠ Passwords do not match yet</p>
+            )
+          )}
         </div>
 
         {/* Logout other devices */}
         <div className="flex items-center gap-2">
-          <Checkbox
-            id="logout_other_devices"
+          <Controller
             name="logout_other_devices"
-            defaultChecked={true}
-            disabled
+            control={control}
+            render={({ field }) => (
+              <Checkbox
+                id="logout_other_devices"
+                checked={field.value}
+                onCheckedChange={field.onChange}
+                disabled={isSubmitting || true} // Keep disabled for now
+              />
+            )}
           />
           <Label htmlFor="logout_other_devices">Logout of other devices</Label>
         </div>
@@ -143,18 +183,13 @@ export default function UserChangePasswordForm() {
           <Button
             variant="outline"
             type="button"
-            disabled={isPending}
+            disabled={isSubmitting}
             onClick={handleCancel}
           >
             Cancel
           </Button>
-          <Button
-            type="submit"
-            disabled={
-              isPending || newPassword !== confirmPassword || !currentPassword
-            }
-          >
-            {isPending ? "Updating..." : "Update Password"}
+          <Button type="submit" disabled={isSubmitting}>
+            {isSubmitting ? "Updating..." : "Update Password"}
           </Button>
         </div>
       </div>

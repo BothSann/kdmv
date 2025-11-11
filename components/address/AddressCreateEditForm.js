@@ -14,7 +14,11 @@ import { CAMBODIA_PROVINCES, COUNTRIES } from "@/lib/constants";
 import { ScrollArea } from "../ui/scroll-area";
 import { Checkbox } from "../ui/checkbox";
 import { Button } from "../ui/button";
-import { useState } from "react";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { addressSchema } from "@/lib/validations/address";
+import { cn } from "@/lib/utils";
+import FormError from "@/components/FormError";
 import {
   createAddressAction,
   updateAddressAction,
@@ -27,58 +31,31 @@ export default function AddressCreateEditForm({
   existingAddress = null,
 }) {
   const isEditMode = Boolean(existingAddress);
-
-  const [firstName, setFirstName] = useState(existingAddress?.first_name || "");
-
-  const [lastName, setLastName] = useState(existingAddress?.last_name || "");
-
-  const [phoneNumber, setPhoneNumber] = useState(
-    existingAddress?.phone_number || ""
-  );
-
-  const [streetAddress, setStreetAddress] = useState(
-    existingAddress?.street_address || ""
-  );
-
-  const [apartment, setApartment] = useState(existingAddress?.apartment || "");
-
-  const [country, setCountry] = useState(
-    existingAddress?.country || COUNTRIES[0].value
-  );
-
-  const [cityProvince, setCityProvince] = useState(
-    existingAddress?.city_province || ""
-  );
-
-  const [isDefault, setIsDefault] = useState(
-    existingAddress?.is_default || false
-  );
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
   const router = useRouter();
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    setIsSubmitting(true);
+  const {
+    register,
+    handleSubmit,
+    control,
+    formState: { errors, isSubmitting },
+    reset,
+  } = useForm({
+    resolver: zodResolver(addressSchema),
+    mode: "onBlur",
+    defaultValues: {
+      first_name: existingAddress?.first_name || "",
+      last_name: existingAddress?.last_name || "",
+      phone_number: existingAddress?.phone_number || "",
+      street_address: existingAddress?.street_address || "",
+      apartment: existingAddress?.apartment || "",
+      country: existingAddress?.country || COUNTRIES[0].value,
+      city_province: existingAddress?.city_province || "",
+      is_default: existingAddress?.is_default || false,
+    },
+  });
 
-    const formData = new FormData(event.target);
-
-    const addressData = {
-      // In EDIT mode: include ID
-      ...(isEditMode && { id: existingAddress.id }),
-
-      first_name: formData.get("first_name"),
-      last_name: formData.get("last_name"),
-      phone_number: formData.get("phone_number"),
-      street_address: formData.get("street_address"),
-      apartment: formData.get("apartment"),
-      country: formData.get("country"),
-      city_province: formData.get("city_province"),
-      is_default: isDefault,
-    };
-
-    console.log(addressData);
-
+  const onSubmit = async (data) => {
+    // data is already validated by Zod!
     const actionToUse = isEditMode ? updateAddressAction : createAddressAction;
 
     const loadingMessage = isEditMode
@@ -90,7 +67,7 @@ export default function AddressCreateEditForm({
     try {
       const result = await actionToUse(
         isEditMode ? existingAddress.id : customerId,
-        addressData
+        data
       );
 
       if (result.error) {
@@ -99,11 +76,9 @@ export default function AddressCreateEditForm({
       }
 
       toast.success(result.message, { id: toastId });
-      router.push(`/account/address`);
+      router.push("/account/address");
     } catch (error) {
       toast.error(error.message, { id: toastId });
-    } finally {
-      setIsSubmitting(false);
     }
   };
   return (
@@ -114,37 +89,41 @@ export default function AddressCreateEditForm({
       <CardContent>
         <form
           className="grid grid-cols-2 gap-4 space-y-4"
-          onSubmit={handleSubmit}
+          onSubmit={handleSubmit(onSubmit)}
         >
-          <div className="space-y-4">
+          <div className="space-y-2.5">
             <Label htmlFor="first_name">
               First Name<span className="text-destructive">*</span>
             </Label>
             <Input
-              type="text"
+              {...register("first_name")}
               id="first_name"
-              name="first_name"
+              type="text"
               placeholder="Your first name"
-              required
-              value={firstName}
-              onChange={(e) => setFirstName(e.target.value)}
+              disabled={isSubmitting}
+              className={cn("w-full", errors.first_name && "border-destructive")}
             />
+            {errors.first_name && (
+              <FormError message={errors.first_name.message} />
+            )}
           </div>
-          <div className="space-y-4">
+          <div className="space-y-2.5">
             <Label htmlFor="last_name">
               Last Name<span className="text-destructive">*</span>
             </Label>
             <Input
-              type="text"
+              {...register("last_name")}
               id="last_name"
-              name="last_name"
+              type="text"
               placeholder="Your last name"
-              required
-              value={lastName}
-              onChange={(e) => setLastName(e.target.value)}
+              disabled={isSubmitting}
+              className={cn("w-full", errors.last_name && "border-destructive")}
             />
+            {errors.last_name && (
+              <FormError message={errors.last_name.message} />
+            )}
           </div>
-          <div className="space-y-4 col-span-2">
+          <div className="space-y-2.5 col-span-2">
             <Label htmlFor="phone_number">
               Phone<span className="text-destructive">*</span>
             </Label>
@@ -152,95 +131,125 @@ export default function AddressCreateEditForm({
               <div className="text-sm text-foreground/70 border border-border text-center bg-muted py-1.5 px-2 lg:px-4">
                 &#x2b;855
               </div>
-              <Input
-                type="tel"
-                id="phone_number"
-                name="phone_number"
-                placeholder="0123456789"
-                required
-                value={phoneNumber}
-                onChange={(e) => setPhoneNumber(e.target.value)}
-              />
+              <div className="flex-1 space-y-2.5">
+                <Input
+                  {...register("phone_number")}
+                  id="phone_number"
+                  type="tel"
+                  placeholder="0123456789"
+                  disabled={isSubmitting}
+                  className={cn("w-full", errors.phone_number && "border-destructive")}
+                />
+                {errors.phone_number && (
+                  <FormError message={errors.phone_number.message} />
+                )}
+              </div>
             </div>
           </div>
-          <div className="space-y-4">
-            <Label htmlFor="address">
+          <div className="space-y-2.5">
+            <Label htmlFor="street_address">
               Street Address<span className="text-destructive">*</span>
             </Label>
             <Input
-              type="text"
+              {...register("street_address")}
               id="street_address"
-              name="street_address"
+              type="text"
               placeholder="Street, Building, Floor"
-              className="truncate"
-              required
-              value={streetAddress}
-              onChange={(e) => setStreetAddress(e.target.value)}
+              disabled={isSubmitting}
+              className={cn("w-full truncate", errors.street_address && "border-destructive")}
             />
+            {errors.street_address && (
+              <FormError message={errors.street_address.message} />
+            )}
           </div>
-          <div className="space-y-4">
+          <div className="space-y-2.5">
             <Label htmlFor="apartment">Apartment (Optional)</Label>
             <Input
-              type="text"
+              {...register("apartment")}
               id="apartment"
-              name="apartment"
+              type="text"
               placeholder="Apt 5B"
-              value={apartment}
-              onChange={(e) => setApartment(e.target.value)}
+              disabled={isSubmitting}
+              className={cn("w-full", errors.apartment && "border-destructive")}
             />
+            {errors.apartment && (
+              <FormError message={errors.apartment.message} />
+            )}
           </div>
-          <div className="space-y-4">
+          <div className="space-y-2.5">
             <Label htmlFor="country">
               Country<span className="text-destructive">*</span>
             </Label>
-            <Select
+            <Controller
               name="country"
-              value={country}
-              onValueChange={setCountry}
-              required
-            >
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select a country" />
-              </SelectTrigger>
-              <SelectContent>
-                {COUNTRIES.map((country) => (
-                  <SelectItem key={country.code} value={country.value}>
-                    {country.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+              control={control}
+              render={({ field }) => (
+                <Select
+                  value={field.value}
+                  onValueChange={field.onChange}
+                  disabled={isSubmitting}
+                >
+                  <SelectTrigger className={cn("w-full", errors.country && "border-destructive")}>
+                    <SelectValue placeholder="Select a country" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {COUNTRIES.map((country) => (
+                      <SelectItem key={country.code} value={country.value}>
+                        {country.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
+            />
+            {errors.country && (
+              <FormError message={errors.country.message} />
+            )}
           </div>
-          <div className="space-y-4">
+          <div className="space-y-2.5">
             <Label htmlFor="city_province">
               City/Province<span className="text-destructive">*</span>
             </Label>
-            <Select
+            <Controller
               name="city_province"
-              value={cityProvince}
-              onValueChange={setCityProvince}
-              required
-            >
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select a city/province" />
-              </SelectTrigger>
-              <SelectContent position="popper">
-                <ScrollArea className="h-48">
-                  {CAMBODIA_PROVINCES.map((province) => (
-                    <SelectItem key={province.value} value={province.value}>
-                      {province.label}
-                    </SelectItem>
-                  ))}
-                </ScrollArea>
-              </SelectContent>
-            </Select>
+              control={control}
+              render={({ field }) => (
+                <Select
+                  value={field.value}
+                  onValueChange={field.onChange}
+                  disabled={isSubmitting}
+                >
+                  <SelectTrigger className={cn("w-full", errors.city_province && "border-destructive")}>
+                    <SelectValue placeholder="Select a city/province" />
+                  </SelectTrigger>
+                  <SelectContent position="popper">
+                    <ScrollArea className="h-48">
+                      {CAMBODIA_PROVINCES.map((province) => (
+                        <SelectItem key={province.value} value={province.value}>
+                          {province.label}
+                        </SelectItem>
+                      ))}
+                    </ScrollArea>
+                  </SelectContent>
+                </Select>
+              )}
+            />
+            {errors.city_province && (
+              <FormError message={errors.city_province.message} />
+            )}
           </div>
           <div className="col-span-2 flex items-center gap-2">
-            <Checkbox
-              id="default_address"
-              checked={isDefault}
-              onCheckedChange={setIsDefault}
-              disabled={isSubmitting}
+            <Controller
+              name="is_default"
+              control={control}
+              render={({ field }) => (
+                <Checkbox
+                  id="default_address"
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                  disabled={isSubmitting}
+                />
+              )}
             />
             <Label htmlFor="default_address">Set as default address</Label>
           </div>

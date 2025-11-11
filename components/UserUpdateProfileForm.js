@@ -10,108 +10,110 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import useAuthStore from "@/store/useAuthStore";
 import { useRef, useState, useEffect } from "react";
-import Link from "next/link";
 import { toast } from "sonner";
 import { updateCurrentUserProfileAction } from "@/actions/user-action";
-import { sanitizeName } from "@/lib/utils";
+import { CAMBODIA_PROVINCES } from "@/lib/constants";
+import { cn } from "@/lib/utils";
+import FormError from "@/components/FormError";
 import Image from "next/image";
 import { User, Trash } from "lucide-react";
 import Spinner from "./Spinner";
 import { useRouter } from "next/navigation";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { profileUpdateSchema } from "@/lib/validations/profile";
 
 export default function UserUpdateProfileForm() {
   const { profile, setProfile } = useAuthStore();
-
-  // ✅ FIX 1: Initialize with empty strings (controlled from start)
-  const [first_name, setFirst_name] = useState("");
-  const [last_name, setLast_name] = useState("");
-  const [gender, setGender] = useState("");
-  const [country, setCountry] = useState("Cambodia");
-  const [city_province, setCity_province] = useState("");
-  const [telephone, setTelephone] = useState("");
-  const [avatarFile, setAvatarFile] = useState(null);
-  const [previewUrl, setPreviewUrl] = useState(null);
-  const [isPending, setIsPending] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-
   const router = useRouter();
-
   const fileInputRef = useRef(null);
 
-  // ✅ FIX 2: Sync state when profile loads
+  // Preview state for avatar (kept separate from form)
+  const [previewUrl, setPreviewUrl] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Initialize React Hook Form with Zod validation
+  const {
+    register,
+    handleSubmit,
+    control,
+    formState: { errors, isSubmitting },
+    reset,
+  } = useForm({
+    resolver: zodResolver(profileUpdateSchema),
+    mode: "onBlur", // Validate on blur for better UX
+    defaultValues: {
+      first_name: "",
+      last_name: "",
+      gender: "",
+      telephone: "",
+      country: "Cambodia",
+      city_province: "",
+      avatar_file: undefined,
+    },
+  });
+
+  // Sync form with profile data when it loads
   useEffect(() => {
     setIsLoading(true);
     if (profile) {
-      setFirst_name(profile.first_name || "");
-      setLast_name(profile.last_name || "");
-      setGender(profile.gender || "");
-      setCity_province(profile.city_province || "");
-      setTelephone(profile.telephone || "");
+      reset({
+        first_name: profile.first_name || "",
+        last_name: profile.last_name || "",
+        gender: profile.gender || "",
+        telephone: profile.telephone || "",
+        country: "Cambodia",
+        city_province: profile.city_province || "",
+        avatar_file: undefined,
+      });
     }
-
     setIsLoading(false);
-  }, [profile]);
+  }, [profile, reset]);
 
-  // ✅ FIX 3: Compute fullName safely
+  // Compute fullName safely
   const fullName =
     profile?.first_name && profile?.last_name
       ? `${profile.first_name} ${profile.last_name}`
       : "Loading...";
 
-  // We'll manage pending state manually for now
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    setIsPending(true);
-
-    const formData = new FormData(event.target);
-    const updateCustomerProfileData = {
-      first_name: formData.get("first_name"),
-      last_name: formData.get("last_name"),
-      gender: formData.get("gender"),
-      telephone: formData.get("telephone"),
-      country: formData.get("country"),
-      city_province: formData.get("city_province"),
-      avatar_file: avatarFile,
-    };
-
+  // Form submission handler - receives validated data from React Hook Form
+  const onSubmit = async (data) => {
+    // data is already validated by Zod at this point!
     const toastId = toast.loading("Updating profile...");
+
     try {
       const { success, error, message, updatedProfile } =
-        await updateCurrentUserProfileAction(updateCustomerProfileData);
+        await updateCurrentUserProfileAction(data);
 
       if (error) {
         toast.error(error, { id: toastId });
+        return;
       }
 
       if (success && updatedProfile) {
         setProfile(updatedProfile);
-        event.target.reset();
         toast.success(message, { id: toastId });
+        // Clear preview URL after successful update
+        setPreviewUrl(null);
       }
     } catch (error) {
       toast.error(error.message, { id: toastId });
-    } finally {
-      setIsPending(false);
     }
   };
 
-  const handleNameBlur = (setter) => (event) => {
-    const cleaned = sanitizeName(event.target.value);
-    setter(cleaned);
-  };
-
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-
+  // Handle file change for preview (will be connected to Controller)
+  const handleFileChange = (file, onChange) => {
     if (!file) {
-      setAvatarFile(null);
       setPreviewUrl(null);
+      onChange(undefined);
       return;
     }
 
-    setAvatarFile(file);
+    // Update form field value
+    onChange(file);
 
     // Create preview URL for the selected file
     const objectUrl = URL.createObjectURL(file);
@@ -141,7 +143,7 @@ export default function UserUpdateProfileForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="w-full md:w-3/4 mt-10">
+    <form onSubmit={handleSubmit(onSubmit)} className="w-full md:w-3/4 mt-10">
       <div className="grid grid-cols-2 gap-6">
         {/* Avatar Section */}
         <div className="grid col-span-2 gap-3 mb-6">
@@ -178,7 +180,7 @@ export default function UserUpdateProfileForm() {
                 <Button
                   type="button"
                   onClick={triggerFileInput}
-                  disabled={isPending}
+                  disabled={isSubmitting}
                   size="sm"
                   className="text-xs"
                 >
@@ -190,51 +192,69 @@ export default function UserUpdateProfileForm() {
                     type="button"
                     variant="outline"
                     onClick={() => setPreviewUrl(null)}
-                    disabled={isPending}
+                    disabled={isSubmitting}
                     size="sm"
                   >
                     <Trash />
                   </Button>
                 )}
               </div>
-              <Input
-                ref={fileInputRef}
-                type="file"
-                className="hidden"
-                name="avatar_url"
-                onChange={handleFileChange}
-                accept="image/*"
-                disabled={isPending}
+              <Controller
+                name="avatar_file"
+                control={control}
+                render={({ field: { onChange, value, ...field } }) => (
+                  <Input
+                    {...field}
+                    ref={fileInputRef}
+                    type="file"
+                    className="hidden"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      handleFileChange(file, onChange);
+                    }}
+                    accept="image/*"
+                    disabled={isSubmitting}
+                  />
+                )}
               />
+              {errors.avatar_file && (
+                <FormError message={errors.avatar_file.message} />
+              )}
             </div>
           </div>
         </div>
 
         {/* Information Section */}
-        <div className="space-y-4">
-          <Label htmlFor="first_name">First Name</Label>
+        <div className="space-y-2.5">
+          <Label htmlFor="first_name">
+            First Name<span className="text-destructive">*</span>
+          </Label>
           <Input
+            {...register("first_name")}
+            id="first_name"
             type="text"
-            name="first_name"
-            value={first_name}
-            onChange={(e) => setFirst_name(e.target.value)}
-            onBlur={handleNameBlur(setFirst_name)}
-            disabled={isPending}
-            required
+            placeholder="Your first name"
+            disabled={isSubmitting}
+            className={cn("w-full", errors.first_name && "border-destructive")}
           />
+          {errors.first_name && (
+            <FormError message={errors.first_name.message} />
+          )}
         </div>
 
-        <div className="space-y-4">
-          <Label htmlFor="last_name">Last Name</Label>
+        <div className="space-y-2.5">
+          <Label htmlFor="last_name">
+            Last Name<span className="text-destructive">*</span>
+          </Label>
           <Input
+            {...register("last_name")}
+            id="last_name"
             type="text"
-            name="last_name"
-            value={last_name}
-            onChange={(e) => setLast_name(e.target.value)}
-            onBlur={handleNameBlur(setLast_name)}
-            disabled={isPending}
-            required
+            placeholder="Your last name"
+            disabled={isSubmitting}
+            className={cn("w-full", errors.last_name && "border-destructive")}
           />
+          {errors.last_name && <FormError message={errors.last_name.message} />}
         </div>
 
         <div className="grid col-span-2 space-y-4">
@@ -250,76 +270,134 @@ export default function UserUpdateProfileForm() {
 
         <div className="grid col-span-2 gap-3">
           <div className="grid grid-cols-2 gap-6">
-            <div className="space-y-4">
-              <Label htmlFor="gender">Gender</Label>
-              <Select
+            <div className="space-y-2.5">
+              <Label htmlFor="gender">
+                Gender<span className="text-destructive">*</span>
+              </Label>
+              <Controller
                 name="gender"
-                value={gender}
-                onValueChange={setGender}
-                disabled={isPending}
-              >
-                <SelectTrigger className="w-full" disabled={isPending}>
-                  <SelectValue placeholder="Select a gender" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="male">Male</SelectItem>
-                  <SelectItem value="female">Female</SelectItem>
-                  <SelectItem value="prefer not to say">
-                    Prefer not to say
-                  </SelectItem>
-                </SelectContent>
-              </Select>
+                control={control}
+                render={({ field }) => (
+                  <Select
+                    value={field.value}
+                    onValueChange={field.onChange}
+                    disabled={isSubmitting}
+                  >
+                    <SelectTrigger
+                      className={cn(
+                        "w-full",
+                        errors.gender && "border-destructive"
+                      )}
+                      disabled={isSubmitting}
+                    >
+                      <SelectValue placeholder="Select a gender" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="male">Male</SelectItem>
+                      <SelectItem value="female">Female</SelectItem>
+                      <SelectItem value="prefer not to say">
+                        Prefer not to say
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                )}
+              />
+              {errors.gender && <FormError message={errors.gender.message} />}
             </div>
-            <div className="space-y-4">
-              <Label htmlFor="telephone">Telephone</Label>
+            <div className="space-y-2.5">
+              <Label htmlFor="telephone">
+                Telephone<span className="text-destructive">*</span>
+              </Label>
               <Input
-                name="telephone"
+                {...register("telephone")}
                 id="telephone"
                 type="tel"
-                placeholder="1234567890"
-                value={telephone}
-                onChange={(e) => setTelephone(e.target.value)}
-                disabled={isPending}
+                placeholder="012345678"
+                disabled={isSubmitting}
+                className={cn(
+                  "w-full",
+                  errors.telephone && "border-destructive"
+                )}
               />
+              {errors.telephone && (
+                <FormError message={errors.telephone.message} />
+              )}
             </div>
           </div>
         </div>
 
         <div className="grid col-span-2 gap-3">
           <div className="grid grid-cols-2 gap-6">
-            <div className="space-y-4">
-              <Label htmlFor="country">Country</Label>
-              <Select
+            <div className="space-y-2.5">
+              <Label htmlFor="country">
+                Country<span className="text-destructive">*</span>
+              </Label>
+              <Controller
                 name="country"
-                value={country}
-                onValueChange={setCountry}
-                disabled={isPending}
-              >
-                <SelectTrigger className="w-full" disabled={isPending}>
-                  <SelectValue placeholder="Select a country" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Cambodia">Cambodia</SelectItem>
-                </SelectContent>
-              </Select>
+                control={control}
+                render={({ field }) => (
+                  <Select
+                    value={field.value}
+                    onValueChange={field.onChange}
+                    disabled={isSubmitting}
+                  >
+                    <SelectTrigger
+                      className={cn(
+                        "w-full",
+                        errors.country && "border-destructive"
+                      )}
+                      disabled={isSubmitting}
+                    >
+                      <SelectValue placeholder="Select a country" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Cambodia">Cambodia</SelectItem>
+                    </SelectContent>
+                  </Select>
+                )}
+              />
+              {errors.country && <FormError message={errors.country.message} />}
             </div>
-            <div className="space-y-4">
-              <Label htmlFor="city_province">City/Province</Label>
-              <Select
+            <div className="space-y-2.5">
+              <Label htmlFor="city_province">
+                City/Province<span className="text-destructive">*</span>
+              </Label>
+              <Controller
                 name="city_province"
-                value={city_province}
-                onValueChange={setCity_province}
-                disabled={isPending}
-              >
-                <SelectTrigger className="w-full" disabled={isPending}>
-                  <SelectValue placeholder="Select a city/province" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Phnom Penh">Phnom Penh</SelectItem>
-                  <SelectItem value="Siem Reap">Siem Reap</SelectItem>
-                  <SelectItem value="Battambang">Battambang</SelectItem>
-                </SelectContent>
-              </Select>
+                control={control}
+                render={({ field }) => (
+                  <Select
+                    value={field.value}
+                    onValueChange={field.onChange}
+                    disabled={isSubmitting}
+                  >
+                    <SelectTrigger
+                      className={cn(
+                        "w-full",
+                        errors.city_province && "border-destructive"
+                      )}
+                      disabled={isSubmitting}
+                    >
+                      <SelectValue placeholder="Select a city/province" />
+                    </SelectTrigger>
+                    <SelectContent position="popper">
+                      <ScrollArea className="h-48">
+                        {CAMBODIA_PROVINCES.map((province) => (
+                          <SelectItem
+                            key={province.value}
+                            value={province.value}
+                          >
+                            {province.label}
+                          </SelectItem>
+                        ))}
+                      </ScrollArea>
+                    </SelectContent>
+                  </Select>
+                )}
+              />
+              {errors.city_province && (
+                <FormError message={errors.city_province.message} />
+              )}
             </div>
           </div>
         </div>
@@ -329,13 +407,13 @@ export default function UserUpdateProfileForm() {
             <Button
               variant="outline"
               type="button"
-              disabled={isPending}
+              disabled={isSubmitting}
               onClick={() => router.back()}
             >
               Cancel
             </Button>
-            <Button type="submit" disabled={isPending}>
-              {isPending ? "Updating..." : "Update Profile"}
+            <Button type="submit" disabled={isSubmitting}>
+              {isSubmitting ? "Updating..." : "Update Profile"}
             </Button>
           </div>
         </div>

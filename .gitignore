@@ -77,4 +77,6 @@ middleware-to-proxy-nextjs16.md
 optimistic-checks-with-proxy.md
 supabase-middleware.md
 
+app/test/
+
 temp/
