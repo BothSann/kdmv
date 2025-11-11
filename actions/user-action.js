@@ -222,6 +222,7 @@ export async function verifyAndUpdateUserPasswordAction(formData) {
     // ⚠️ IMPORTANT: Current code restricts to admin only!
     // Change to: if (!["admin", "customer"].includes(profile.role))
     // if you want customers to change passwords too
+    // if (!["admin", "customer"].includes(profile.role)) {
     if (profile?.role !== "admin") {
       console.error("User is not admin");
       return {

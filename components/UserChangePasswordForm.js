@@ -75,7 +75,10 @@ export default function UserChangePasswordForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="w-full lg:w-3/4 mt-8 lg:mt-10">
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="w-full lg:w-3/4 mt-8 lg:mt-10"
+    >
       <div className="grid grid-cols-1 gap-6">
         <div className="space-y-2.5">
           <Label htmlFor="current_password">
@@ -131,7 +134,9 @@ export default function UserChangePasswordForm() {
           )}
           {/* Password strength indicator */}
           {newPassword && !errors.new_password && (
-            <p className="text-xs text-green-600">✓ Password meets requirements</p>
+            <p className="text-xs text-success">
+              &#10003; Password meets requirements
+            </p>
           )}
         </div>
         <div className="space-y-2.5">
@@ -152,14 +157,18 @@ export default function UserChangePasswordForm() {
           {errors.confirm_password && (
             <FormError message={errors.confirm_password.message} />
           )}
+
           {/* Real-time password match indicator */}
-          {newPassword && confirmPassword && !errors.confirm_password && (
-            newPassword === confirmPassword ? (
-              <p className="text-xs text-green-600">✓ Passwords match</p>
+          {newPassword &&
+            confirmPassword &&
+            !errors.confirm_password &&
+            (newPassword === confirmPassword ? (
+              <p className="text-xs text-success">&#10003; Passwords match</p>
             ) : (
-              <p className="text-xs text-amber-600">⚠ Passwords do not match yet</p>
-            )
-          )}
+              <p className="text-xs text-warning">
+                &#10007; Passwords do not match yet
+              </p>
+            ))}
         </div>
 
         {/* Logout other devices */}

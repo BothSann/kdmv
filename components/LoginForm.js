@@ -17,24 +17,37 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { Eye, EyeOff } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { loginSchema } from "@/lib/validations/auth";
+import FormError from "@/components/FormError";
+import { cn } from "@/lib/utils";
 
 export default function LoginForm() {
   const { signInUser } = useAuthStore();
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    setIsSubmitting(true);
+  // React Hook Form with Zod validation
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm({
+    resolver: zodResolver(loginSchema),
+    mode: "onBlur",
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
 
+  // Form submit handler with validated data
+  const onSubmit = async (data) => {
     const toastId = toast.loading("Logging in...");
     try {
-      const formData = new FormData(event.target);
-      const result = await signInUser(
-        formData.get("email"),
-        formData.get("password")
-      );
+      // data is already validated by Zod schema
+      const result = await signInUser(data.email, data.password);
 
       if (result.error) {
         toast.error(result.error, { id: toastId });
@@ -46,8 +59,6 @@ export default function LoginForm() {
       }
     } catch (error) {
       toast.error(error.message, { id: toastId });
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
@@ -70,13 +81,64 @@ export default function LoginForm() {
         </CardHeader>
 
         <CardContent>
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit(onSubmit)}>
             <div className="flex flex-col gap-6">
-              <LoginFormField
-                isSubmitting={isSubmitting}
-                showPassword={showPassword}
-                togglePasswordVisibility={togglePasswordVisibility}
-              />
+              <div className="space-y-2.5">
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  {...register("email")}
+                  id="email"
+                  type="email"
+                  placeholder="m@example.com"
+                  disabled={isSubmitting}
+                  className={cn("w-full", errors.email && "border-destructive")}
+                />
+                {errors.email && <FormError message={errors.email.message} />}
+              </div>
+              <div className="space-y-2.5">
+                <div className="flex items-center">
+                  <Label htmlFor="password">Password</Label>
+                  <Link
+                    href=""
+                    className="ml-auto inline-block underline-offset-4 hover:underline text-sm"
+                  >
+                    Forgot your password?
+                  </Link>
+                </div>
+                <div className="relative">
+                  <Input
+                    {...register("password")}
+                    id="password"
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Password"
+                    disabled={isSubmitting}
+                    className={cn(
+                      "w-full pr-10",
+                      errors.password && "border-destructive"
+                    )}
+                  />
+                  {showPassword ? (
+                    <Eye
+                      size={20}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground cursor-pointer"
+                      onClick={togglePasswordVisibility}
+                    />
+                  ) : (
+                    <EyeOff
+                      size={20}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground cursor-pointer"
+                      onClick={togglePasswordVisibility}
+                    />
+                  )}
+                </div>
+                {errors.password && (
+                  <FormError message={errors.password.message} />
+                )}
+              </div>
+
+              <Button type="submit" className="w-full" disabled={isSubmitting}>
+                {isSubmitting ? "Logging in..." : "Login"}
+              </Button>
             </div>
             <div className="mt-4 text-sm text-center">
               Don&apos;t have an account?{" "}
@@ -91,65 +153,5 @@ export default function LoginForm() {
         </CardContent>
       </Card>
     </div>
-  );
-}
-
-function LoginFormField({
-  isSubmitting,
-  showPassword,
-  togglePasswordVisibility,
-}) {
-  return (
-    <>
-      <div className="grid gap-3">
-        <Label htmlFor="email">Email</Label>
-        <Input
-          id="email"
-          name="email"
-          type="email"
-          placeholder="m@example.com"
-          disabled={isSubmitting}
-          required
-        />
-      </div>
-      <div className="grid gap-3">
-        <div className="flex items-center">
-          <Label htmlFor="password">Password</Label>
-          <a
-            href="#"
-            className="ml-auto inline-block underline-offset-4 hover:underline text-sm"
-          >
-            Forgot your password?
-          </a>
-        </div>
-        <div className="relative">
-          <Input
-            id="password"
-            name="password"
-            type={showPassword ? "text" : "password"}
-            placeholder="Password"
-            disabled={isSubmitting}
-            required
-          />
-          {showPassword ? (
-            <Eye
-              size={20}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground cursor-pointer"
-              onClick={togglePasswordVisibility}
-            />
-          ) : (
-            <EyeOff
-              size={20}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground cursor-pointer"
-              onClick={togglePasswordVisibility}
-            />
-          )}
-        </div>
-      </div>
-
-      <Button type="submit" className="w-full" disabled={isSubmitting}>
-        {isSubmitting ? "Logging in..." : "Login"}
-      </Button>
-    </>
   );
 }

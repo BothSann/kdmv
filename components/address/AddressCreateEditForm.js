@@ -65,10 +65,9 @@ export default function AddressCreateEditForm({
     const toastId = toast.loading(loadingMessage);
 
     try {
-      const result = await actionToUse(
-        isEditMode ? existingAddress.id : customerId,
-        data
-      );
+      const result = await (isEditMode
+        ? actionToUse(existingAddress.id, customerId, data)
+        : actionToUse(customerId, data));
 
       if (result.error) {
         toast.error(result.error, { id: toastId });
@@ -101,7 +100,10 @@ export default function AddressCreateEditForm({
               type="text"
               placeholder="Your first name"
               disabled={isSubmitting}
-              className={cn("w-full", errors.first_name && "border-destructive")}
+              className={cn(
+                "w-full",
+                errors.first_name && "border-destructive"
+              )}
             />
             {errors.first_name && (
               <FormError message={errors.first_name.message} />
@@ -138,7 +140,10 @@ export default function AddressCreateEditForm({
                   type="tel"
                   placeholder="0123456789"
                   disabled={isSubmitting}
-                  className={cn("w-full", errors.phone_number && "border-destructive")}
+                  className={cn(
+                    "w-full",
+                    errors.phone_number && "border-destructive"
+                  )}
                 />
                 {errors.phone_number && (
                   <FormError message={errors.phone_number.message} />
@@ -156,7 +161,10 @@ export default function AddressCreateEditForm({
               type="text"
               placeholder="Street, Building, Floor"
               disabled={isSubmitting}
-              className={cn("w-full truncate", errors.street_address && "border-destructive")}
+              className={cn(
+                "w-full truncate",
+                errors.street_address && "border-destructive"
+              )}
             />
             {errors.street_address && (
               <FormError message={errors.street_address.message} />
@@ -189,7 +197,12 @@ export default function AddressCreateEditForm({
                   onValueChange={field.onChange}
                   disabled={isSubmitting}
                 >
-                  <SelectTrigger className={cn("w-full", errors.country && "border-destructive")}>
+                  <SelectTrigger
+                    className={cn(
+                      "w-full",
+                      errors.country && "border-destructive"
+                    )}
+                  >
                     <SelectValue placeholder="Select a country" />
                   </SelectTrigger>
                   <SelectContent>
@@ -202,9 +215,7 @@ export default function AddressCreateEditForm({
                 </Select>
               )}
             />
-            {errors.country && (
-              <FormError message={errors.country.message} />
-            )}
+            {errors.country && <FormError message={errors.country.message} />}
           </div>
           <div className="space-y-2.5">
             <Label htmlFor="city_province">
@@ -219,7 +230,12 @@ export default function AddressCreateEditForm({
                   onValueChange={field.onChange}
                   disabled={isSubmitting}
                 >
-                  <SelectTrigger className={cn("w-full", errors.city_province && "border-destructive")}>
+                  <SelectTrigger
+                    className={cn(
+                      "w-full",
+                      errors.city_province && "border-destructive"
+                    )}
+                  >
                     <SelectValue placeholder="Select a city/province" />
                   </SelectTrigger>
                   <SelectContent position="popper">
