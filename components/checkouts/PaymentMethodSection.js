@@ -46,7 +46,7 @@ export default function PaymentMethodSection({ selected, onSelect }) {
                   htmlFor={method.id}
                   className="flex items-center gap-2.5 lg:gap-4 cursor-pointer flex-grow"
                 >
-                  <div className="relative min-w-16 min-h-16">
+                  <div className="relative lg:min-w-16 lg:min-h-16 min-w-14 min-h-14">
                     <Image
                       fill
                       quality={100}
