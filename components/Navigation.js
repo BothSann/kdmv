@@ -1,18 +1,20 @@
 "use client";
 
-import Link from "next/link";
 import CustomerProfileDropdownMenu from "@/components/customer/CustomerProfileDropdownMenu";
 
-import { Heart } from "lucide-react";
 import { ModeToggle } from "@/components/ModeToggle";
-import { Button } from "./ui/button";
 import CartDrawer from "@/components/CartDrawer";
 import useAuthStore from "@/store/useAuthStore";
+import { cn } from "@/lib/utils";
 
-export default function Navigation() {
+export default function Navigation({
+  className,
+  modeToggleClassName,
+  modeToggleVariant = "default",
+}) {
   const { user } = useAuthStore();
   return (
-    <nav className="z-10">
+    <nav className={cn("z-10", className)}>
       <ul className="flex items-center lg:gap-2">
         {/* <>
           <Button variant="ghost" asChild>
@@ -24,7 +26,11 @@ export default function Navigation() {
 
         {user && <CartDrawer />}
         <CustomerProfileDropdownMenu />
-        <ModeToggle />
+
+        <ModeToggle
+          className={modeToggleClassName}
+          variant={modeToggleVariant}
+        />
       </ul>
     </nav>
   );

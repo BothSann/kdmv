@@ -10,16 +10,39 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useEffect, useState } from "react";
 
-export function ModeToggle({ className }) {
-  const { setTheme } = useTheme();
+export function ModeToggle({ className, variant = "default" }) {
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // For carousel variant, use theme state instead of dark: selector
+  const showSun = variant === "carousel" ? theme !== "dark" : undefined; // Let CSS handle default variant
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" className={`${className} ml-1`} size="icon">
-          <Sun className="h-[1.2rem] w-[1.2rem] scale-100 rotate-0 transition-all dark:scale-0 dark:-rotate-90" />
-          <Moon className="absolute h-[1.2rem] w-[1.2rem] scale-0 rotate-90 transition-all dark:scale-100 dark:rotate-0" />
+        <Button variant="outline" className={`${className}`} size="icon">
+          {variant === "carousel" ? (
+            // Carousel variant: controlled by theme state
+            <>
+              {mounted && showSun ? (
+                <Sun className="scale-110" />
+              ) : (
+                <Moon className="scale-110" />
+              )}
+            </>
+          ) : (
+            // Default variant: controlled by dark: selector
+            <>
+              <Sun className="h-[1.2rem] w-[1.2rem] scale-100 rotate-0 transition-all dark:scale-0 dark:-rotate-90" />
+              <Moon className="absolute h-[1.2rem] w-[1.2rem] scale-0 rotate-90 transition-all dark:scale-100 dark:rotate-0" />
+            </>
+          )}
           <span className="sr-only">Toggle theme</span>
         </Button>
       </DropdownMenuTrigger>

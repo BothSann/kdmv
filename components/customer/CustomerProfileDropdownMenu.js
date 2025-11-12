@@ -32,11 +32,13 @@ export default function CustomerProfileDropdownMenu() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
-        className={cn("cursor-pointer p-2 hover:bg-accent focus:outline-none")}
+        className={cn(
+          "cursor-pointer p-2 hover:bg-accent dark:hover:bg-accent/50 focus:outline-none"
+        )}
       >
         <User />
       </DropdownMenuTrigger>
-      <DropdownMenuContent className={cn("w-full lg:w-[18rem]")}>
+      <DropdownMenuContent className={cn("w-full md:w-[18rem]")}>
         {isAuthenticated() ? (
           <>
             {!isLoading ? (
