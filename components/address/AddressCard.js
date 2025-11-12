@@ -1,6 +1,6 @@
 "use client";
 
-import { setDefaultAddressAction } from "@/actions/address-action";
+import { setDefaultAddressAction } from "@/server/actions/address-action";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";

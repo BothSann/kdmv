@@ -24,7 +24,7 @@ import { Textarea } from "../ui/textarea";
 import { Badge } from "../ui/badge";
 import { useEffect, useState, useTransition } from "react";
 import { toast } from "sonner";
-import { updateOrderStatusAction } from "@/actions/order-action";
+import { updateOrderStatusAction } from "@/server/actions/order-action";
 
 export default function OrderStatusUpdateDialog({ order, adminId }) {
   const [open, setOpen] = useState(false);

@@ -22,7 +22,7 @@ import FormError from "@/components/FormError";
 import {
   createAddressAction,
   updateAddressAction,
-} from "@/actions/address-action";
+} from "@/server/actions/address-action";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 

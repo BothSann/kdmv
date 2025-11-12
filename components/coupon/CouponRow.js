@@ -15,7 +15,7 @@ import { cn, formatISODateToDayDateMonthYear } from "@/lib/utils";
 import DeleteCouponDialog from "./DeleteCouponDialog";
 import { useCouponTableStore } from "@/store/useTableSelectionStore";
 import { Checkbox } from "../ui/checkbox";
-import { restoreCouponAction } from "@/actions/coupon-action";
+import { restoreCouponAction } from "@/server/actions/coupon-action";
 import { toast } from "sonner";
 
 export default function CouponRow({ coupon }) {

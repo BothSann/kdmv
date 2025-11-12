@@ -6,8 +6,8 @@ import {
   getCurrentUserAction,
   loginUserAction,
   logoutUserAction,
-} from "@/actions/auth-action";
-import { getUserProfileAction } from "@/actions/user-action";
+} from "@/server/actions/auth-action";
+import { getUserProfileAction } from "@/server/actions/user-action";
 
 const useAuthStore = create((set, get) => ({
   // 1. User State

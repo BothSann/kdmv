@@ -19,7 +19,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 import { toast } from "sonner";
-import { registerUserAction } from "@/actions/auth-action";
+import { registerUserAction } from "@/server/actions/auth-action";
 import { useState } from "react";
 
 import Logo from "@/components/Logo";

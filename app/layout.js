@@ -7,11 +7,10 @@ import AuthProvider from "@/components/AuthProvider";
 import "./globals.css";
 
 export const metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL),
-  title: {
-    default: "KDMV - Premium Lifestyle & Apparel Brand in Cambodia",
-    template: "%s | KDMV",
-  },
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_BASE_URL || "https://kdmv.store"
+  ),
+  title: "KDMV | Premium Lifestyle & Apparel Brand in Cambodia",
   description:
     "KDMV is a leading local digital marketing agency in Cambodia, specializing in video content and social media marketing, with an e-commerce component for its own in-house lifestyle/apparel brand.",
   keywords: [
@@ -63,6 +62,14 @@ export const metadata = {
   },
 };
 
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  viewportFit: "cover",
+};
+
 export default async function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>
@@ -71,6 +78,7 @@ export default async function RootLayout({ children }) {
           name="google-site-verification"
           content="lMGrRLMEbXBQWY9WM9k0vQvHZ3-MKZlDAHOS8ZsZQMs"
         />
+        <title>{metadata.title}</title>
       </head>
       <body
         className={`${poppins.className} ${poppins.variable} ${jost.variable} ${sourceSans3.variable} ${nunitoSans.variable} antialiased min-h-screen`}

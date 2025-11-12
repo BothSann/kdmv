@@ -14,7 +14,7 @@ import { toast } from "sonner";
 import {
   createNewCouponAction,
   updateCouponAction,
-} from "@/actions/coupon-action";
+} from "@/server/actions/coupon-action";
 
 export default function CouponCreateEditForm({ existingCoupon = null }) {
   const isEditMode = Boolean(existingCoupon);

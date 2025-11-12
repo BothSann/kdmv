@@ -16,7 +16,7 @@ import Link from "next/link";
 import DeleteProductDialog from "./DeleteProductDialog";
 import { Checkbox } from "../ui/checkbox";
 import { useProductTableStore } from "@/store/useTableSelectionStore";
-import { restoreProductAction } from "@/actions/product-action";
+import { restoreProductAction } from "@/server/actions/product-action";
 import { toast } from "sonner";
 
 export default function ProductRow({ product }) {

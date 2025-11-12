@@ -8,6 +8,11 @@ import NotFound from "@/components/NotFound";
 import EmptyState from "@/components/EmptyState";
 import { redirect } from "next/navigation";
 
+export const metadata = {
+  title: "KDMV | Address",
+  description: "View your addresses and manage your delivery information",
+};
+
 export default async function AddressPage() {
   const { user, error: userError } = await getCurrentUser();
   const customerId = user?.id;

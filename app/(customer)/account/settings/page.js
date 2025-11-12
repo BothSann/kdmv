@@ -1,5 +1,10 @@
 import UserChangePasswordForm from "@/components/UserChangePasswordForm";
 
+export const metadata = {
+  title: "KDMV | Settings",
+  description: "Manage your account settings and preferences",
+};
+
 export default function SettingsPage() {
   return (
     <>

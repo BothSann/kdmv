@@ -7,6 +7,11 @@ import { getCurrentUser } from "@/lib/api/users";
 import { redirect } from "next/navigation";
 import { getAddressById } from "@/lib/api/addresses";
 
+export const metadata = {
+  title: "KDMV | Edit Address",
+  description: "Edit your address and manage your delivery information",
+};
+
 export default async function AddressPage({ params }) {
   const { user } = await getCurrentUser();
   if (!user) redirect("/auth/login");

@@ -9,7 +9,7 @@ import {
   getUserCartAction,
   removeFromCartAction,
   updateCartItemQuantityAction,
-} from "@/actions/cart-action";
+} from "@/server/actions/cart-action";
 
 const useCartStore = create(
   persist(
@@ -52,6 +52,44 @@ const useCartStore = create(
           // Add the cost of this item type (price per unit * quantity) to the total
           return total + pricePerUnit * quantity;
         }, 0);
+      },
+
+      // Calculate item-level discount amount (how much saved from product discounts)
+      itemDiscountAmount: () => {
+        return get().subTotalPrice() - get().totalPrice();
+      },
+
+      // Calculate coupon discount amount
+      couponDiscountAmount: (appliedCoupon) => {
+        if (!appliedCoupon) return 0;
+        const totalAfterItemDiscounts = get().totalPrice();
+        return (
+          (totalAfterItemDiscounts * appliedCoupon.discount_percentage) / 100
+        );
+      },
+
+      // Calculate final total (after all discounts)
+      finalTotal: (appliedCoupon = null) => {
+        const afterItemDiscounts = get().totalPrice();
+        const couponDiscount = get().couponDiscountAmount(appliedCoupon);
+        return afterItemDiscounts - couponDiscount;
+      },
+
+      // Get all totals at once (for checkout summary)
+      getOrderTotals: (appliedCoupon = null) => {
+        const subtotal = get().subTotalPrice();
+        const totalAfterItemDiscounts = get().totalPrice();
+        const itemDiscounts = get().itemDiscountAmount();
+        const couponDiscount = get().couponDiscountAmount(appliedCoupon);
+        const finalTotal = get().finalTotal(appliedCoupon);
+
+        return {
+          subtotal,
+          totalAfterItemDiscounts,
+          itemDiscounts,
+          couponDiscount,
+          finalTotal,
+        };
       },
 
       // Actions

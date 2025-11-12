@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import { verifyAndUpdateUserPasswordAction } from "@/actions/user-action";
+import { verifyAndUpdateUserPasswordAction } from "@/server/actions/user-action";
 import { toast } from "sonner";
 import { Eye, EyeOff } from "lucide-react";
 import { useRouter } from "next/navigation";

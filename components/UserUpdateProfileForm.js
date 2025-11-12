@@ -14,7 +14,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import useAuthStore from "@/store/useAuthStore";
 import { useRef, useState, useEffect } from "react";
 import { toast } from "sonner";
-import { updateCurrentUserProfileAction } from "@/actions/user-action";
+import { updateCurrentUserProfileAction } from "@/server/actions/user-action";
 import { CAMBODIA_PROVINCES } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import FormError from "@/components/FormError";

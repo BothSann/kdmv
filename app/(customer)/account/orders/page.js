@@ -9,6 +9,11 @@ import { Suspense } from "react";
 
 export const dynamic = "force-dynamic";
 
+export const metadata = {
+  title: "KDMV | Orders",
+  description: "View your orders and track your purchases",
+};
+
 export default async function OrdersPage() {
   const { user, error: userError } = await getCurrentUser();
   const userId = user?.id;

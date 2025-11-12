@@ -1,6 +1,6 @@
 "use client";
 
-import { deleteAddressAction } from "@/actions/address-action";
+import { deleteAddressAction } from "@/server/actions/address-action";
 import {
   AlertDialog,
   AlertDialogContent,
