@@ -96,7 +96,7 @@ export default function HeroCarousel({ banners = null }) {
                 src={slide.image}
                 alt={slide.title}
                 fill
-                quality={80}
+                quality={50}
                 sizes="100vw"
                 className="object-cover object-top"
                 priority={index === 0}
