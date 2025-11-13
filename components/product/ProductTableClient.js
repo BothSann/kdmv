@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
-import { MoreVertical, Trash2, X } from "lucide-react";
+import { MoreVertical, Package, Trash2, X } from "lucide-react";
 
 import {
   Table,
@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import BulkDeleteProductDialog from "./BulkDeleteProductDialog";
 import { useProductTableStore } from "@/store/useTableSelectionStore";
+import EmptyState from "../EmptyState";
 
 export default function ProductTableClient({ products, pagination }) {
   const [isBulkDeleteDialogOpen, setIsBulkDeleteDialogOpen] = useState(false);
@@ -47,6 +48,16 @@ export default function ProductTableClient({ products, pagination }) {
   const handleSelectAll = () => {
     toggleSelectAll(productIds);
   };
+
+  if (!products || products.length === 0) {
+    return (
+      <EmptyState
+        icon={Package}
+        title="No products yet"
+        description="Create your first product to display in the store"
+      />
+    );
+  }
 
   const tableHeaders = [
     { label: "", key: "select" }, // Checkbox column

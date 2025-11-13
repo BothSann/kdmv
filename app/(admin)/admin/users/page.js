@@ -11,7 +11,13 @@ export default function AdminRegisterPage() {
   return (
     <>
       <div className="flex justify-between items-center">
-        <h1 className="text-4xl font-bold">Users</h1>
+        <div>
+          <h1 className="text-4xl font-bold">Users</h1>
+          <p className="text-muted-foreground mt-1">
+            Manage users in the store
+          </p>
+        </div>
+
         <Button asChild>
           <Link href="/admin/users/create">
             <Plus />

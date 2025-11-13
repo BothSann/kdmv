@@ -5,6 +5,7 @@ import { Plus } from "lucide-react";
 import Link from "next/link";
 import { Suspense } from "react";
 import TableSkeleton from "@/components/TableSkeleton";
+import PaginationStateManager from "@/components/PaginationStateManager";
 
 /**
  * Admin Banners List Page
@@ -15,7 +16,6 @@ export default async function AdminBannersPage({ searchParams }) {
   const page = Math.max(1, Number(resolvedSearchParams?.page) || 1);
 
   const { banners, pagination, error } = await getAllBanners({ page });
-  console.log(banners);
 
   if (error) {
     return (
@@ -28,6 +28,7 @@ export default async function AdminBannersPage({ searchParams }) {
 
   return (
     <div className="space-y-6">
+      <PaginationStateManager />
       {/* Page Header */}
       <div className="flex justify-between items-center">
         <div>

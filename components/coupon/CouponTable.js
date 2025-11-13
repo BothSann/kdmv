@@ -1,6 +1,7 @@
 import { getAllCoupons } from "@/lib/api/coupons";
 import CouponTableClient from "./CouponTableClient";
 import { getCurrentUser, getUserRole } from "@/lib/api/users";
+import EmptyState from "../EmptyState";
 
 export default async function CouponTable({ searchParams }) {
   const resolvedSearchParams = await searchParams;
@@ -15,7 +16,15 @@ export default async function CouponTable({ searchParams }) {
     role,
   });
 
-  if (!coupons.length) return null;
+  if (!coupons || coupons.length === 0) {
+    return (
+      <EmptyState
+        icon={TicketPercent}
+        title="No coupons yet"
+        description="Create your first coupon to display in the store"
+      />
+    );
+  }
 
   return <CouponTableClient coupons={coupons} pagination={pagination} />;
 }

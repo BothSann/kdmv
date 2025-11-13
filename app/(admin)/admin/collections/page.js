@@ -11,7 +11,13 @@ export default function AdminCollectionsPage({ searchParams }) {
     <>
       <PaginationStateManager />
       <div className="flex justify-between items-center">
-        <h1 className="text-4xl font-bold">Collections</h1>
+        <div>
+          <h1 className="text-4xl font-bold">Collections</h1>
+          <p className="text-muted-foreground mt-1">
+            Manage collections in the store
+          </p>
+        </div>
+
         <Button asChild>
           <Link href="/admin/collections/create">
             <Plus />

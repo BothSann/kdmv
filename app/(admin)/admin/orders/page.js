@@ -8,7 +8,12 @@ export default function AdminOrdersPage({ searchParams }) {
     <>
       <PaginationStateManager />
       <div className="flex justify-between items-center">
-        <h1 className="text-4xl font-bold">Orders</h1>
+        <div>
+          <h1 className="text-4xl font-bold">Orders</h1>
+          <p className="text-muted-foreground mt-1">
+            Manage orders in the store
+          </p>
+        </div>
       </div>
 
       <Suspense fallback={<TableSkeleton />}>

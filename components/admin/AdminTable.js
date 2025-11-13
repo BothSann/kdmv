@@ -8,11 +8,21 @@ import {
 
 import AdminRow from "@/components/admin/AdminRow";
 import { getAllAdmins } from "@/lib/api/users";
+import EmptyState from "../EmptyState";
+import { Users } from "lucide-react";
 
 export default async function AdminTable() {
   const { admins } = await getAllAdmins();
 
-  if (!admins.length) return null;
+  if (!admins || admins.length === 0) {
+    return (
+      <EmptyState
+        icon={Users}
+        title="No admins yet"
+        description="Create your first admin to display in the store"
+      />
+    );
+  }
 
   return (
     <Table className="mt-10 border rounded-lg">

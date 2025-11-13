@@ -1,6 +1,8 @@
 import NotFound from "@/components/NotFound";
 import OrderTableClient from "./OrderTableClient";
 import { getAllOrders } from "@/lib/api/orders";
+import EmptyState from "../EmptyState";
+import { FileCheck } from "lucide-react";
 
 export default async function OrderTable({ searchParams }) {
   const resolvedSearchParams = await searchParams;
@@ -17,7 +19,15 @@ export default async function OrderTable({ searchParams }) {
     searchQuery,
   });
 
-  if (!orders.length) return null;
+  if (!orders || orders.length === 0) {
+    return (
+      <EmptyState
+        icon={FileCheck}
+        title="No orders yet"
+        description="Create your first order to display in the store"
+      />
+    );
+  }
 
   return <OrderTableClient orders={orders} pagination={pagination} />;
 }

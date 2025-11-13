@@ -12,7 +12,12 @@ export default async function AdminProductsPage({ searchParams }) {
     <>
       <PaginationStateManager />
       <div className="flex justify-between items-center">
-        <h1 className="text-4xl font-bold">Products</h1>
+        <div>
+          <h1 className="text-4xl font-bold">Products</h1>
+          <p className="text-muted-foreground mt-1">
+            Manage products in the store
+          </p>
+        </div>
         <Button asChild>
           <Link href="/admin/products/create">
             <Plus />
