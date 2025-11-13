@@ -106,7 +106,8 @@ export default function HeroCarousel({ banners = null }) {
   return (
     <div className="w-full aspect-[16/15] md:aspect-[26/10] overflow-hidden relative">
       <Swiper
-        modules={[Autoplay, Pagination, Keyboard]}
+        modules={[Autoplay, Pagination, Keyboard, EffectFade]}
+        effect={"fade"}
         grabCursor={true}
         spaceBetween={0}
         slidesPerView={1}
