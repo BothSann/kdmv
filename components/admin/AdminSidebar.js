@@ -8,6 +8,7 @@ import {
   FileCheck,
   TicketPercent,
   Combine,
+  Tv,
 } from "lucide-react";
 
 import {
@@ -61,6 +62,11 @@ const items = [
     icon: Users,
   },
   {
+    title: "Banners",
+    url: "/admin/banners",
+    icon: Tv,
+  },
+  {
     title: "Settings",
     url: "/admin/settings",
     icon: Settings,
@@ -72,7 +78,7 @@ export function AdminSidebar() {
   return (
     <Sidebar>
       <SidebarContent>
-        <SidebarGroup className={cn("px-4 pt-10 gap-y-12")}>
+        <SidebarGroup className={cn("px-4 pt-10 gap-y-12 ")}>
           <SidebarGroupLabel
             className={cn("flex justify-start items-center px-10")}
           >

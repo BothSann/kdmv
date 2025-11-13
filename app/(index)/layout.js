@@ -1,6 +1,7 @@
 import ConditionalFooter from "@/components/ConditionalFooter";
 import DisclaimerBanner from "@/components/DisclaimerBanner";
 import HeaderWithCarousel from "@/components/HeaderWithCarousel";
+import { getActiveBanners } from "@/lib/api/banners";
 
 export const metadata = {
   title: "KDMV | Premium Lifestyle & Apparel Brand in Cambodia",
@@ -26,13 +27,16 @@ export const metadata = {
   },
 };
 
-export default function IndexLayout({ children }) {
+export default async function IndexLayout({ children }) {
+  // Fetch active banners for the homepage carousel
+  const { banners } = await getActiveBanners();
+
   return (
     <div>
       {/* Warning Banner */}
       <DisclaimerBanner />
 
-      <HeaderWithCarousel />
+      <HeaderWithCarousel banners={banners} />
       <main className="max-w-7xl mx-auto w-full px-6 lg:px-8 py-6 lg:py-12">
         {children}
       </main>

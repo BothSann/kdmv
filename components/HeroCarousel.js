@@ -10,41 +10,54 @@ import { Button } from "./ui/button";
 import { MoveRight } from "lucide-react";
 
 const slides = [
-  {
-    id: "1",
-    image: "/carousel4.jpg",
-    title: "Childhood Nostalgia",
-    subtitle: "Hoodies back for good!",
-    link: "/collections/new-products",
-    linkText: "Shop Childhood Nostalgia",
-  },
-  {
-    id: "2",
-    image: "/carousel5.jpg",
-    title: "Tourist Vs Purist 2.0",
-    subtitle: "",
-    link: "/collections/off-the-pier",
-    linkText: "Shop Now",
-  },
-  {
-    id: "3",
-    image: "/carousel6.jpg",
-    title: "KDMV x TENA",
-    subtitle: "Limited Edition Collection",
-    // link: "/collections/straight-edge-collection",
-    linkText: "Shop",
-  },
-  {
-    id: "4",
-    image: "/carousel7.jpg",
-    title: "KDMV Presents: The Revenge",
-    subtitle: "Sdach Game Ft. Tena",
-    link: "https://www.facebook.com/share/v/17VHMwU4Gy/",
-    linkText: "Watch Now",
-  },
+  // {
+  //   id: "1",
+  //   image: "/carousel4.jpg",
+  //   title: "Childhood Nostalgia",
+  //   subtitle: "Hoodies back for good!",
+  //   link: "/collections/new-products",
+  //   linkText: "Shop Childhood Nostalgia",
+  // },
+  // {
+  //   id: "2",
+  //   image: "/carousel5.jpg",
+  //   title: "Tourist Vs Purist 2.0",
+  //   subtitle: "",
+  //   link: "/collections/off-the-pier",
+  //   linkText: "Grab One Now",
+  // },
+  // {
+  //   id: "3",
+  //   image: "/carousel6.jpg",
+  //   title: "KDMV x TENA",
+  //   subtitle: "Limited Edition Collection",
+  //   // link: "/collections/straight-edge-collection",
+  //   linkText: "Shop",
+  // },
+  // {
+  //   id: "4",
+  //   image: "/carousel7.jpg",
+  //   title: "KDMV Presents: The Revenge",
+  //   subtitle: "Sdach Game Ft. Tena",
+  //   link: "https://www.facebook.com/share/v/17VHMwU4Gy/",
+  //   linkText: "Watch Now",
+  // },
 ];
 
-export default function HeroCarousel() {
+export default function HeroCarousel({ banners = null }) {
+  // Use dynamic banners if provided, otherwise fallback to hardcoded slides
+  const slidesData =
+    banners && banners.length > 0
+      ? banners.map((banner) => ({
+          id: banner.id,
+          image: banner.image_url,
+          title: banner.title,
+          subtitle: banner.subtitle || "",
+          link: banner.link_url || "",
+          linkText: banner.link_text || "Shop Now",
+        }))
+      : slides;
+
   return (
     <div className="w-full aspect-[16/15] md:aspect-[26/10] overflow-hidden relative">
       <Swiper
@@ -64,7 +77,7 @@ export default function HeroCarousel() {
         }}
         className="w-full h-full"
       >
-        {slides.map((slide) => (
+        {slidesData.map((slide, index) => (
           <SwiperSlide key={slide.id}>
             <div className="relative w-full h-full">
               <Image
@@ -73,7 +86,7 @@ export default function HeroCarousel() {
                 fill
                 quality={100}
                 className="object-cover object-top"
-                priority={slide.id === "1"}
+                priority={index === 0}
               />
               <div className="absolute inset-0 bg-foreground/50 dark:bg-background/50 flex flex-col items-center justify-center text-background dark:text-foreground px-4 font-poppins text-center space-y-1.5">
                 {slide.title && (

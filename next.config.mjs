@@ -1,7 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    unoptimized: true,
     remotePatterns: [
       {
         protocol: "https",
@@ -22,6 +21,11 @@ const nextConfig = {
         protocol: "https",
         hostname: "rbcppmhhbzilsypviyrg.supabase.co",
         pathname: "/storage/v1/object/public/collection-images/**",
+      },
+      {
+        protocol: "https",
+        hostname: "rbcppmhhbzilsypviyrg.supabase.co",
+        pathname: "/storage/v1/object/public/hero-banner-images/**",
       },
     ],
   },
