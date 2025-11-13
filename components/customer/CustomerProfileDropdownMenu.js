@@ -51,7 +51,7 @@ export default function CustomerProfileDropdownMenu() {
                       fill
                       quality={50}
                       loading="lazy"
-                      sizes="36px"
+                      sizes="100vw"
                       className="object-cover object-center rounded-full"
                     />
                   ) : (

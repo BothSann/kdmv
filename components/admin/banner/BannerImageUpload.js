@@ -132,7 +132,7 @@ export default function BannerImageUpload({
               fill
               loading="lazy"
               quality={50}
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 80vw"
+              sizes="100vw"
               className="object-cover"
             />
           </div>

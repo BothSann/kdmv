@@ -20,7 +20,7 @@ export default function CheckoutItem({ item }) {
           src={product.banner_image_url}
           alt={product.name}
           fill
-          sizes="72px"
+          sizes="100vw"
           quality={50}
           className="object-cover object-center"
         />

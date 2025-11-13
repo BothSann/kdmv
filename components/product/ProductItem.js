@@ -34,7 +34,7 @@ export default function ProductItem({ product, className, index }) {
             src={product.banner_image_url}
             fill
             quality={50}
-            sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 20vw"
+            sizes="100vw"
             className="object-cover object-center"
           />
 

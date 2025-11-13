@@ -92,7 +92,7 @@ export default function OrderItem({ order }) {
                       src={item.banner_image_url} // Use the image URL from the item
                       alt={item.product_name || "Product"} // Use product name for alt text if available
                       fill
-                      sizes="(max-width: 1024px) 72px, 128px"
+                      sizes="100vw"
                       quality={50}
                       loading="lazy"
                       className="object-cover object-center"

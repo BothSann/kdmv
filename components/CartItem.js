@@ -136,7 +136,7 @@ export default function CartItem({ item }) {
           src={product.banner_image_url}
           alt={product.name}
           fill
-          sizes="(max-width: 1024px) 72px, 96px"
+          sizes="100vw"
           quality={50}
           className="object-cover object-center"
         />
