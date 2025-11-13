@@ -22,8 +22,6 @@ import Image from "next/image";
 export default function CollectionRow({ collection }) {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const { toggleItem, isSelected } = useCollectionTableStore();
-  console.log(collection);
-  console.log(collection.banner_image_url);
 
   return (
     <TableRow className="text-sm">
