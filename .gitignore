@@ -76,6 +76,7 @@ DEPLOYMENT_GUIDE.md
 middleware-to-proxy-nextjs16.md
 optimistic-checks-with-proxy.md
 supabase-middleware.md
+animate-on-scoll.md
 
 app/test/
 

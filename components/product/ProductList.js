@@ -10,8 +10,8 @@ export default function ProductList({
   // Layout classes based on variant
   const containerClasses =
     variant === "scroll"
-      ? "overflow-x-auto pb-4" // Horizontal scroll
-      : ""; // No horizontal scroll
+      ? "overflow-x-auto pb-4 overflow-y-hidden" // Horizontal scroll
+      : "overflow-y-hidden"; // No horizontal scroll
 
   const listClasses =
     variant === "scroll"

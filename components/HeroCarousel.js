@@ -1,8 +1,15 @@
 "use client";
 
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay, Pagination, Keyboard, EffectFade } from "swiper/modules";
+import {
+  Autoplay,
+  Pagination,
+  Keyboard,
+  EffectFade,
+  EffectCreative,
+} from "swiper/modules";
 import "swiper/css/bundle";
+import AOS from "aos";
 
 import Link from "next/link";
 import Image from "next/image";
@@ -61,12 +68,25 @@ export default function HeroCarousel({ banners = null }) {
   return (
     <div className="w-full aspect-[16/15] md:aspect-[26/10] overflow-hidden relative">
       <Swiper
-        modules={[Autoplay, Pagination, Keyboard]}
+        modules={[Autoplay, Pagination, Keyboard, EffectCreative]}
+        effect={"creative"}
+        creativeEffect={{
+          prev: {
+            shadow: true,
+            translate: [0, 0, -400],
+          },
+          next: {
+            translate: ["100%", 0, 0],
+          },
+        }}
         grabCursor={true}
         spaceBetween={0}
         slidesPerView={1}
         loop={true}
         autoplay={{ delay: 3000 }}
+        onSlideChange={() => {
+          AOS.refresh();
+        }}
         pagination={{
           bulletClass: "custom-bullet",
           bulletActiveClass: `custom-bullet-active`,
@@ -80,37 +100,65 @@ export default function HeroCarousel({ banners = null }) {
         {slidesData.map((slide, index) => (
           <SwiperSlide key={slide.id}>
             <div className="relative w-full h-full">
+              {/* Do not wrap the image in a div with data-aos="fade" */}
               <Image
                 src={slide.image}
                 alt={slide.title}
                 fill
-                quality={100}
+                quality={80}
+                sizes="100vw"
                 className="object-cover object-top"
                 priority={index === 0}
+                data-aos="fade"
+                data-aos-duration="1000"
               />
+
+              {/* Content Overlay */}
               <div className="absolute inset-0 bg-foreground/50 dark:bg-background/50 flex flex-col items-center justify-center text-background dark:text-foreground px-4 font-poppins text-center space-y-1.5">
+                {/* Title - Fades up with slight delay */}
                 {slide.title && (
-                  <h2 className="text-3xl lg:text-6xl font-bold">
+                  <h2
+                    className="text-3xl lg:text-6xl font-bold"
+                    data-aos="fade-up"
+                    data-aos-duration="800"
+                    data-aos-delay="200"
+                    data-aos-easing="ease-out-cubic"
+                  >
                     {slide.title}
                   </h2>
                 )}
 
+                {/* Subtitle - Fades up with more delay */}
                 {slide.subtitle && (
-                  <p className="uppercase text-sm lg:text-lg tracking-widest">
+                  <p
+                    className="uppercase text-sm lg:text-lg tracking-widest"
+                    data-aos="fade-up"
+                    data-aos-duration="800"
+                    data-aos-delay="400"
+                    data-aos-easing="ease-out-cubic"
+                  >
                     {slide.subtitle}
                   </p>
                 )}
 
+                {/* Button - Zooms in with most delay */}
                 {slide.link && (
-                  <Button
-                    className="border-border border bg-transparent hover:bg-primary/20 dark:text-foreground dark:border-foreground dark:hover:bg-foreground/20 group font-semibold mt-1.5 size-sm lg:size-default"
-                    asChild
+                  <div
+                    data-aos="zoom-in"
+                    data-aos-duration="600"
+                    data-aos-delay="600"
+                    data-aos-easing="ease-out-back"
                   >
-                    <Link href={slide.link}>
-                      {slide.linkText}
-                      <MoveRight className="transition-all duration-300 ease-in-out group-hover:opacity-100 group-hover:translate-x-0.5 group-hover:scale-110" />
-                    </Link>
-                  </Button>
+                    <Button
+                      className="border-border border bg-transparent hover:bg-primary/20 dark:text-foreground dark:border-foreground dark:hover:bg-foreground/20 group font-semibold mt-1.5 size-sm lg:size-default"
+                      asChild
+                    >
+                      <Link href={slide.link}>
+                        {slide.linkText}
+                        <MoveRight className="transition-all duration-300 ease-in-out group-hover:opacity-100 group-hover:translate-x-0.5 group-hover:scale-110" />
+                      </Link>
+                    </Button>
+                  </div>
                 )}
               </div>
             </div>

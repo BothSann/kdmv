@@ -4,6 +4,7 @@ import { Toaster } from "sonner";
 import "react-photo-view/dist/react-photo-view.css";
 
 import AuthProvider from "@/components/AuthProvider";
+import AOSProvider from "@/components/AOSProvider";
 import "./globals.css";
 
 export const metadata = {
@@ -91,7 +92,9 @@ export default async function RootLayout({ children }) {
         >
           <Toaster richColors position="top-center" expand visibleToasts={1} />
 
-          <AuthProvider>{children}</AuthProvider>
+          <AuthProvider>
+            <AOSProvider>{children}</AOSProvider>
+          </AuthProvider>
         </ThemeProvider>
       </body>
     </html>

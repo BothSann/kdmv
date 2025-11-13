@@ -73,6 +73,8 @@ export default function ProductImageSlider({ product }) {
                       quality={80}
                       loading="lazy"
                       className="object-cover object-center cursor-zoom-in"
+                      data-aos="fade"
+                      data-aos-duration="1000"
                     />
                   </PhotoView>
                 </div>
@@ -112,8 +114,11 @@ export default function ProductImageSlider({ product }) {
                     alt={image.image_url}
                     fill
                     sizes="100vw"
+                    quality={50}
                     loading="lazy"
                     className="object-cover object-center cursor-pointer active:cursor-grabbing"
+                    data-aos="fade"
+                    data-aos-duration="1000"
                   />
                 </div>
               </CarouselItem>
