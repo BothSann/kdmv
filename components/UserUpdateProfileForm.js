@@ -154,7 +154,8 @@ export default function UserUpdateProfileForm() {
                   src={previewUrl}
                   alt="User Avatar Preview"
                   fill
-                  quality={80}
+                  loading="lazy"
+                  quality={50}
                   sizes="100vw"
                   className="object-cover object-center rounded-full"
                 />
@@ -163,7 +164,8 @@ export default function UserUpdateProfileForm() {
                   src={profile.avatar_url}
                   alt="User Avatar"
                   fill
-                  quality={80}
+                  loading="lazy"
+                  quality={50}
                   sizes="100vw"
                   className="object-cover object-center rounded-full"
                 />

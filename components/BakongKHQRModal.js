@@ -203,6 +203,8 @@ export default function BakongKHQRModal({
                         src="/KHQR-logo-nobg.png"
                         alt="KHQR Logo"
                         fill
+                        sizes="100vw"
+                        quality={50}
                         className="object-contain"
                       />
                     </div>

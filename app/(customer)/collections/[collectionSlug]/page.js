@@ -82,6 +82,7 @@ export default async function CollectionPage({ params, searchParams }) {
               src={products[0].collection_banner_image_url}
               alt={products[0].collection_name}
               fill
+              sizes="100vw"
               className="object-cover object-top"
               priority
             />

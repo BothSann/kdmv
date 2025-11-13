@@ -16,7 +16,8 @@ export default function AdminRow({ admin }) {
                 alt={fullName}
                 fill
                 loading="lazy"
-                quality={100}
+                quality={50}
+                sizes="100vw"
                 className="object-cover object-center rounded-full"
               />
             ) : (

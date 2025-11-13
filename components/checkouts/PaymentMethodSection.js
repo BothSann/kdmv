@@ -49,7 +49,9 @@ export default function PaymentMethodSection({ selected, onSelect }) {
                   <div className="relative lg:min-w-16 lg:min-h-16 min-w-14 min-h-14">
                     <Image
                       fill
-                      quality={100}
+                      quality={70}
+                      sizes="100vw"
+                      loading="lazy"
                       src={method.image}
                       alt={method.name}
                       className="object-contain object-center"

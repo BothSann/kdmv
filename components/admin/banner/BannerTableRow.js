@@ -69,6 +69,8 @@ export default function BannerTableRow({ banner }) {
               alt={banner.title}
               fill
               loading="lazy"
+              quality={50}
+              sizes="100vw"
               className="object-cover"
             />
           ) : (

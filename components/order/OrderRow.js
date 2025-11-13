@@ -71,6 +71,9 @@ export default function OrderRow({ order }) {
             src={bannerImageUrl}
             alt={imageAlt}
             fill
+            sizes="100vw"
+            quality={50}
+            loading="lazy"
             className="object-cover object-center"
           />
         </div>

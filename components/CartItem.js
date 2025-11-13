@@ -136,6 +136,8 @@ export default function CartItem({ item }) {
           src={product.banner_image_url}
           alt={product.name}
           fill
+          sizes="100vw"
+          quality={50}
           className="object-cover object-center"
         />
       </div>

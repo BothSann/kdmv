@@ -130,6 +130,9 @@ export default function BannerImageUpload({
               src={previewUrl}
               alt="Banner preview"
               fill
+              loading="lazy"
+              quality={50}
+              sizes="100vw"
               className="object-cover"
             />
           </div>
@@ -174,9 +177,7 @@ export default function BannerImageUpload({
       />
 
       {/* Error Message */}
-      {error && (
-        <p className="text-sm text-destructive font-medium">{error}</p>
-      )}
+      {error && <p className="text-sm text-destructive font-medium">{error}</p>}
 
       {/* Helper Text */}
       {!error && previewUrl && (

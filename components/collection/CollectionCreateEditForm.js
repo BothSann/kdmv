@@ -223,7 +223,8 @@ export default function CollectionCreateEditForm({
                             src={previewUrl}
                             alt="Collection Banner Image Preview"
                             fill
-                            quality={80}
+                            quality={50}
+                            loading="lazy"
                             sizes="100vw"
                             className="object-cover object-center"
                           />

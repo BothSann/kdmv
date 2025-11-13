@@ -15,6 +15,7 @@ export default function CollectionItem({ collection }) {
             fill
             loading="lazy"
             quality={50}
+            sizes="100vw"
             className="object-cover object-top transition-transform duration-300 group-hover:scale-110"
           />
 

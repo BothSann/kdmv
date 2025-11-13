@@ -41,7 +41,8 @@ export default function AdminProfileDropdownMenu() {
                 src={profile?.avatar_url}
                 alt="Admin Avatar"
                 fill
-                quality={80}
+                quality={50}
+                loading="lazy"
                 sizes="100vw"
                 className="object-cover object-center rounded-full"
               />

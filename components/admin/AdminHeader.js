@@ -25,7 +25,8 @@ export default function AdminHeader() {
                 src={profile?.avatar_url}
                 alt="Admin Avatar"
                 fill
-                quality={80}
+                loading="lazy"
+                quality={50}
                 sizes="100vw"
                 className="object-cover object-center rounded-full"
               />

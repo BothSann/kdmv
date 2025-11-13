@@ -10,7 +10,7 @@ export default function Logo({ width = "w-26", className = "" }) {
           alt="logo"
           sizes="100vw"
           fill
-          quality={100}
+          quality={70}
           loading="lazy"
           className={`object-contain dark:invert ${className}`}
         />

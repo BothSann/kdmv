@@ -142,6 +142,8 @@ export default function ProductImages({
                   alt="Product Banner Image Preview"
                   fill
                   sizes="100vw"
+                  quality={50}
+                  loading="lazy"
                   className="object-cover object-center"
                 />
               </div>
@@ -200,6 +202,8 @@ export default function ProductImages({
                         src={image.preview}
                         alt={`Additional image ${index + 1}`}
                         fill
+                        sizes="100vw"
+                        quality={50}
                         className="object-cover object-center"
                       />
                     </div>
@@ -239,6 +243,8 @@ export default function ProductImages({
                       src={image.image_url}
                       alt={`Existing image ${index + 1}`}
                       fill
+                      sizes="100vw"
+                      quality={50}
                       className="object-cover object-center"
                     />
                   </div>
