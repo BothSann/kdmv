@@ -17,7 +17,7 @@ export default function ProductItem({ product, className, index }) {
       className={cn(className)}
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-100px" }}
+      viewport={{ once: true, margin: "-80px" }}
       transition={{ duration: 0.5, delay: index * 0.1 }}
     >
       <Link href={`/products/${product.id}`}>
@@ -26,7 +26,7 @@ export default function ProductItem({ product, className, index }) {
           className="relative aspect-[3/4]"
           initial={{ opacity: 0, scale: 0.95 }}
           whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true, margin: "-100px" }}
+          viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.5, delay: index * 0.1 + 0.1 }}
         >
           <Image
@@ -60,7 +60,7 @@ export default function ProductItem({ product, className, index }) {
           className="py-4 px-2 flex flex-col gap-0.5"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
+          viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.5, delay: index * 0.1 + 0.2 }}
         >
           <p className="text-lg">{product.name}</p>
