@@ -86,6 +86,7 @@ export default function ProductImageSlider({ product }) {
                         src={image.image_url}
                         alt={image.image_url}
                         fill
+                        sizes="100vw"
                         quality={80}
                         priority
                         className="object-cover object-center cursor-zoom-in"
@@ -137,6 +138,7 @@ export default function ProductImageSlider({ product }) {
                       src={image.image_url}
                       alt={image.image_url}
                       fill
+                      sizes="100vw"
                       quality={50}
                       loading="lazy"
                       className="object-cover object-center cursor-pointer active:cursor-grabbing"
