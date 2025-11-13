@@ -43,7 +43,7 @@ export default function AdminProfileDropdownMenu() {
                 fill
                 quality={50}
                 loading="lazy"
-                sizes="100vw"
+                sizes="32px"
                 className="object-cover object-center rounded-full"
               />
             ) : (

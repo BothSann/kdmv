@@ -18,12 +18,12 @@ import {
 
 export const FOOTER_SECTIONS = {
   support: [
-    { href: "/returns", label: "Returns & Refunds" },
-    { href: "/faq", label: "FAQ & Guides" },
+    { href: "", label: "Returns & Refunds" }, //returns
+    { href: "", label: "FAQ & Guides" }, //faq
   ],
   policies: [
-    { href: "/terms", label: "Terms of Service" },
-    { href: "/privacy", label: "Privacy Policy" },
+    { href: "", label: "Terms of Service" }, //terms
+    { href: "", label: "Privacy Policy" }, //privacy
   ],
 };
 

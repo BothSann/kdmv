@@ -13,7 +13,6 @@ import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import useCartStore from "@/store/useCartStore";
 import { toast } from "sonner";
 import { Badge } from "../ui/badge";
-import MiniSpinner from "../MiniSpinner";
 
 export default function ProductCustomerDetail({ product }) {
   const searchParams = useSearchParams();

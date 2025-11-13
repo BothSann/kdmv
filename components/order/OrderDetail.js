@@ -289,7 +289,7 @@ export function OrderItemsCard({ orderItems }) {
                   src={imageUrl}
                   alt="Order Item"
                   fill
-                  sizes="100vw"
+                  sizes="(max-width: 1024px) 96px, 160px"
                   quality={50}
                   loading="lazy"
                   className="object-cover object-center"

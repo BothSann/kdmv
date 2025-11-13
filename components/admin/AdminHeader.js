@@ -27,7 +27,7 @@ export default function AdminHeader() {
                 fill
                 loading="lazy"
                 quality={50}
-                sizes="100vw"
+                sizes="40px"
                 className="object-cover object-center rounded-full"
               />
             ) : (

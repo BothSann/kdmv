@@ -50,7 +50,7 @@ export default function PaymentMethodSection({ selected, onSelect }) {
                     <Image
                       fill
                       quality={70}
-                      sizes="100vw"
+                      sizes="(max-width: 1024px) 56px, 64px"
                       loading="lazy"
                       src={method.image}
                       alt={method.name}

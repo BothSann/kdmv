@@ -1,20 +1,15 @@
 "use client";
 
 import { Swiper, SwiperSlide } from "swiper/react";
-import {
-  Autoplay,
-  Pagination,
-  Keyboard,
-  EffectFade,
-  EffectCreative,
-} from "swiper/modules";
+import { Autoplay, Pagination, Keyboard, EffectFade } from "swiper/modules";
 import "swiper/css/bundle";
-import AOS from "aos";
 
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "./ui/button";
 import { MoveRight } from "lucide-react";
+import { motion } from "framer-motion";
+import { useState } from "react";
 
 const slides = [
   // {
@@ -51,7 +46,46 @@ const slides = [
   // },
 ];
 
+// Animation variants for slide content
+const imageVariants = {
+  hidden: { opacity: 0, scale: 1.1 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    transition: { duration: 0.8, ease: "easeOut" },
+  },
+};
+
+const titleVariants = {
+  hidden: { opacity: 0, y: -30 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6, delay: 0.2, ease: "easeOut" },
+  },
+};
+
+const subtitleVariants = {
+  hidden: { opacity: 0, y: -20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6, delay: 0.4, ease: "easeOut" },
+  },
+};
+
+const buttonVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6, delay: 0.6, ease: "easeOut" },
+  },
+};
+
 export default function HeroCarousel({ banners = null }) {
+  const [activeIndex, setActiveIndex] = useState(0);
+
   // Use dynamic banners if provided, otherwise fallback to hardcoded slides
   const slidesData =
     banners && banners.length > 0
@@ -65,19 +99,19 @@ export default function HeroCarousel({ banners = null }) {
         }))
       : slides;
 
+  const handleSlideChange = (swiper) => {
+    setActiveIndex(swiper.realIndex);
+  };
+
   return (
     <div className="w-full aspect-[16/15] md:aspect-[26/10] overflow-hidden relative">
       <Swiper
-        modules={[Autoplay, Pagination, Keyboard, EffectFade]}
-        effect={"fade"}
+        modules={[Autoplay, Pagination, Keyboard]}
         grabCursor={true}
         spaceBetween={0}
         slidesPerView={1}
         loop={true}
         autoplay={{ delay: 3000 }}
-        onSlideChange={() => {
-          AOS.refresh();
-        }}
         pagination={{
           bulletClass: "custom-bullet",
           bulletActiveClass: `custom-bullet-active`,
@@ -86,59 +120,62 @@ export default function HeroCarousel({ banners = null }) {
         keyboard={{
           enabled: true,
         }}
+        onSlideChange={handleSlideChange}
         className="w-full h-full"
       >
         {slidesData.map((slide, index) => (
           <SwiperSlide key={slide.id}>
             <div className="relative w-full h-full">
-              {/* Do not wrap the image in a div with data-aos="fade" */}
-              <Image
-                src={slide.image}
-                alt={slide.title}
-                fill
-                quality={50}
-                sizes="100vw"
-                className="object-cover object-top"
-                priority={index === 0}
-                data-aos="fade"
-                data-aos-duration="1000"
-              />
+              <motion.div
+                key={`image-${slide.id}-${activeIndex}`}
+                variants={imageVariants}
+                initial="hidden"
+                animate={activeIndex === index ? "visible" : "hidden"}
+                className="relative w-full h-full"
+              >
+                <Image
+                  src={slide.image}
+                  alt={slide.title}
+                  fill
+                  quality={50}
+                  sizes="100vw"
+                  className="object-cover object-top"
+                  priority={index === 0}
+                />
+              </motion.div>
 
               {/* Content Overlay */}
               <div className="absolute inset-0 bg-foreground/50 dark:bg-background/50 flex flex-col items-center justify-center text-background dark:text-foreground px-4 font-poppins text-center space-y-1.5">
-                {/* Title - Fades up with slight delay */}
                 {slide.title && (
-                  <h2
+                  <motion.h2
+                    key={`title-${slide.id}-${activeIndex}`}
+                    variants={titleVariants}
+                    initial="hidden"
+                    animate={activeIndex === index ? "visible" : "hidden"}
                     className="text-3xl lg:text-6xl font-bold"
-                    data-aos="fade-up"
-                    data-aos-duration="800"
-                    data-aos-delay="200"
-                    data-aos-easing="ease-out-cubic"
                   >
                     {slide.title}
-                  </h2>
+                  </motion.h2>
                 )}
 
-                {/* Subtitle - Fades up with more delay */}
                 {slide.subtitle && (
-                  <p
+                  <motion.p
+                    key={`subtitle-${slide.id}-${activeIndex}`}
+                    variants={subtitleVariants}
+                    initial="hidden"
+                    animate={activeIndex === index ? "visible" : "hidden"}
                     className="uppercase text-sm lg:text-lg tracking-widest"
-                    data-aos="fade-up"
-                    data-aos-duration="800"
-                    data-aos-delay="400"
-                    data-aos-easing="ease-out-cubic"
                   >
                     {slide.subtitle}
-                  </p>
+                  </motion.p>
                 )}
 
-                {/* Button - Zooms in with most delay */}
                 {slide.link && (
-                  <div
-                    data-aos="zoom-in"
-                    data-aos-duration="600"
-                    data-aos-delay="600"
-                    data-aos-easing="ease-out-back"
+                  <motion.div
+                    key={`button-${slide.id}-${activeIndex}`}
+                    variants={buttonVariants}
+                    initial="hidden"
+                    animate={activeIndex === index ? "visible" : "hidden"}
                   >
                     <Button
                       className="border-border border bg-transparent hover:bg-primary/20 dark:text-foreground dark:border-foreground dark:hover:bg-foreground/20 group font-semibold mt-1.5 size-sm lg:size-default"
@@ -149,7 +186,7 @@ export default function HeroCarousel({ banners = null }) {
                         <MoveRight className="transition-all duration-300 ease-in-out group-hover:opacity-100 group-hover:translate-x-0.5 group-hover:scale-110" />
                       </Link>
                     </Button>
-                  </div>
+                  </motion.div>
                 )}
               </div>
             </div>

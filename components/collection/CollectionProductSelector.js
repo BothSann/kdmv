@@ -127,7 +127,7 @@ export default function CollectionProductSelector({
                       fill
                       loading="lazy"
                       quality={50}
-                      sizes="100vw"
+                      sizes="56px"
                       className="object-cover object-top"
                     />
                   </div>

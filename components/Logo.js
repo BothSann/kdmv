@@ -8,11 +8,11 @@ export default function Logo({ width = "w-26", className = "" }) {
         <Image
           src="/KDMV_LOGO_OG_BLACK.png"
           alt="logo"
-          sizes="100vw"
+          sizes="(max-width: 768px) 200px, 200px"
           fill
           quality={70}
-          loading="lazy"
           className={`object-contain dark:invert ${className}`}
+          priority
         />
       </div>
     </Link>

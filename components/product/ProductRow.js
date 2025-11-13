@@ -71,7 +71,7 @@ export default function ProductRow({ product }) {
               src={product.banner_image_url}
               alt={product.name}
               fill
-              sizes="100vw"
+              sizes="56px"
               quality={50}
               loading="lazy"
               className="object-cover object-top"

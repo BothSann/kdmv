@@ -38,7 +38,7 @@ const useAuthStore = create((set, get) => ({
     } else {
       // No user or error - clear auth and cart
       // This handles logout in other browsers/tabs
-      console.log("No authenticated user found, clearing auth and cart");
+      // console.log("No authenticated user found, clearing auth and cart");
       get().clearAuth();
     }
 

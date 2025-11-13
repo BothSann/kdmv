@@ -156,7 +156,7 @@ export default function UserUpdateProfileForm() {
                   fill
                   loading="lazy"
                   quality={50}
-                  sizes="100vw"
+                  sizes="80px"
                   className="object-cover object-center rounded-full"
                 />
               ) : profile?.avatar_url ? (
@@ -166,7 +166,7 @@ export default function UserUpdateProfileForm() {
                   fill
                   loading="lazy"
                   quality={50}
-                  sizes="100vw"
+                  sizes="80px"
                   className="object-cover object-center rounded-full"
                 />
               ) : (

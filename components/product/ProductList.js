@@ -26,11 +26,12 @@ export default function ProductList({
   return (
     <div className={containerClasses}>
       <ul className={listClasses}>
-        {products.map((product) => (
+        {products.map((product, index) => (
           <ProductItem
             key={product.id}
             product={product}
             className={itemClasses}
+            index={index}
           />
         ))}
 

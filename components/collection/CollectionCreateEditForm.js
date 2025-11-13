@@ -225,7 +225,7 @@ export default function CollectionCreateEditForm({
                             fill
                             quality={50}
                             loading="lazy"
-                            sizes="100vw"
+                            sizes="96px"
                             className="object-cover object-center"
                           />
                         </div>

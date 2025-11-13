@@ -12,6 +12,7 @@ import Image from "next/image";
 import Autoplay from "embla-carousel-autoplay";
 
 import { PhotoProvider, PhotoView } from "react-photo-view";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function ProductImageSlider({ product }) {
   const [mainApi, setMainApi] = useState(null);
@@ -63,21 +64,36 @@ export default function ProductImageSlider({ product }) {
           <CarouselContent>
             {imagesToUse.map((image, index) => (
               <CarouselItem key={index}>
-                <div className="relative aspect-[1/1]">
+                <motion.div
+                  className="relative aspect-[1/1]"
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={
+                    current === index
+                      ? { opacity: 1, scale: 1 }
+                      : { opacity: 1, scale: 1 }
+                  }
+                  transition={{ duration: 0.5, ease: "easeOut" }}
+                >
                   <PhotoView src={image.image_url}>
-                    <Image
-                      src={image.image_url}
-                      alt={image.image_url}
-                      fill
-                      sizes="100vw"
-                      quality={80}
-                      loading="lazy"
-                      className="object-cover object-center cursor-zoom-in"
-                      data-aos="fade"
-                      data-aos-duration="1000"
-                    />
+                    <motion.div
+                      key={`main-${index}-${current}`}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: current === index ? 1 : 0.7 }}
+                      transition={{ duration: 0.6 }}
+                      className="relative w-full h-full"
+                    >
+                      <Image
+                        src={image.image_url}
+                        alt={image.image_url}
+                        fill
+                        sizes="(max-width: 1024px) 100vw, 50vw"
+                        quality={80}
+                        priority
+                        className="object-cover object-center cursor-zoom-in"
+                      />
+                    </motion.div>
                   </PhotoView>
-                </div>
+                </motion.div>
               </CarouselItem>
             ))}
           </CarouselContent>
@@ -102,25 +118,33 @@ export default function ProductImageSlider({ product }) {
                 className="basis-1/4 lg:basis-1/5"
                 onClick={() => handleGalleryClick(index)}
               >
-                <div
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, delay: index * 0.1 }}
                   className={`relative aspect-square border-2 dark:border-3 ${
                     current === index
                       ? "border-primary dark:border-chart-3"
                       : "border-transparent"
                   }`}
                 >
-                  <Image
-                    src={image.image_url}
-                    alt={image.image_url}
-                    fill
-                    sizes="100vw"
-                    quality={50}
-                    loading="lazy"
-                    className="object-cover object-center cursor-pointer active:cursor-grabbing"
-                    data-aos="fade"
-                    data-aos-duration="1000"
-                  />
-                </div>
+                  <motion.div
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    transition={{ duration: 0.2 }}
+                    className="relative w-full h-full"
+                  >
+                    <Image
+                      src={image.image_url}
+                      alt={image.image_url}
+                      fill
+                      sizes="(max-width: 1024px) 25vw, 10vw"
+                      quality={50}
+                      loading="lazy"
+                      className="object-cover object-center cursor-pointer active:cursor-grabbing"
+                    />
+                  </motion.div>
+                </motion.div>
               </CarouselItem>
             ))}
           </CarouselContent>

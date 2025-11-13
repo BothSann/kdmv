@@ -43,7 +43,7 @@ export default function CollectionRow({ collection }) {
               fill
               loading="lazy"
               quality={50}
-              sizes="100vw"
+              sizes="40px"
               className="object-cover object-top rounded-full"
             />
           ) : (

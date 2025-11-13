@@ -70,7 +70,7 @@ export default function BannerTableRow({ banner }) {
               fill
               loading="lazy"
               quality={50}
-              sizes="100vw"
+              sizes="80px"
               className="object-cover"
             />
           ) : (
