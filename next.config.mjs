@@ -2,9 +2,6 @@
 const nextConfig = {
   images: {
     domains: ["kdmv.store"],
-    loading: "lazy",
-    quality: 50,
-    sizes: "100vw",
     unoptimized: true,
 
     remotePatterns: [
