@@ -141,7 +141,7 @@ export default function ProductImages({
                   src={bannerPreviewUrl}
                   alt="Product Banner Image Preview"
                   fill
-                  sizes="104px"
+                  sizes="100vw"
                   quality={50}
                   loading="lazy"
                   className="object-cover object-center"
@@ -202,7 +202,7 @@ export default function ProductImages({
                         src={image.preview}
                         alt={`Additional image ${index + 1}`}
                         fill
-                        sizes="(max-width: 640px) 33vw, (max-width: 1024px) 16vw, 12vw"
+                        sizes="100vw"
                         quality={50}
                         className="object-cover object-center"
                       />
@@ -243,7 +243,7 @@ export default function ProductImages({
                       src={image.image_url}
                       alt={`Existing image ${index + 1}`}
                       fill
-                      sizes="(max-width: 640px) 33vw, (max-width: 1024px) 16vw, 12vw"
+                      sizes="100vw"
                       quality={50}
                       className="object-cover object-center"
                     />
