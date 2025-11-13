@@ -43,7 +43,7 @@ export default function ProductItem({ product, className, index }) {
               initial={{ opacity: 0, x: 20, y: -20 }}
               whileInView={{ opacity: 1, x: 0, y: 0 }}
               viewport={{ once: true, margin: "-10px" }}
-              transition={{ duration: 0.4, delay: index * 0.1 + 0.1 }}
+              transition={{ duration: 0.4, delay: index * 0.1 + 0.2 }}
             >
               <Badge
                 variant="destructive"
@@ -61,7 +61,7 @@ export default function ProductItem({ product, className, index }) {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-10px" }}
-          transition={{ duration: 0.5, delay: index * 0.1 + 0.1 }}
+          transition={{ duration: 0.5, delay: index * 0.1 + 0.2 }}
         >
           <p className="text-lg">{product.name}</p>
           {hasDiscount ? (
