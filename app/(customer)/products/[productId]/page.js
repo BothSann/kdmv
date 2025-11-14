@@ -34,8 +34,6 @@ export async function generateMetadata({ params }) {
           url: product.banner_image_url,
           width: 1200,
           height: 630,
-          objectFit: "cover",
-          objectPosition: "top",
           alt: product.name,
         },
       ],
@@ -47,6 +45,18 @@ export async function generateMetadata({ params }) {
       images: [product.banner_image_url],
       creator: "@KDMV",
       site: "@KDMV",
+    },
+
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-video-preview": -1,
+        "max-image-preview": "large",
+        "max-snippet": -1,
+      },
     },
   };
 }
