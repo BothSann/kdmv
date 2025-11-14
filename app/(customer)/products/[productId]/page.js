@@ -27,7 +27,6 @@ export async function generateMetadata({ params }) {
       locale: "en_US",
       url: `https://kdmv.store/products/${product.id}`,
       title: `${product.name} | KDMV`,
-      description: product.description,
       siteName: "KDMV",
       images: [
         {
