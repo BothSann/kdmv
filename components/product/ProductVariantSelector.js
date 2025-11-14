@@ -58,16 +58,42 @@ export default function ProductVariantSelector({
     }
   }, [selectedVariant, onVariantChange]);
 
-  // Handle color selection - find first variant with this color
   const handleColorChange = (colorId) => {
-    const firstVariantWithColor = product.variants_lookup.find(
-      (v) => v.colors?.id === colorId
+    // Get all unique sizes for this color, properly sorted
+    const sizesForColor = product.variants_lookup
+      .filter((v) => v.colors?.id === colorId)
+      .map((v) => v.sizes)
+      .filter((size) => size != null) // Remove null/undefined
+      .sort((a, b) => (a.display_order || 999) - (b.display_order || 999));
+
+    // Step 2: Remove duplicate sizes (same ID)
+    const uniqueSizes = Array.from(
+      new Map(sizesForColor.map((size) => [size.id, size])).values()
     );
 
-    const newVariantId = firstVariantWithColor?.id || null;
+    // Get the first size by display_order
+    const firstSize = uniqueSizes[0];
 
+    if (!firstSize) {
+      // No sizes available for this color
+      if (isControlled) {
+        onVariantChange?.(null);
+      } else {
+        setInternalVariantId(null);
+      }
+      return;
+    }
+
+    // Find the variant that matches this color + first size
+    const variantWithColorAndSize = product.variants_lookup.find(
+      (v) => v.colors?.id === colorId && v.sizes?.id === firstSize.id
+    );
+
+    const newVariantId = variantWithColorAndSize?.id || null;
+
+    // Update state
     if (isControlled) {
-      onVariantChange?.(firstVariantWithColor || null);
+      onVariantChange?.(variantWithColorAndSize || null);
     } else {
       setInternalVariantId(newVariantId);
     }
