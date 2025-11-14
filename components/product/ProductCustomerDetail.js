@@ -261,22 +261,43 @@ export default function ProductCustomerDetail({ product }) {
 
         {/* Share */}
         <div className="space-x-2 mt-4">
+          {/* Facebook Share */}
           <Button variant="link" asChild>
-            <Link href="/">
+            <Link
+              href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+                window.location.href
+              )}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <FaFacebookF className="mr-1" />
               <span className="text-base">Share</span>
             </Link>
           </Button>
 
+          {/* Instagram Share (opens Instagram's sharing interface) */}
           <Button variant="link" asChild>
-            <Link href="/">
+            <Link
+              href={`https://www.instagram.com/accounts/login/?next=/&url=${encodeURIComponent(
+                window.location.href
+              )}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <FaInstagram className="mr-1" />
               <span className="text-base">Share</span>
             </Link>
           </Button>
 
+          {/* Twitter/X Share */}
           <Button variant="link" asChild>
-            <Link href="/">
+            <Link
+              href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(
+                window.location.href
+              )}&text=Check%20this%20out!`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <FaXTwitter className="mr-1" />
               <span className="text-base">Tweet</span>
             </Link>
