@@ -217,7 +217,7 @@ export default function ProductCustomerDetail({ product }) {
         {/* Description */}
         {product.description && (
           <div className="space-y-2.5 mt-4">
-            <Label className="text-sm font-bold font-poppins uppercase tracking-widest">
+            <Label className="text-sm font-bold font-poppins uppercase tracking-widest text-muted-foreground">
               Description
             </Label>
             <p className="text-foreground text-sm lg:text-base">

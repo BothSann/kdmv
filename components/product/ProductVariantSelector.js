@@ -103,7 +103,7 @@ export default function ProductVariantSelector({
       colorLabel: "Color",
       sizeLabel: "Size",
       labelClassName:
-        "text-sm font-bold font-poppins uppercase tracking-[0.2em]",
+        "text-sm font-bold font-poppins uppercase tracking-[0.2em] text-muted-foreground",
     };
   }, [variant]);
 
