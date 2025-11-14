@@ -32,8 +32,10 @@ export async function generateMetadata({ params }) {
       images: [
         {
           url: product.banner_image_url,
-          width: 1280,
+          width: 1200,
           height: 630,
+          objectFit: "cover",
+          objectPosition: "top",
           alt: product.name,
         },
       ],
