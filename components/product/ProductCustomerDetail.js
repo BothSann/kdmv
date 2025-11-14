@@ -205,7 +205,7 @@ export default function ProductCustomerDetail({ product }) {
           onVariantChange={handleVariantChange}
         />
 
-        {selectedVariant && remainingStock > 0 && remainingStock <= 3 && (
+        {selectedVariant && remainingStock > 0 && remainingStock <= 10 && (
           <div className="bg-warning-bg dark:bg-warning-dark-bg border border-warning-border dark:border-warning-dark-border p-3">
             <p className="text-sm text-warning dark:text-warning-dark-text">
               Only {remainingStock} more can be added to cart
