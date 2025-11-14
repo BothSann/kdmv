@@ -88,7 +88,7 @@ export function FooterCopyright() {
 
 export default function Footer() {
   return (
-    <footer className="bg-foreground text-background dark:bg-primary-foreground dark:text-foreground pt-8 lg:pt-14 lg:pb-24 pb-16 border-t border-border">
+    <footer className="bg-foreground text-background dark:bg-primary-foreground dark:text-foreground pt-8 lg:pt-14 lg:pb-24 pb-20 border-t border-border">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         {/* ============================================
             MOBILE LAYOUT (< md) - Accordion
