@@ -76,19 +76,19 @@ export function FooterSocialIcons() {
 
 export function FooterCopyright() {
   return (
-    <div className="pt-18 lg:pt-22 text-center text-sm text-muted/90 dark:text-accent-foreground/85 font-jost tracking-wide space-y-2">
-      <p>Built with ❤️ in beautiful Phnom Penh, Cambodia.</p>
+    <div className="pt-24 lg:pt-28 text-center text-sm text-muted/90 dark:text-accent-foreground/85 font-jost tracking-wide space-y-2">
       <p>
         Copyright &copy; {new Date().getFullYear()} by Both Sann. All rights
         reserved.
       </p>
+      <p>Built with ❤️ in beautiful Phnom Penh, Cambodia.</p>
     </div>
   );
 }
 
 export default function Footer() {
   return (
-    <footer className="bg-foreground text-background dark:bg-primary-foreground dark:text-foreground pt-8 lg:pt-14 lg:pb-24 pb-20 border-t border-border">
+    <footer className="bg-foreground text-background dark:bg-primary-foreground dark:text-foreground pt-8 lg:pt-14 lg:pb-20 pb-18 border-t border-border">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         {/* ============================================
             MOBILE LAYOUT (< md) - Accordion
