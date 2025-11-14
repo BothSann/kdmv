@@ -18,6 +18,34 @@ export async function generateMetadata({ params }) {
 
   return {
     title: `${product.name} | KDMV`,
+    description: product.description,
+    authors: [{ name: "KDMV" }],
+    publisher: "KDMV",
+
+    openGraph: {
+      type: "website",
+      locale: "en_US",
+      url: `https://kdmv.store/products/${product.id}`,
+      title: `${product.name} | KDMV`,
+      description: product.description,
+      siteName: "KDMV",
+      images: [
+        {
+          url: product.banner_image_url,
+          width: 1200,
+          height: 630,
+          alt: product.name,
+        },
+      ],
+    },
+
+    twitter: {
+      title: `${product.name} | KDMV`,
+      description: product.description,
+      images: [product.banner_image_url],
+      creator: "@KDMV",
+      site: "@KDMV",
+    },
   };
 }
 
