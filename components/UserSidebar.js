@@ -2,7 +2,7 @@
 
 import { cn } from "@/lib/utils";
 
-import { MapPinHouse, FileText, Settings, User } from "lucide-react";
+import { MapPinHouse, FileText, Settings, User, Palette } from "lucide-react";
 import Link from "next/link";
 import LogoutButton from "./LogoutButton";
 import { usePathname } from "next/navigation";
@@ -19,9 +19,14 @@ const navLinks = [
     icon: FileText,
   },
   {
-    title: "Address",
-    href: "/account/address",
+    title: "Addresses",
+    href: "/account/addresses",
     icon: MapPinHouse,
+  },
+  {
+    title: "Appearances",
+    href: "/account/appearances",
+    icon: Palette,
   },
   {
     title: "Password & Security",

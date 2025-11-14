@@ -76,9 +76,10 @@ export function FooterSocialIcons() {
 
 export function FooterCopyright() {
   return (
-    <div className="pt-16 lg:pt-20">
-      <p className="text-center text-sm text-muted/90 dark:text-accent-foreground/85 font-jost tracking-wide">
-        &copy; {new Date().getFullYear()} KDMV &amp; Both Sann. All rights
+    <div className="pt-18 lg:pt-22 text-center text-sm text-muted/90 dark:text-accent-foreground/85 font-jost tracking-wide space-y-2">
+      <p>Built with ❤️ in beautiful Phnom Penh, Cambodia.</p>
+      <p>
+        Copyright &copy; {new Date().getFullYear()} by Both Sann. All rights
         reserved.
       </p>
     </div>

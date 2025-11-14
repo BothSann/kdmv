@@ -26,6 +26,7 @@ export default function CustomerProfileDropdownMenu() {
     { href: "/account/profile", icon: User, label: "Profile" },
     { href: "/account/orders", icon: FileText, label: "Orders" },
     { href: "/account/address", icon: MapPinHouse, label: "Address" },
+    { href: "/account/appearances", icon: Settings, label: "Appearances" },
     { href: "/account/settings", icon: Settings, label: "Settings" },
   ];
 

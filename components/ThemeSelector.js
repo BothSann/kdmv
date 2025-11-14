@@ -20,7 +20,7 @@ export default function ThemeSelector() {
       <RadioGroup
         value={theme}
         onValueChange={setTheme}
-        className="grid grid-cols-2 gap-4"
+        className="grid grid-cols-1 sm:grid-cols-2 gap-4"
       >
         <div>
           <RadioGroupItem value="light" id="light" className="sr-only" />
