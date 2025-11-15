@@ -6,7 +6,7 @@ import {
   getCollectionBySlug,
   getCollectionProducts,
 } from "@/lib/api/collections";
-import Image from "next/image";
+import CollectionBanner from "@/components/collection/CollectionBanner";
 
 // METADATA (SEO)
 export async function generateMetadata({ params, searchParams }) {
@@ -75,24 +75,10 @@ export default async function CollectionPage({ params, searchParams }) {
     <div className="space-y-16">
       <section className="space-y-4">
         {products[0].collection_banner_image_url && (
-          <div className="relative aspect-[16/12] lg:aspect-[16/7] group overflow-hidden transition-transform duration-300 hover:scale-[1.02]">
-            {/* Dark overlay */}
-            <div className="absolute inset-0 bg-black/40 group-hover:bg-black/30 transition-colors duration-300 z-10" />
-            <Image
-              src={products[0].collection_banner_image_url}
-              alt={products[0].collection_name}
-              fill
-              sizes="100vw"
-              className="object-cover object-top"
-              priority
-            />
-            <div className="absolute bottom-0 left-0 right-0 z-20 w-full p-3 lg:p-5">
-              <p className="text-white/95 font-bold text-xl lg:text-4xl relative inline-block leading-tight">
-                {products[0].collection_name}
-                <span className="absolute -bottom-0.5 left-0 w-0 h-0.5 bg-white transition-all duration-300 group-hover:w-full" />
-              </p>
-            </div>
-          </div>
+          <CollectionBanner
+            imageUrl={products[0].collection_banner_image_url}
+            name={products[0].collection_name}
+          />
         )}
       </section>
 
