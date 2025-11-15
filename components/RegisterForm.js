@@ -161,13 +161,19 @@ export default function RegisterForm() {
               {showPassword ? (
                 <Eye
                   size={20}
-                  className="absolute right-3 top-7.5 text-muted-foreground cursor-pointer"
+                  className={cn(
+                    "absolute right-3 top-7.5 text-muted-foreground cursor-pointer",
+                    isSubmitting && "opacity-50 cursor-not-allowed"
+                  )}
                   onClick={togglePasswordVisibility}
                 />
               ) : (
                 <EyeOff
                   size={20}
-                  className="absolute right-3 top-7.5 text-muted-foreground cursor-pointer"
+                  className={cn(
+                    "absolute right-3 top-7.5 text-muted-foreground cursor-pointer",
+                    isSubmitting && "opacity-50 cursor-not-allowed"
+                  )}
                   onClick={togglePasswordVisibility}
                 />
               )}

@@ -120,13 +120,19 @@ export default function LoginForm() {
                   {showPassword ? (
                     <Eye
                       size={20}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground cursor-pointer"
+                      className={cn(
+                        "absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground cursor-pointer",
+                        isSubmitting && "opacity-50 cursor-not-allowed"
+                      )}
                       onClick={togglePasswordVisibility}
                     />
                   ) : (
                     <EyeOff
                       size={20}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground cursor-pointer"
+                      className={cn(
+                        "absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground cursor-pointer",
+                        isSubmitting && "opacity-50 cursor-not-allowed"
+                      )}
                       onClick={togglePasswordVisibility}
                     />
                   )}
