@@ -24,7 +24,6 @@ import Image from "next/image";
 import OrderStatusUpdateDialog from "./OrderStatusUpdateDialog";
 
 export default function OrderDetail({ order, role }) {
-  console.log("Order Status History", order?.order_status_history);
   const isAdmin = role === "admin";
   const adminId = order?.admin_id;
 
@@ -137,7 +136,7 @@ export default function OrderDetail({ order, role }) {
         adminId={adminId}
       />
 
-      <div className="grid grid-cols-1 lg:grid-cols-[1.55fr_1fr] gap-4 items-start">
+      <div className="grid grid-cols-1 md:grid-cols-[1.25fr_1fr] gap-4 items-start">
         <div className="space-y-4">
           <OrderItemsCard orderItems={orderItems} />
           <OrderHistoryTimeline orderHistory={orderHistory} />
@@ -190,7 +189,7 @@ export function OrderDeliveryStatusCard({
   return (
     <Card className="mb-4">
       <CardHeader>
-        <CardTitle className="flex items-center justify-between">
+        <CardTitle className="flex items-center justify-between text-base lg:text-lg">
           Delivery Status
           {isAdmin && (
             <OrderStatusUpdateDialog order={order} adminId={adminId} />
@@ -256,7 +255,7 @@ export function OrderItemsCard({ orderItems }) {
   return (
     <Card>
       <CardHeader className="border-b border-border">
-        <CardTitle className="flex items-center gap-4">
+        <CardTitle className="flex items-center gap-4 text-base lg:text-lg">
           <PackageOpen className="w-6 h-6" />
           Product Details
         </CardTitle>
@@ -362,7 +361,7 @@ export function OrderSummaryCard({
   return (
     <Card>
       <CardHeader className="border-b border-border">
-        <CardTitle className="flex items-center justify-between">
+        <CardTitle className="flex items-center justify-between text-base lg:text-lg">
           <div className="flex items-center gap-2.5">
             <CircleDollarSign className="w-6 h-6" />
             <span>Order Summary</span>
@@ -436,7 +435,7 @@ export function OrderCustomerInformationCard({
   return (
     <Card>
       <CardHeader className="border-b border-border">
-        <CardTitle className="flex items-center gap-2.5">
+        <CardTitle className="flex items-center gap-2.5 text-base lg:text-lg">
           <Contact />
           Customer Information
         </CardTitle>
@@ -468,7 +467,7 @@ export function OrderShippingAddressCard({
   return (
     <Card>
       <CardHeader className="border-b border-border">
-        <CardTitle className="flex items-center gap-2.5">
+        <CardTitle className="flex items-center gap-2.5 text-base lg:text-lg">
           <MapPinHouse />
           Shipping Address
         </CardTitle>
@@ -560,7 +559,7 @@ export function OrderHistoryTimeline({ orderHistory }) {
   return (
     <Card>
       <CardHeader className="border-b border-border">
-        <CardTitle className="flex items-center gap-2.5">
+        <CardTitle className="flex items-center gap-2.5 text-base lg:text-lg">
           <History />
           Order History
         </CardTitle>

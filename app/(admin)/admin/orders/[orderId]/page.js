@@ -43,7 +43,7 @@ function Header({ order }) {
             <ChevronLeft />
           </Link>
         </Button>
-        <h2 className="text-3xl font-bold">{orderNumber}</h2>
+        <h2 className="text-2xl lg:text-3xl font-bold">{orderNumber}</h2>
       </div>
     </div>
   );
