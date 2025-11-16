@@ -480,7 +480,9 @@ export function OrderShippingAddressCard({
         </div>
         <div className="flex items-center justify-between text-sm">
           <span className="font-medium">Address</span>
-          <span className="text-muted-foreground">{streetAddress},</span>
+          <span className="text-muted-foreground w-[65%] md:w-auto text-right">
+            {streetAddress}
+          </span>
         </div>
       </CardContent>
     </Card>
