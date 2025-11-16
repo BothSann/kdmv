@@ -57,7 +57,7 @@ function Header() {
           <ChevronLeft />
         </Button>
       </Link>
-      <h2 className="text-3xl font-bold">Order Details</h2>
+      <h2 className="text-2xl xl:text-3xl font-bold">Order Details</h2>
     </div>
   );
 }

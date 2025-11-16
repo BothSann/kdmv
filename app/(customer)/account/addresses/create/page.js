@@ -10,17 +10,17 @@ export default async function AddressCreatePage() {
   const customerId = user?.id;
 
   if (!user || userError) {
-    return <NotFound href="/account/address" title="Addresses" />;
+    return <NotFound href="/account/addresses" title="Address" />;
   }
   return (
     <>
       <div className="flex items-center gap-4 mb-8">
         <Button asChild variant="outline">
-          <Link href="/account/address">
+          <Link href="/account/addresses">
             <ChevronLeft />
           </Link>
         </Button>
-        <h2 className="text-3xl font-bold">Add New Address</h2>
+        <h2 className="text-2xl xl:text-3xl font-bold">Add New Address</h2>
       </div>
 
       <AddressCreateEditForm customerId={customerId} />

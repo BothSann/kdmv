@@ -23,17 +23,17 @@ export default async function AddressPage({ params }) {
   const { address, error } = await getAddressById(customerId, addressId);
 
   if (error || !address)
-    return <NotFound href="/account/address" title="Address not found" />;
+    return <NotFound href="/account/addresses" title="Address" />;
 
   return (
     <>
       <div className="flex items-center gap-4 mb-8">
         <Button asChild variant="outline">
-          <Link href="/account/address">
+          <Link href="/account/addresses">
             <ChevronLeft />
           </Link>
         </Button>
-        <h2 className="text-3xl font-bold">Edit Address</h2>
+        <h2 className="text-2xl xl:text-3xl font-bold">Edit Address</h2>
       </div>
 
       <AddressCreateEditForm

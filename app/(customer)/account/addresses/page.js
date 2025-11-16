@@ -25,7 +25,7 @@ export default async function AddressPage() {
   }
 
   if (userError || addressesError) {
-    return <NotFound href="/account/address" title="Addresses" />;
+    return <NotFound href="/account/addresses" title="Addresses" />;
   }
 
   if (addresses.length === 0) {
@@ -36,7 +36,7 @@ export default async function AddressPage() {
           title="You have no addresses yet"
           description="Add an address to get started"
           action={{
-            href: "/account/address/create",
+            href: "/account/addresses/create",
             label: "Add Address",
           }}
         />
@@ -49,7 +49,7 @@ export default async function AddressPage() {
       <div className="flex justify-between items-center">
         <h2 className="text-2xl xl:text-3xl font-bold">Address</h2>
         <Button asChild>
-          <Link href="/account/address/create">
+          <Link href="/account/addresses/create">
             <PlusIcon className="scale-80" />
             Add Address
           </Link>
