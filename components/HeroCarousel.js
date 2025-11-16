@@ -179,7 +179,7 @@ export default function HeroCarousel({ banners = null }) {
                     animate={activeIndex === index ? "visible" : "hidden"}
                   >
                     <Button
-                      className="border-border border bg-transparent hover:bg-primary/20 dark:text-foreground dark:border-foreground dark:hover:bg-foreground/20 group font-medium mt-1.5 text-xs md:text-sm "
+                      className="border-border border bg-transparent hover:bg-primary/20 dark:text-foreground dark:border-foreground dark:hover:bg-foreground/20 group font-medium mt-1.5 text-xs md:text-sm has-[>svg]:px-3.5"
                       size="sm"
                       asChild
                     >
