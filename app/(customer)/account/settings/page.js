@@ -8,9 +8,7 @@ export const metadata = {
 export default function SettingsPage() {
   return (
     <>
-      <h2 className="text-[2.125rem] lg:text-3xl font-bold">
-        Password & Security
-      </h2>
+      <h2 className="text-2xl xl:text-3xl font-bold">Password & Security</h2>
 
       <UserChangePasswordForm />
     </>

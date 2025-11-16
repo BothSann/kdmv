@@ -47,7 +47,7 @@ export default async function AddressPage() {
   return (
     <>
       <div className="flex justify-between items-center">
-        <h2 className="text-3xl font-bold">Address</h2>
+        <h2 className="text-2xl xl:text-3xl font-bold">Address</h2>
         <Button asChild>
           <Link href="/account/address/create">
             <PlusIcon className="scale-80" />
