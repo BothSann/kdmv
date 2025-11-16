@@ -104,6 +104,7 @@ export default function Footer() {
                 <Link
                   href="https://bothsann.xyz"
                   className="font-jost tracking-wide text-muted/90 dark:text-accent-foreground/85 hover:underline"
+                  target="_blank"
                 >
                   Developed by Both Sann
                 </Link>
