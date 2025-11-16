@@ -24,6 +24,7 @@ export default function CollectionBanner({ imageUrl, name }) {
           src={imageUrl}
           alt={name}
           fill
+          quality={50}
           sizes="100vw"
           className="object-cover object-top"
           priority
