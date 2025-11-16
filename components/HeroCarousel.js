@@ -146,14 +146,14 @@ export default function HeroCarousel({ banners = null }) {
               </motion.div>
 
               {/* Content Overlay */}
-              <div className="absolute inset-0 bg-foreground/50 dark:bg-background/50 flex flex-col items-center justify-center text-background dark:text-foreground px-4 font-poppins text-center space-y-1.5">
+              <div className="absolute inset-0 bg-foreground/50 dark:bg-background/50 flex flex-col items-center justify-center text-background dark:text-foreground px-4 font-poppins text-center space-y-1.5 lg:space-y-2.5">
                 {slide.title && (
                   <motion.h2
                     key={`title-${slide.id}-${activeIndex}`}
                     variants={titleVariants}
                     initial="hidden"
                     animate={activeIndex === index ? "visible" : "hidden"}
-                    className="text-3xl lg:text-6xl font-bold"
+                    className="text-3xl md:text-4xl lg:text-[3.5rem] leading-none font-bold"
                   >
                     {slide.title}
                   </motion.h2>
@@ -179,7 +179,8 @@ export default function HeroCarousel({ banners = null }) {
                     animate={activeIndex === index ? "visible" : "hidden"}
                   >
                     <Button
-                      className="border-border border bg-transparent hover:bg-primary/20 dark:text-foreground dark:border-foreground dark:hover:bg-foreground/20 group font-semibold mt-1.5 size-sm lg:size-default"
+                      className="border-border border bg-transparent hover:bg-primary/20 dark:text-foreground dark:border-foreground dark:hover:bg-foreground/20 group font-medium mt-1.5 text-xs md:text-sm "
+                      size="sm"
                       asChild
                     >
                       <Link href={slide.link}>
