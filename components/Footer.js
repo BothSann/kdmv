@@ -102,7 +102,7 @@ export default function Footer() {
               </AccordionTrigger>
               <AccordionContent>
                 <Link
-                  href="/"
+                  href="https://bothsann.xyz"
                   className="font-jost tracking-wide text-muted/90 dark:text-accent-foreground/85 hover:underline"
                 >
                   Developed by Both Sann
@@ -145,7 +145,7 @@ export default function Footer() {
           <div className="flex flex-col items-start">
             <Logo width="lg:w-32 w-30" className="invert object-top" />
             <Link
-              href="https://facebook.com/bothsann"
+              href="https://bothsann.xyz"
               target="_blank"
               className="font-jost tracking-wide font-medium text-muted/90 dark:text-accent-foreground/85 hover:underline"
             >
