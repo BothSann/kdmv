@@ -149,7 +149,7 @@ export default function Footer() {
               target="_blank"
               className="font-jost tracking-wide font-medium text-muted/90 dark:text-accent-foreground/85 hover:underline"
             >
-              Powered by Both Sann
+              Developed by Both Sann
             </Link>
           </div>
 
