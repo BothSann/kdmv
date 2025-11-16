@@ -5,7 +5,7 @@ export default function DisclaimerBanner() {
   return (
     <div className="h-auto w-full bg-warning-bg text-warning-text lg:py-6 py-5 lg:px-6 px-4.5 text-center">
       <div className="flex items-center justify-center gap-2">
-        <span className="text-sm lg:text-base text-center">
+        <span className="text-xs lg:text-base text-center">
           <Megaphone className="size-4 inline-block mr-1" />
           <span>
             This is not the official KDMV website. To visit the official site,
