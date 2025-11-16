@@ -30,8 +30,7 @@ export default function OrderDetail({ order, role }) {
   const paymentStatus = order?.payment_status;
   const paymentMethod = order?.payment_method;
   const orderItems = order?.order_items || [];
-  const { cityProvince, country, fullName, telephone } =
-    order?.shipping_address;
+  const { fullName, telephone, streetAddress } = order?.shipping_address;
 
   const subtotal = order?.subtotal;
   const totalAmount = order?.total_amount;
@@ -136,7 +135,7 @@ export default function OrderDetail({ order, role }) {
         adminId={adminId}
       />
 
-      <div className="grid grid-cols-1 md:grid-cols-[1.25fr_1fr] gap-4 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-[1.75fr_1fr] gap-4 items-start">
         <div className="space-y-4">
           <OrderItemsCard orderItems={orderItems} />
           <OrderHistoryTimeline orderHistory={orderHistory} />
@@ -164,10 +163,9 @@ export default function OrderDetail({ order, role }) {
           )}
 
           <OrderShippingAddressCard
-            cityProvince={cityProvince}
-            country={country}
             fullName={fullName}
             telephone={telephone}
+            streetAddress={streetAddress}
           />
         </div>
       </div>
@@ -459,10 +457,9 @@ export function OrderCustomerInformationCard({
 }
 
 export function OrderShippingAddressCard({
-  cityProvince,
-  country,
   fullName,
   telephone,
+  streetAddress,
 }) {
   return (
     <Card>
@@ -483,9 +480,7 @@ export function OrderShippingAddressCard({
         </div>
         <div className="flex items-center justify-between text-sm">
           <span className="font-medium">Address</span>
-          <span className="text-muted-foreground">
-            {cityProvince}, {country}
-          </span>
+          <span className="text-muted-foreground">{streetAddress},</span>
         </div>
       </CardContent>
     </Card>
