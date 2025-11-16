@@ -45,12 +45,12 @@ export const SOCIAL_LINKS = [
 
 export function FooterLinks({ section }) {
   return (
-    <ul className="flex flex-col items-start space-y-2">
+    <ul className="flex flex-col items-start space-y-1.5 md:space-y-0 xl:space-y-1.5">
       {FOOTER_SECTIONS[section].map((link) => (
         <li key={link.label}>
           <Link
             href={link.href}
-            className="font-jost text-muted/90 dark:text-accent-foreground/85 hover:underline"
+            className="font-jost text-muted/90 dark:text-accent-foreground/85 hover:underline text-sm"
           >
             {link.label}
           </Link>
@@ -148,7 +148,7 @@ export default function Footer() {
             <Link
               href="https://bothsann.xyz"
               target="_blank"
-              className="font-jost tracking-wide font-medium text-muted/90 dark:text-accent-foreground/85 hover:underline"
+              className="font-jost tracking-wide font-medium text-muted/90 dark:text-accent-foreground/85 hover:underline text-sm"
             >
               Developed by Both Sann
             </Link>
