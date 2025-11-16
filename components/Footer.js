@@ -45,7 +45,7 @@ export const SOCIAL_LINKS = [
 
 export function FooterLinks({ section }) {
   return (
-    <ul className="flex flex-col items-start space-y-1.5 md:space-y-0 xl:space-y-1.5">
+    <ul className="flex flex-col items-start space-y-1.5 lg:space-y-1 xl:space-y-1.5">
       {FOOTER_SECTIONS[section].map((link) => (
         <li key={link.label}>
           <Link
