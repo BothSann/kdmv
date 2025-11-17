@@ -91,9 +91,9 @@ export default function Footer() {
     <footer className="bg-foreground text-background dark:bg-primary-foreground dark:text-foreground pt-8 lg:pt-14 lg:pb-20 pb-18 border-t border-border">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         {/* ============================================
-            MOBILE LAYOUT (< md) - Accordion
+            MOBILE LAYOUT (< lg) - Accordion
             ============================================ */}
-        <div className="md:hidden">
+        <div className="lg:hidden">
           <Accordion type="single" collapsible className="w-full">
             {/* Logo Section */}
             <AccordionItem value="logo">
@@ -139,9 +139,9 @@ export default function Footer() {
         </div>
 
         {/* ============================================
-            DESKTOP LAYOUT (md+) - Grid
+            DESKTOP LAYOUT (lg+) - Grid
             ============================================ */}
-        <div className="hidden md:grid md:grid-cols-4 gap-10 items-center">
+        <div className="hidden lg:grid lg:grid-cols-4 gap-10 items-center">
           {/* Logo Column */}
           <div className="flex flex-col items-start">
             <Logo width="lg:w-32 w-30" className="invert object-top" />

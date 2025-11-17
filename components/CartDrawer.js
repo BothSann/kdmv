@@ -49,7 +49,7 @@ export default function CartDrawer() {
         </Button>
       </SheetTrigger>
       <SheetContent
-        className="w-3/4 lg:w-xl px-4 lg:px-8 pt-4 pb-2 lg:py-6 dark:bg-primary-foreground"
+        className="w-3/4 md:w-xl px-4 lg:px-8 pt-4 pb-2 lg:py-6 dark:bg-primary-foreground"
         onOpenAutoFocus={(e) => e.preventDefault()}
         side="right"
       >

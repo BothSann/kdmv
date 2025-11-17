@@ -6,6 +6,7 @@ import { ModeToggle } from "@/components/ModeToggle";
 import CartDrawer from "@/components/CartDrawer";
 import useAuthStore from "@/store/useAuthStore";
 import { cn } from "@/lib/utils";
+import SearchBar from "./SearchBar";
 
 export default function Navigation({
   className,
@@ -23,7 +24,7 @@ export default function Navigation({
             </Link>
           </Button>
         </> */}
-
+        <SearchBar />
         {user && <CartDrawer />}
         <CustomerProfileDropdownMenu />
 

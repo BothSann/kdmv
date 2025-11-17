@@ -50,7 +50,7 @@ export default function CustomerProfileDropdownMenu() {
                       src={profile?.avatar_url}
                       alt="Admin Avatar"
                       fill
-                      quality={50}
+                      quality={30}
                       loading="lazy"
                       sizes="100vw"
                       className="object-cover object-center rounded-full"

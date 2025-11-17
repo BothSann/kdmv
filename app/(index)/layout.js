@@ -37,7 +37,7 @@ export default async function IndexLayout({ children }) {
       <DisclaimerBanner />
 
       <HeaderWithCarousel banners={banners} />
-      <main className="max-w-7xl mx-auto w-full px-6 lg:px-8 py-6 lg:py-12">
+      <main className="max-w-7xl mx-auto w-full px-6 md:px-8 lg:px-10 py-6 lg:py-12">
         {children}
       </main>
       <ConditionalFooter />
