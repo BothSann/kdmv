@@ -5,7 +5,7 @@ import HeroCarousel from "@/components/HeroCarousel";
 export default function HeaderWithCarousel({ banners }) {
   return (
     <header className="relative">
-      <nav className="absolute top-0 left-0 right-0 z-10 flex items-center justify-between px-8 py-5 max-w-7xl mx-auto">
+      <nav className="absolute top-0 left-0 right-0 z-10 flex items-center justify-between px-8 sm:px-10 md:px-12 py-5 max-w-7xl mx-auto">
         <Logo width="w-20 lg:w-24 invert dark:invert-0" />
 
         <Navigation
