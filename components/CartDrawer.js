@@ -39,7 +39,7 @@ export default function CartDrawer() {
         <Button variant="ghost" className="relative" size="icon">
           <ShoppingCart className="size-5 sm:size-6" />
           {count > 0 && (
-            <div className="absolute rounded-full bg-destructive text-white h-3.5 w-3.5 top-0.5 right-0.5 sm:h-4.5 sm:w-4.5 sm:top-0 sm:-right-0.5 font-normal text-xs flex items-center justify-center">
+            <div className="absolute rounded-full bg-destructive text-white h-3.5 w-3.5 top-0.5 right-0.5 sm:h-4.5 sm:w-4.5 sm:top-0 sm:-right-0.5 font-normal text-[0.6rem] sm:text-xs flex items-center justify-center">
               {count}
             </div>
           )}
