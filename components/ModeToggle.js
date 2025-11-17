@@ -31,9 +31,9 @@ export function ModeToggle({ className, variant = "default" }) {
             // Carousel variant: controlled by theme state
             <>
               {mounted && showSun ? (
-                <Sun className="scale-110" />
+                <Sun className="size-5 sm:size-6" />
               ) : (
-                <Moon className="scale-110" />
+                <Moon className="size-5 sm:size-6" />
               )}
             </>
           ) : (

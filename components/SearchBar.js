@@ -39,8 +39,8 @@ export default function SearchBar() {
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger asChild>
-        <Button variant="ghost">
-          <Search className="scale-125" />
+        <Button variant="ghost" size="icon">
+          <Search className="size-5 sm:size-6" />
         </Button>
       </SheetTrigger>
       <SheetContent side="top" className="h-24">

@@ -36,8 +36,9 @@ export default function CustomerProfileDropdownMenu() {
         className={cn(
           "cursor-pointer p-2 hover:bg-accent dark:hover:bg-accent/50 focus:outline-none"
         )}
+        size="icon"
       >
-        <User />
+        <User className="size-5 sm:size-6" />
       </DropdownMenuTrigger>
       <DropdownMenuContent className={cn("w-full md:w-[18rem]")}>
         {isAuthenticated() ? (

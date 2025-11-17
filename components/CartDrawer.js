@@ -36,8 +36,8 @@ export default function CartDrawer() {
   return (
     <Sheet open={isDrawerOpen} onOpenChange={setDrawerOpen}>
       <SheetTrigger asChild>
-        <Button variant="ghost" className="relative">
-          <ShoppingCart className="scale-125" />
+        <Button variant="ghost" className="relative" size="icon">
+          <ShoppingCart className="size-5 md:size-6" />
           {count > 0 && (
             <Badge
               variant="destructive"
