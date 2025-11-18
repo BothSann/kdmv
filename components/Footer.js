@@ -76,7 +76,7 @@ export function FooterSocialIcons() {
 
 export function FooterCopyright() {
   return (
-    <div className="pt-24 lg:pt-28 text-center text-xs xl:text-sm text-muted/90 dark:text-accent-foreground/85 font-jost tracking-wide space-y-2">
+    <div className="pt-24 lg:pt-28 text-center text-sm xl:text-base text-muted/90 dark:text-accent-foreground/85 font-jost tracking-wide space-y-2">
       <p>
         Copyright &copy; {new Date().getFullYear()} by Both Sann. All rights
         reserved.
