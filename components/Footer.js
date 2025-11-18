@@ -50,7 +50,7 @@ export function FooterLinks({ section }) {
         <li key={link.label}>
           <Link
             href={link.href}
-            className="font-jost text-muted/90 dark:text-accent-foreground/85 hover:underline text-sm"
+            className="font-jost text-muted/90 dark:text-accent-foreground/85 hover:underline text-sm xl:text-base"
           >
             {link.label}
           </Link>
@@ -76,7 +76,7 @@ export function FooterSocialIcons() {
 
 export function FooterCopyright() {
   return (
-    <div className="pt-24 lg:pt-28 text-center text-sm text-muted/90 dark:text-accent-foreground/85 font-jost tracking-wide space-y-2">
+    <div className="pt-24 lg:pt-28 text-center text-xs xl:text-sm text-muted/90 dark:text-accent-foreground/85 font-jost tracking-wide space-y-2">
       <p>
         Copyright &copy; {new Date().getFullYear()} by Both Sann. All rights
         reserved.
@@ -148,7 +148,7 @@ export default function Footer() {
             <Link
               href="https://bothsann.xyz"
               target="_blank"
-              className="font-jost tracking-wide font-medium text-muted/90 dark:text-accent-foreground/85 hover:underline text-sm"
+              className="font-jost tracking-wide font-medium text-muted/90 dark:text-accent-foreground/85 hover:underline text-sm xl:text-base"
             >
               Developed by Both Sann
             </Link>
