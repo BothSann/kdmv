@@ -98,7 +98,7 @@ export default function Footer() {
             {/* Logo Section */}
             <AccordionItem value="logo">
               <AccordionTrigger className="uppercase tracking-[0.15em] text-2xl font-bold">
-                <Logo width="w-30" className="invert object-center" />
+                <Logo width="w-26" className="invert object-center" />
               </AccordionTrigger>
               <AccordionContent>
                 <Link
@@ -144,7 +144,7 @@ export default function Footer() {
         <div className="hidden lg:grid lg:grid-cols-4 gap-10 items-center">
           {/* Logo Column */}
           <div className="flex flex-col items-start">
-            <Logo width="lg:w-32 w-30" className="invert object-top" />
+            <Logo width="w-30" className="invert object-top" />
             <Link
               href="https://bothsann.xyz"
               target="_blank"
