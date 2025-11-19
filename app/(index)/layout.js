@@ -4,7 +4,7 @@ import HeaderWithCarousel from "@/components/HeaderWithCarousel";
 import { getActiveBanners } from "@/lib/api/banners";
 
 export const metadata = {
-  title: "KDMV | Premium Lifestyle & Apparel Brand in Cambodia",
+  title: "KDMV | Khmer Digital Marketing Venture",
   description:
     "Shop premium lifestyle and apparel products from KDMV. Discover our latest collections featuring quality clothing, accessories, and more. Fast delivery across Cambodia.",
 

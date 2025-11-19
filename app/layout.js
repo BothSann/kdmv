@@ -10,7 +10,7 @@ export const metadata = {
   metadataBase: new URL(
     process.env.NEXT_PUBLIC_BASE_URL || "https://kdmv.store"
   ),
-  title: "KDMV | Premium Lifestyle & Apparel Brand in Cambodia",
+  title: "KDMV | Khmer Digital Marketing Venture",
   description:
     "KDMV is a leading local digital marketing agency in Cambodia, specializing in video content and social media marketing, with an e-commerce component for its own in-house lifestyle/apparel brand.",
   keywords: [
