@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
-import { User, FileText, MapPinHouse, Settings } from "lucide-react";
+import { User, FileText, MapPinHouse, Settings, Palette } from "lucide-react";
 
 import useAuthStore from "@/store/useAuthStore";
 
@@ -26,8 +26,8 @@ export default function CustomerProfileDropdownMenu() {
     { href: "/account/profile", icon: User, label: "Profile" },
     { href: "/account/orders", icon: FileText, label: "Orders" },
     { href: "/account/addresses", icon: MapPinHouse, label: "Address" },
-    { href: "/account/appearances", icon: Settings, label: "Appearances" },
-    { href: "/account/settings", icon: Settings, label: "Settings" },
+    { href: "/account/appearances", icon: Palette, label: "Appearances" },
+    { href: "/account/password", icon: Settings, label: "Password" },
   ];
 
   return (

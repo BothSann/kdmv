@@ -259,7 +259,7 @@ export async function verifyAndUpdateUserPasswordAction(formData) {
     // 7. SUCCESS - Revalidate cache and return success
     // ════════════════════════════════════════════════════════════
     revalidatePath("/admin/account/password");
-    revalidatePath("/account/settings");
+    revalidatePath("/account/password");
 
     return {
       success: true,

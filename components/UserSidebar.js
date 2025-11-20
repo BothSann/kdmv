@@ -30,7 +30,7 @@ const navLinks = [
   },
   {
     title: "Password & Security",
-    href: "/account/settings",
+    href: "/account/password",
     icon: Settings,
   },
 ];

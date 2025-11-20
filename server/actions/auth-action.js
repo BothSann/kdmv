@@ -227,3 +227,47 @@ export async function logoutUserAction() {
 export async function getCurrentUserAction() {
   return await getCurrentUser();
 }
+
+export async function sendPasswordResetEmailAction(email) {
+  try {
+    // ========================================
+    // STEP 1: VALIDATE EMAIL
+    // ========================================
+    if (!email || typeof email !== "string") {
+      return { error: "Valid email address is required" };
+    }
+
+    const sanitizedEmail = email.toLowerCase().trim();
+
+    // ========================================
+    // STEP 2: SEND PASSWORD RESET EMAIL
+    // ========================================
+    const { data, error } = await supabaseAdmin.auth.resetPasswordForEmail(
+      sanitizedEmail
+    );
+
+    // ========================================
+    // STEP 3: HANDLE RESPONSE
+    // ========================================
+    // Security best practice: Always return success message
+    // Don't reveal whether the email exists in the system
+    if (error) {
+      console.error("Password reset email error:", error);
+      // Still return success to prevent email enumeration
+    }
+
+    return {
+      success: true,
+      message:
+        "If an account exists with that email, we've sent a password reset link. Please check your inbox.",
+    };
+  } catch (err) {
+    console.error("Unexpected error in sendPasswordResetEmailAction:", err);
+    // Still return success to prevent email enumeration
+    return {
+      success: true,
+      message:
+        "If an account exists with that email, we've sent a password reset link. Please check your inbox.",
+    };
+  }
+}

@@ -7,7 +7,7 @@ export async function GET(request) {
   const { searchParams } = new URL(request.url);
   const token_hash = searchParams.get("token_hash");
   const type = searchParams.get("type");
-  const next = "/";
+  const next = searchParams.get("next") ?? "/"; // Use 'next' parameter from URL
 
   // Create redirect link without the secret token
   const redirectTo = request.nextUrl.clone();
@@ -25,20 +25,29 @@ export async function GET(request) {
     });
 
     if (!error && data.user) {
-      console.log("User confirmed successfully:", data.user);
-      // Create profile for confirmed user
-      const profileResult = await createProfileForConfirmedUser(data.user);
-      console.log("Profile creation result:", profileResult);
+      // ═══════════════════════════════════════════════════════════
+      // Conditional profile creation based on confirmation type
+      // ═══════════════════════════════════════════════════════════
 
-      if (profileResult.error) {
-        console.error("Profile creation error:", profileResult.error);
-        // REDIRECT TO ERROR PAGE WITH CUSTOM MESSAGE
-        redirectTo.pathname = "/error";
-        redirectTo.searchParams.set("message", profileResult.error);
-        return NextResponse.redirect(redirectTo);
+      // Only create profile for NEW user signups
+      if (type === "email") {
+        const profileResult = await createProfileForConfirmedUser(data.user);
+
+        if (profileResult.error) {
+          console.error("Profile creation error:", profileResult.error);
+          // REDIRECT TO ERROR PAGE WITH CUSTOM MESSAGE
+          redirectTo.pathname = "/error";
+          redirectTo.searchParams.set("message", profileResult.error);
+          return NextResponse.redirect(redirectTo);
+        }
       }
 
-      console.log("Redirecting to...:", redirectTo);
+      // For password recovery, skip profile creation
+      if (type === "recovery") {
+        // User already has a profile, just verify the token
+        // The 'next' param should redirect to reset password page
+      }
+
       redirectTo.searchParams.delete("next");
       return NextResponse.redirect(redirectTo);
     } else {
