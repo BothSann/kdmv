@@ -7,6 +7,9 @@ import PageOverlay from "@/components/PageOverlay";
 import { getCurrentUser, getUserRole } from "@/lib/api/users";
 import { redirect } from "next/navigation";
 
+// Force dynamic rendering for all admin routes (they use authentication cookies)
+export const dynamic = "force-dynamic";
+
 export default async function AdminLayout({ children }) {
   const { user } = await getCurrentUser();
 

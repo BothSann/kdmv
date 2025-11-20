@@ -1,6 +1,9 @@
 import ConditionalFooter from "@/components/ConditionalFooter";
 import Header from "@/components/Header";
 
+// Force dynamic rendering for customer routes (account pages and checkout use authentication)
+export const dynamic = "force-dynamic";
+
 export default function CustomerLayout({ children }) {
   return (
     <div className="font-poppins">
