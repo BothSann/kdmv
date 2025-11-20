@@ -10,6 +10,8 @@ export default function ProductItem({ product, className, index }) {
   const discountedPrice = product.discounted_price;
   const discountPercentage = product.discount_percentage;
   const hasDiscount = product.discount_percentage > 0;
+  const isLimitedEdition =
+    product.id === "7cd7c70f-5e15-4c3b-99a1-031cf0352f79";
 
   return (
     <motion.li
@@ -37,6 +39,21 @@ export default function ProductItem({ product, className, index }) {
             sizes="100vw"
             className="object-cover object-center"
           />
+          {isLimitedEdition && (
+            <motion.div
+              initial={{ opacity: 0, x: 20, y: -20 }}
+              whileInView={{ opacity: 1, x: 0, y: 0 }}
+              viewport={{ once: true, margin: "-100px" }}
+              transition={{ duration: 0.4, delay: index * 0.1 + 0.2 }}
+            >
+              <Badge
+                variant="destructive"
+                className="absolute top-0 right-0 z-10 text-sm lg:text-base uppercase font-jost font-normal tracking-widest lg:px-2.5"
+              >
+                Limited Edition
+              </Badge>
+            </motion.div>
+          )}
 
           {hasDiscount && (
             <motion.div
