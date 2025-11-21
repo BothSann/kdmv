@@ -143,7 +143,7 @@ export default function UserUpdateProfileForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="w-full md:w-3/4 mt-10">
+    <form onSubmit={handleSubmit(onSubmit)} className="w-full mt-10">
       <div className="grid grid-cols-2 gap-6">
         {/* Avatar Section */}
         <div className="grid col-span-2 gap-3 mb-6">
