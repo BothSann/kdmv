@@ -275,15 +275,12 @@ export default function ProductCustomerDetail({ product }) {
             </Link>
           </Button>
 
+          {/* {`https://www.instagram.com/accounts/login/?next=/&url=${encodeURIComponent(
+                window.location.href
+              )}`} */}
           {/* Instagram Share (opens Instagram's sharing interface) */}
           <Button variant="link" asChild>
-            <Link
-              href={`https://www.instagram.com/accounts/login/?next=/&url=${encodeURIComponent(
-                window.location.href
-              )}`}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+            <Link href="">
               <FaInstagram className="mr-1" />
               <span className="text-base">Share</span>
             </Link>
