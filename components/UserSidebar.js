@@ -41,7 +41,7 @@ export function UserSidebar() {
     <nav className="border-r border-border hidden md:block">
       <ul className="flex flex-col space-y-4 h-full">
         {navLinks.map((link) => {
-          const isActive = pathname === link.href;
+          const isActive = pathname.startsWith(link.href);
           const Icon = link.icon;
 
           return (
