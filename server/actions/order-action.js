@@ -12,7 +12,7 @@ import {
   generateUniqueOrderNumber,
   generateStatusChangeNote,
 } from "@/lib/utils";
-import { supabaseAdmin } from "@/utils/supabase/supabaseAdmin";
+import { createSupabaseServerClient } from "@/utils/supabase/server";
 import { revalidatePath } from "next/cache";
 
 export async function createOrderAndInitiatePaymentAction(orderData) {
@@ -38,7 +38,9 @@ export async function createOrderAndInitiatePaymentAction(orderData) {
     // PHASE 2: CREATE ORDER (PENDING)
     const orderNumber = generateUniqueOrderNumber();
 
-    const { data: order, error: orderError } = await supabaseAdmin
+    // ✅ Use authenticated client - RLS allows customers to create their own orders
+    const supabase = await createSupabaseServerClient();
+    const { data: order, error: orderError } = await supabase
       .from("orders")
       .insert({
         order_number: orderNumber,
@@ -87,14 +89,17 @@ export async function createOrderAndInitiatePaymentAction(orderData) {
       };
     });
 
-    const { data: createdOrderItems, error: orderItemsError } =
-      await supabaseAdmin.from("order_items").insert(orderItems).select();
+    // ✅ Use authenticated client - RLS allows customers to create order items for their own orders
+    const { error: orderItemsError } = await supabase
+      .from("order_items")
+      .insert(orderItems)
+      .select();
 
     if (orderItemsError) {
       console.error("Order items creation error:", orderItemsError);
 
       // Rollback: Delete the order we just created
-      await supabaseAdmin.from("orders").delete().eq("id", order.id);
+      await supabase.from("orders").delete().eq("id", order.id);
 
       return { error: "Failed to create order items" };
     }
@@ -104,7 +109,7 @@ export async function createOrderAndInitiatePaymentAction(orderData) {
     const khqrResult = generateIndividualKHQR(order.total_amount);
     if (!khqrResult || !khqrResult.data) {
       // Rollback
-      await supabaseAdmin.from("orders").delete().eq("id", order.id);
+      await supabase.from("orders").delete().eq("id", order.id);
       return { error: "Failed to generate KHQR payment" };
     }
 
@@ -114,33 +119,34 @@ export async function createOrderAndInitiatePaymentAction(orderData) {
     // Decode KHQR to get payment details (optional, for display)
     const decodedKHQR = decodeKHQR(qrString);
 
-    const { data: paymentTransaction, error: paymentError } =
-      await supabaseAdmin
-        .from("payment_transactions")
-        .insert({
-          order_id: order.id,
-          gateway: "BAKONG_KHQR",
-          type: "PURCHASE",
-          amount: order.total_amount,
-          currency: order.currency,
-          status: "INITIATED",
-          qr_string: qrString,
-          hash: md5Hash,
-          gateway_request: khqrResult,
-          gateway_response: decodedKHQR,
-          expires_at: new Date(Date.now() + 3 * 60 * 1000).toISOString(), // 3 min expiry
-        })
-        .select()
-        .single();
+    // ✅ Use authenticated client - RLS allows customers to create payment transactions for their own orders
+    const { data: paymentTransaction, error: paymentError } = await supabase
+      .from("payment_transactions")
+      .insert({
+        order_id: order.id,
+        gateway: "BAKONG_KHQR",
+        type: "PURCHASE",
+        amount: order.total_amount,
+        currency: order.currency,
+        status: "INITIATED",
+        qr_string: qrString,
+        hash: md5Hash,
+        gateway_request: khqrResult,
+        gateway_response: decodedKHQR,
+        expires_at: new Date(Date.now() + 3 * 60 * 1000).toISOString(), // 3 min expiry
+      })
+      .select()
+      .single();
 
     if (paymentError) {
       console.error("Payment transaction error:", paymentError);
-      await supabaseAdmin.from("orders").delete().eq("id", order.id);
+      await supabase.from("orders").delete().eq("id", order.id);
       return { error: "Failed to create payment transaction" };
     }
 
     // PHASE 6: CREATE ORDER STATUS HISTORY
-    await supabaseAdmin.from("order_status_history").insert({
+    // ✅ Use authenticated client - RLS allows customers to create status history for their own orders
+    await supabase.from("order_status_history").insert({
       order_id: order.id,
       status: "PENDING",
       notes: "Order has been placed",
