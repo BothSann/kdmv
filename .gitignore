@@ -49,6 +49,8 @@ next-env.d.ts
 
 
 /docs
+.github/
+
 
 supabase-schema.sql
 
