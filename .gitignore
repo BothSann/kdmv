@@ -45,39 +45,10 @@ next-env.d.ts
 .vscode
 .claude
 
-PROJECT_STRUCTURE.md
+
+/docs
+
 supabase-schema.sql
-supabase-authdata-response.js
-text.md
-createEditProductAction-example.js
-PaginationForced.js
-PaginationStandalone.js
-coupon_auto_deactivate_trigger.sql
-coupon_constraints.sql
-use_coupon_transaction.sql
-couponCleanupJob.js
-object-of-single-product.js
-complete-add-to-cart-flow.js
-signInWithPasswordResponse.js
-text-2.md
-checkout-flow.md
-CLAUDE.md
-check-transaction-by-md5.md
-generate-khqr-clientside-sdk.md
-how-khqr-works.md
-how-to-use-khqr-sdk.md
-supabase-functions.sql
-duanpenhdatacenter-vps.md
-khqr-proxy.md
-payment-response-vpn.md
-access-duanpenh-vps.md
-putty-readme.md
-DEPLOYMENT_GUIDE.md
-middleware-to-proxy-nextjs16.md
-optimistic-checks-with-proxy.md
-supabase-middleware.md
-animate-on-scoll.md
-grad_project_proposal.md
 
 build-output.log
 
