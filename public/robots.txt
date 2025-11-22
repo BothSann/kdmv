@@ -1,0 +1,28 @@
+# KDMV | Khmer Digital Marketing Venture - Robots.txt
+# Updated: 2025-11-22
+
+# Allow all crawlers to access public content
+User-agent: *
+Allow: /
+
+# Disallow admin areas
+Disallow: /admin/
+
+# Disallow customer account pages (private)
+Disallow: /account/
+
+# Disallow checkout process (to prevent duplicate content)
+Disallow: /checkouts/
+
+# Disallow API endpoints
+Disallow: /api/
+
+# Disallow search results (to prevent thin content)
+# Uncomment if you don't want search results indexed
+# Disallow: /search
+
+# Sitemap location
+Sitemap: https://kdmv.store/sitemap.xml
+
+# Crawl-delay (optional - only if needed)
+# Crawl-delay: 1
