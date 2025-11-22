@@ -76,7 +76,8 @@ export async function updateCurrentUserProfileAction(formData) {
     // ════════════════════════════════════════════════════════════
     // 5. BUSINESS LOGIC VALIDATIONS - Check phone number uniqueness
     // ════════════════════════════════════════════════════════════
-    const { data: existingPhone } = await supabaseAdmin
+    // ✅ Use authenticated client for read operations (RLS allows SELECT for all)
+    const { data: existingPhone } = await supabase
       .from("profiles")
       .select("id")
       .eq("telephone", validatedData.telephone)
@@ -101,6 +102,7 @@ export async function updateCurrentUserProfileAction(formData) {
         .replaceAll(" ", "-")
         .replaceAll("--", "-");
 
+      // ✅ Keep using supabaseAdmin for storage uploads (requires elevated permissions)
       // Upload image to Supabase Storage
       const { error: storageError } = await supabaseAdmin.storage
         .from("avatars")
@@ -117,6 +119,7 @@ export async function updateCurrentUserProfileAction(formData) {
     // ════════════════════════════════════════════════════════════
     // 7. DATABASE UPDATES - Update user metadata
     // ════════════════════════════════════════════════════════════
+    // ✅ Keep using supabaseAdmin for auth admin API (required for updateUserById)
     const { error: updateUserError } =
       await supabaseAdmin.auth.admin.updateUserById(user.id, {
         user_metadata: {
@@ -148,9 +151,18 @@ export async function updateCurrentUserProfileAction(formData) {
       .select()
       .single();
 
-    if (updateProfileError) {
-      console.error("Update profile error:", updateProfileError);
-      return { error: updateProfileError.message };
+    // Check for RLS block - RLS can return error OR no data
+    if (updateProfileError || !updatedProfile) {
+      // PGRST116 = No rows returned (likely RLS blocked the operation)
+      if (updateProfileError?.code === "PGRST116" || !updatedProfile) {
+        return {
+          error:
+            "Demo accounts cannot modify profile information. Please create a regular account to access all features.",
+        };
+      } else {
+        console.error("Update profile error:", updateProfileError);
+        return { error: updateProfileError.message };
+      }
     }
 
     // ════════════════════════════════════════════════════════════
@@ -226,7 +238,8 @@ export async function verifyAndUpdateUserPasswordAction(formData) {
     if (profile?.role !== "admin") {
       console.error("User is not admin");
       return {
-        error: "Unauthorized - Please login as admin to update password",
+        error:
+          "Password changes are only available for admin accounts. Demo accounts cannot modify passwords.",
       };
     }
 

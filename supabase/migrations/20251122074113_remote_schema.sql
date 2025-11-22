@@ -997,7 +997,7 @@ CREATE POLICY "Enable CRUD for authenticated users on own cart" ON "public"."sho
 
 
 
-CREATE POLICY "Enable insert for authenticated users only" ON "public"."orders" FOR INSERT TO "authenticated" WITH CHECK (("auth"."uid"() = "id"));
+CREATE POLICY "Enable insert for authenticated users only" ON "public"."orders" FOR INSERT TO "authenticated" WITH CHECK (("auth"."uid"() = "customer_id"));
 
 
 

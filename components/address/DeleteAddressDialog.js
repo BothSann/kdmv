@@ -14,14 +14,19 @@ import {
 import { useState } from "react";
 import { toast } from "sonner";
 
-export default function DeleteAddressDialog({ isOpen, onClose, addressId }) {
+export default function DeleteAddressDialog({
+  isOpen,
+  onClose,
+  addressId,
+  customerId,
+}) {
   const [isDeleting, setIsDeleting] = useState(false);
 
   const handleDeleteAddress = async () => {
     setIsDeleting(true);
     const toastId = toast.loading("Deleting address...");
     try {
-      const result = await deleteAddressAction(addressId);
+      const result = await deleteAddressAction(addressId, customerId);
 
       if (result.error) {
         toast.error(result.error, { id: toastId });

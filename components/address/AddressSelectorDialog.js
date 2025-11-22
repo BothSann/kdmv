@@ -45,7 +45,7 @@ export default function AddressSelectorDialog({
           <div className="text-center py-8">
             <p className="text-muted-foreground mb-4">No saved addresses</p>
             <Button asChild>
-              <Link href="/account/address/create">
+              <Link href="/account/addresses/create">
                 <Plus />
                 Add New Address
               </Link>
@@ -113,7 +113,7 @@ export default function AddressSelectorDialog({
 
             <div className="flex gap-4 mt-6">
               <Button variant="outline" className="flex-1" asChild>
-                <Link href="/account/address/create">
+                <Link href="/account/addresses/create">
                   <Plus />
                   Add New Address
                 </Link>

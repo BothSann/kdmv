@@ -1,13 +1,15 @@
 "use server";
 
 import { getBakongProxyUrl, getBaseUrl } from "@/lib/config";
+import { createSupabaseServerClient } from "@/utils/supabase/server";
 import { supabaseAdmin } from "@/utils/supabase/supabaseAdmin";
 import { revalidatePath } from "next/cache";
 
 export async function checkPaymentStatus(transactionId) {
   try {
-    // Fetch transaction details
-    const { data: transaction, error } = await supabaseAdmin
+    // ✅ Use authenticated client - RLS allows customers to view their own payment transactions
+    const supabase = await createSupabaseServerClient();
+    const { data: transaction, error } = await supabase
       .from("payment_transactions")
       .select("*, orders(*)")
       .eq("id", transactionId)
@@ -71,6 +73,10 @@ export async function confirmOrderPayment(
   paymentResponse
 ) {
   try {
+    // ⚠️ This is a SYSTEM operation (payment callback handler)
+    // We use supabaseAdmin to bypass RLS as this is triggered by Bakong webhook
+    // NOT by customer action directly
+
     // Update payment transaction
     await supabaseAdmin
       .from("payment_transactions")
@@ -92,13 +98,15 @@ export async function confirmOrderPayment(
       .select("*, order_items(*)")
       .single();
 
-    // Decrease stock for each order item
-    for (const item of order.order_items) {
-      await supabaseAdmin.rpc("decrement_product_variant_quantity", {
-        variant_id: item.product_variant_id,
-        quantity_to_subtract: item.quantity,
-      });
-    }
+    // ✅ Use supabaseAdmin for RPC system operations (inventory management)
+    // Decrease stock for all order items in a single batch operation
+    const variantIds = order.order_items.map((item) => item.product_variant_id);
+    const quantities = order.order_items.map((item) => item.quantity);
+
+    await supabaseAdmin.rpc("decrement_multiple_product_variants", {
+      variant_ids: variantIds,
+      quantities: quantities,
+    });
 
     // Record coupon usage if applicable
     if (order.promo_code_id) {
@@ -108,9 +116,10 @@ export async function confirmOrderPayment(
         order_id: order.id,
       });
 
+      // ✅ Use supabaseAdmin for RPC system operations (promo code tracking)
       // Increment total_uses
       await supabaseAdmin.rpc("increment_promo_code_usage", {
-        code_id: order.promo_code_id,
+        promo_code_id: order.promo_code_id,
       });
     }
 

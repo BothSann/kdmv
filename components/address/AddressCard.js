@@ -81,6 +81,7 @@ export default function AddressCard({ address, customerId }) {
                   isOpen={isOpen}
                   onClose={() => setIsOpen(false)}
                   addressId={addressId}
+                  customerId={customerId}
                 />
               </>
             )}

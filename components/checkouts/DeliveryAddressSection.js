@@ -30,9 +30,7 @@ export default function DeliveryAddressSection({
 
   return (
     <div>
-      <h2 className="text-2xl font-bold mb-4 font-poppins">
-        Delivery Address
-      </h2>
+      <h2 className="text-2xl font-bold mb-4 font-poppins">Delivery Address</h2>
 
       {isLoading ? (
         <Card>
@@ -50,7 +48,7 @@ export default function DeliveryAddressSection({
           {addresses.length === 0 && (
             <div className="mt-4 text-center">
               <Button asChild variant="outline">
-                <Link href="/account/address/create">
+                <Link href="/account/addresses/create">
                   <PlusIcon className="w-4 h-4 mr-2" />
                   Add Your First Address
                 </Link>
