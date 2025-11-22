@@ -48,8 +48,9 @@ next-env.d.ts
 .claude
 
 
-/docs
+docs/
 .github/
+migrations/
 
 
 supabase-schema.sql

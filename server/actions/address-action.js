@@ -43,6 +43,7 @@ export async function createAddressAction(customerId, addressData) {
     // ========================================
     // STEP 3: INSERT TO DATABASE
     // ========================================
+    // ✅ Using authenticated client - RLS will block demo accounts from creating addresses
     const supabase = await createSupabaseServerClient();
     const { data, error } = await supabase
       .from("customer_addresses")
@@ -53,9 +54,18 @@ export async function createAddressAction(customerId, addressData) {
       .select()
       .single();
 
-    if (error) {
-      console.error("Error creating address:", error);
-      return { error: "Failed to create address" };
+    // Check for RLS block - RLS can return error OR no data
+    if (error || !data) {
+      // PGRST116 = No rows returned (likely RLS blocked the operation)
+      if (error?.code === "PGRST116" || !data) {
+        return {
+          error:
+            "Demo accounts cannot modify addresses. Please create a regular account to access all features.",
+        };
+      } else {
+        console.error("Error creating address:", error);
+        return { error: error.message };
+      }
     }
 
     return {
@@ -105,6 +115,7 @@ export async function updateAddressAction(addressId, customerId, addressData) {
     // ========================================
     // STEP 3: UPDATE DATABASE
     // ========================================
+    // ✅ Using authenticated client - RLS will block demo accounts from updating addresses
     const supabase = await createSupabaseServerClient();
     const { data, error } = await supabase
       .from("customer_addresses")
@@ -117,12 +128,21 @@ export async function updateAddressAction(addressId, customerId, addressData) {
       .select()
       .single();
 
-    if (error) {
-      console.error("Error updating address:", error);
-      return { error: "Failed to update address" };
+    // Check for RLS block - RLS can return error OR no data
+    if (error || !data) {
+      // PGRST116 = No rows returned (likely RLS blocked the operation)
+      if (error?.code === "PGRST116" || !data) {
+        return {
+          error:
+            "Demo accounts cannot modify addresses. Please create a regular account to access all features.",
+        };
+      } else {
+        console.error("Error updating address:", error);
+        return { error: error.message };
+      }
     }
 
-    revalidatePath("/account/address");
+    revalidatePath("/account/addresses");
 
     return {
       success: true,
@@ -136,19 +156,30 @@ export async function updateAddressAction(addressId, customerId, addressData) {
 }
 
 export async function deleteAddressAction(addressId, customerId) {
+  // ✅ Using authenticated client - RLS will block demo accounts from deleting addresses
   const supabase = await createSupabaseServerClient();
-  const { error } = await supabase
+
+  const { error, count } = await supabase
     .from("customer_addresses")
-    .delete()
+    .delete({ count: "exact" })
     .eq("id", addressId)
     .eq("customer_id", customerId);
 
-  if (error) {
-    console.error("Error deleting address:", error);
-    return { error: "Failed to delete address" };
+  // Check for RLS block - RLS can return error OR 0 rows deleted
+  if (error || count === 0) {
+    // Check if it's likely an RLS block (no rows affected)
+    if (count === 0 || error?.code === "PGRST116") {
+      return {
+        error:
+          "Demo accounts cannot modify addresses. Please create a regular account to access all features.",
+      };
+    } else {
+      console.error("Error deleting address:", error);
+      return { error: "Failed to delete address" };
+    }
   }
 
-  revalidatePath("/account/address");
+  revalidatePath("/account/addresses");
 
   return { success: true, message: "Address deleted successfully" };
 }
@@ -166,7 +197,7 @@ export async function setDefaultAddressAction(addressId, customerId) {
     return { error: "Failed to set default address" };
   }
 
-  revalidatePath("/account/address");
+  revalidatePath("/account/addresses");
 
   return { success: true, message: "Default address set successfully" };
 }

@@ -75,7 +75,7 @@ export default function AddressCreateEditForm({
       }
 
       toast.success(result.message, { id: toastId });
-      router.push("/account/address");
+      router.push("/account/addresses");
     } catch (error) {
       toast.error(error.message, { id: toastId });
     }
@@ -260,7 +260,7 @@ export default function AddressCreateEditForm({
                   id="default_address"
                   checked={field.value}
                   onCheckedChange={field.onChange}
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || existingAddress?.is_default}
                 />
               )}
             />
