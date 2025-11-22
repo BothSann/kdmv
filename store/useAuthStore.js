@@ -52,8 +52,6 @@ const useAuthStore = create((set, get) => ({
       switch (event) {
         case "INITIAL_SESSION":
         case "SIGNED_IN":
-          console.log("SIGNED_IN EVENT OCCURRED:", event);
-
           if (session?.user) {
             set({ user: session.user });
 
@@ -75,7 +73,6 @@ const useAuthStore = create((set, get) => ({
           break;
 
         case "SIGNED_OUT":
-          console.log("SIGNED_OUT EVENT OCCURRED");
           get().clearAuth();
           break;
 
@@ -114,12 +111,10 @@ const useAuthStore = create((set, get) => ({
       if (result.user) {
         set({ user: result.user });
         // Fetch profile immediately with the user ID we already have
-        console.log("User is logged in, fetching profile...");
         await get().fetchAndSetUserProfile(result.user.id);
 
         // 3. Fetch cart immediately after login
         // This is needed because onAuthStateChange won't fire until window focus/tab switch
-        console.log("Fetching cart after login...");
         useCartStore.getState().fetchCart(); // Fire-and-forget (no await)
 
         set({ isLoading: false });
