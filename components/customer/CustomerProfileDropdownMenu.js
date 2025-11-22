@@ -27,7 +27,7 @@ export default function CustomerProfileDropdownMenu() {
     { href: "/account/orders", icon: FileText, label: "Orders" },
     { href: "/account/addresses", icon: MapPinHouse, label: "Address" },
     { href: "/account/appearances", icon: Palette, label: "Appearances" },
-    { href: "/account/password", icon: Settings, label: "Password" },
+    { href: "/account/password", icon: Settings, label: "Settings" },
   ];
 
   return (
@@ -40,7 +40,9 @@ export default function CustomerProfileDropdownMenu() {
       >
         <User className="size-5 sm:size-6" />
       </DropdownMenuTrigger>
-      <DropdownMenuContent className={cn("w-full md:w-[18rem]")}>
+      <DropdownMenuContent
+        className={cn("w-[14rem] md:w-[16rem] lg:w-[18rem]")}
+      >
         {isAuthenticated() ? (
           <>
             {!isLoading ? (
