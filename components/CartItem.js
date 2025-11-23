@@ -145,7 +145,7 @@ export default function CartItem({ item }) {
       {/* Product Info */}
       <div className="flex-1 lg:space-y-2">
         <div className="flex justify-between">
-          <h4 className="font-jost text-base lg:text-lg line-clamp-1">
+          <h4 className="font-jost text-base lg:text-lg line-clamp-2">
             {product.name}{" "}
             <span className="text-sm text-muted-foreground">
               {hasDiscount && `(${discountPercentage}%)`}
