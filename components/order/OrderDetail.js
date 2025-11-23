@@ -574,7 +574,7 @@ export function OrderHistoryTimeline({ orderHistory }) {
               const statusLabel = getStatusLabel(history.status);
               const changedBy = history.profiles
                 ? `${history.profiles.first_name} ${history.profiles.last_name}`
-                : "System";
+                : "Seller";
               const isLast = index === sortedHistory.length - 1;
 
               return (
