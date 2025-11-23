@@ -37,8 +37,8 @@ export default function LoginForm() {
     resolver: zodResolver(loginSchema),
     mode: "onBlur",
     defaultValues: {
-      email: "",
-      password: "",
+      email: "kdmv2025@kdmv.store",
+      password: "Kdmv@2025?",
     },
   });
 

@@ -314,6 +314,12 @@ export default function RegisterForm() {
               Login
             </Link>
           </div>
+          <div className="mt-4 text-center text-sm">
+            Login as a demo account?{" "}
+            <Link href="/auth/login" className="underline underline-offset-4">
+              Demo Account
+            </Link>
+          </div>
         </form>
       </CardContent>
     </Card>
