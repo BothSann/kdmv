@@ -9,14 +9,19 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useState, useEffect } from "react";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { bannerSchema } from "@/lib/validations/banner";
+import { cn } from "@/lib/utils";
 
 import BannerImageUpload from "./BannerImageUpload";
 import {
   createBannerAction,
   updateBannerAction,
 } from "@/server/actions/banner-action";
+import FormError from "@/components/FormError";
 
 /**
  * BannerForm Component
@@ -29,34 +34,39 @@ export default function BannerForm({ existingBanner = null }) {
   const isEditMode = !!existingBanner;
   const router = useRouter();
 
-  // Form state
-  const [title, setTitle] = useState(existingBanner?.title || "");
-  const [subtitle, setSubtitle] = useState(existingBanner?.subtitle || "");
-  const [linkUrl, setLinkUrl] = useState(existingBanner?.link_url || "");
-  const [linkText, setLinkText] = useState(
-    existingBanner?.link_text || "Shop Now"
-  );
-  const [displayOrder, setDisplayOrder] = useState(
-    existingBanner?.display_order ?? 0
-  );
-  const [isActive, setIsActive] = useState(existingBanner?.is_active ?? true);
+  // React Hook Form with Zod validation
+  const {
+    register,
+    handleSubmit,
+    control,
+    formState: { errors, isSubmitting },
+    reset,
+  } = useForm({
+    resolver: zodResolver(bannerSchema),
+    mode: "onBlur",
+    defaultValues: {
+      title: existingBanner?.title || "",
+      subtitle: existingBanner?.subtitle || "",
+      link_url: existingBanner?.link_url || "",
+      link_text: existingBanner?.link_text || "Shop Now",
+      display_order: existingBanner?.display_order?.toString() || "0",
+      is_active: existingBanner?.is_active ?? true,
+    },
+  });
 
-  // Image state
+  // Image state (separate from Zod - File objects can't be validated by Zod)
   const [imageFile, setImageFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(
     existingBanner?.image_url || null
   );
-
-  // UI state
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [errors, setErrors] = useState({});
+  const [imageError, setImageError] = useState(null);
 
   // Handle image change
   const handleImageChange = (file) => {
     setImageFile(file);
     const objectUrl = URL.createObjectURL(file);
     setPreviewUrl(objectUrl);
-    setErrors((prev) => ({ ...prev, image: null }));
+    setImageError(null);
   };
 
   // Handle image remove
@@ -74,38 +84,14 @@ export default function BannerForm({ existingBanner = null }) {
     };
   }, [previewUrl]);
 
-  // Form validation
-  const validateForm = () => {
-    const newErrors = {};
-
-    if (!title.trim()) {
-      newErrors.title = "Title is required";
-    }
-
-    if (!previewUrl && !isEditMode) {
-      newErrors.image = "Banner image is required";
-    }
-
-    if (linkUrl && !linkUrl.startsWith("/") && !linkUrl.startsWith("http")) {
-      newErrors.linkUrl =
-        "Link must start with / (internal) or http:// (external)";
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
   // Handle form submission
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    // Validate
-    if (!validateForm()) {
-      toast.error("Please fix the form errors");
+  const onSubmit = async (data) => {
+    // Validate image (separate from Zod - File objects can't be validated by Zod)
+    if (!imageFile && !previewUrl) {
+      setImageError("Banner image is required");
+      toast.error("Please upload a banner image");
       return;
     }
-
-    setIsSubmitting(true);
 
     const actionToUse = isEditMode ? updateBannerAction : createBannerAction;
     const loadingMessage = isEditMode
@@ -117,12 +103,12 @@ export default function BannerForm({ existingBanner = null }) {
       // Build FormData
       const formData = new FormData();
 
-      formData.append("title", title.trim());
-      formData.append("subtitle", subtitle.trim());
-      formData.append("link_url", linkUrl.trim());
-      formData.append("link_text", linkText.trim());
-      formData.append("display_order", displayOrder.toString());
-      formData.append("is_active", isActive.toString());
+      formData.append("title", data.title);
+      formData.append("subtitle", data.subtitle);
+      formData.append("link_url", data.link_url);
+      formData.append("link_text", data.link_text);
+      formData.append("display_order", data.display_order.toString());
+      formData.append("is_active", data.is_active.toString());
 
       if (isEditMode) {
         formData.append("id", existingBanner.id);
@@ -147,8 +133,6 @@ export default function BannerForm({ existingBanner = null }) {
     } catch (error) {
       console.error("Form submission error:", error);
       toast.error("An unexpected error occurred", { id: toastId });
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
@@ -174,7 +158,7 @@ export default function BannerForm({ existingBanner = null }) {
       </div>
 
       {/* Form */}
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <Card>
           <CardHeader>
             <CardTitle>Banner Details</CardTitle>
@@ -187,7 +171,7 @@ export default function BannerForm({ existingBanner = null }) {
               onFileChange={handleImageChange}
               onRemove={handleImageRemove}
               required={!isEditMode}
-              error={errors.image}
+              error={imageError}
             />
 
             {/* Title */}
@@ -197,18 +181,12 @@ export default function BannerForm({ existingBanner = null }) {
               </Label>
               <Input
                 id="title"
-                name="title"
-                value={title}
-                onChange={(e) => {
-                  setTitle(e.target.value);
-                  setErrors((prev) => ({ ...prev, title: null }));
-                }}
+                {...register("title")}
                 placeholder="e.g., Childhood Nostalgia"
-                className={errors.title && "border-destructive"}
+                disabled={isSubmitting}
+                className={cn(errors.title && "border-destructive")}
               />
-              {errors.title && (
-                <p className="text-sm text-destructive">{errors.title}</p>
-              )}
+              {errors.title && <FormError message={errors.title.message} />}
             </div>
 
             {/* Subtitle */}
@@ -216,11 +194,14 @@ export default function BannerForm({ existingBanner = null }) {
               <Label htmlFor="subtitle">Subtitle (Optional)</Label>
               <Input
                 id="subtitle"
-                name="subtitle"
-                value={subtitle}
-                onChange={(e) => setSubtitle(e.target.value)}
+                {...register("subtitle")}
                 placeholder="e.g., Hoodies back for good!"
+                disabled={isSubmitting}
+                className={cn(errors.subtitle && "border-destructive")}
               />
+              {errors.subtitle && (
+                <FormError message={errors.subtitle.message} />
+              )}
               <p className="text-xs text-muted-foreground">
                 Supporting text displayed below the title
               </p>
@@ -231,21 +212,17 @@ export default function BannerForm({ existingBanner = null }) {
               <Label htmlFor="link_url">Link URL (Optional)</Label>
               <Input
                 id="link_url"
-                name="link_url"
-                value={linkUrl}
-                onChange={(e) => {
-                  setLinkUrl(e.target.value);
-                  setErrors((prev) => ({ ...prev, linkUrl: null }));
-                }}
+                {...register("link_url")}
                 placeholder="/collections/new-products or https://..."
-                className={errors.linkUrl && "border-destructive"}
+                disabled={isSubmitting}
+                className={cn(errors.link_url && "border-destructive")}
               />
-              {errors.linkUrl && (
-                <p className="text-sm text-destructive">{errors.linkUrl}</p>
+              {errors.link_url && (
+                <FormError message={errors.link_url.message} />
               )}
               <p className="text-xs text-muted-foreground">
-                Where the button should link to. Use /path for internal pages
-                or full URL for external links
+                Where the button should link to. Use /path for internal pages or
+                full URL for external links
               </p>
             </div>
 
@@ -254,11 +231,14 @@ export default function BannerForm({ existingBanner = null }) {
               <Label htmlFor="link_text">Button Text</Label>
               <Input
                 id="link_text"
-                name="link_text"
-                value={linkText}
-                onChange={(e) => setLinkText(e.target.value)}
+                {...register("link_text")}
                 placeholder="Shop Now"
+                disabled={isSubmitting}
+                className={cn(errors.link_text && "border-destructive")}
               />
+              {errors.link_text && (
+                <FormError message={errors.link_text.message} />
+              )}
               <p className="text-xs text-muted-foreground">
                 Text displayed on the call-to-action button
               </p>
@@ -269,13 +249,16 @@ export default function BannerForm({ existingBanner = null }) {
               <Label htmlFor="display_order">Display Order</Label>
               <Input
                 id="display_order"
-                name="display_order"
                 type="number"
                 min="0"
-                value={displayOrder}
-                onChange={(e) => setDisplayOrder(parseInt(e.target.value) || 0)}
+                {...register("display_order")}
                 placeholder="0"
+                disabled={isSubmitting}
+                className={cn(errors.display_order && "border-destructive")}
               />
+              {errors.display_order && (
+                <FormError message={errors.display_order.message} />
+              )}
               <p className="text-xs text-muted-foreground">
                 Lower numbers appear first in the carousel
               </p>
@@ -283,11 +266,17 @@ export default function BannerForm({ existingBanner = null }) {
 
             {/* Is Active */}
             <div className="flex items-center space-x-2">
-              <Checkbox
-                id="is_active"
+              <Controller
                 name="is_active"
-                checked={isActive}
-                onCheckedChange={setIsActive}
+                control={control}
+                render={({ field }) => (
+                  <Checkbox
+                    id="is_active"
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                    disabled={isSubmitting}
+                  />
+                )}
               />
               <Label
                 htmlFor="is_active"
@@ -295,6 +284,9 @@ export default function BannerForm({ existingBanner = null }) {
               >
                 Active (Show on homepage)
               </Label>
+              {errors.is_active && (
+                <FormError message={errors.is_active.message} />
+              )}
             </div>
 
             {/* Form Actions */}

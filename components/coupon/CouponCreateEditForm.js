@@ -16,60 +16,52 @@ import {
   updateCouponAction,
 } from "@/server/actions/coupon-action";
 
+// React Hook Form and Zod validation
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { couponSchema } from "@/lib/validations/coupon";
+import FormError from "@/components/FormError";
+import { cn } from "@/lib/utils";
+
 export default function CouponCreateEditForm({ existingCoupon = null }) {
   const isEditMode = Boolean(existingCoupon);
-
-  const [validFrom, setValidFrom] = useState(
-    existingCoupon?.valid_from ? new Date(existingCoupon.valid_from) : undefined
-  );
-  const [validUntil, setValidUntil] = useState(
-    existingCoupon?.valid_until
-      ? new Date(existingCoupon.valid_until)
-      : undefined
-  );
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
 
-  const isValidDate = () => {
-    return validFrom && validUntil && validFrom <= validUntil;
-  };
-
-  const hasDates = () => {
-    return validFrom && validUntil;
-  };
+  // React Hook Form setup with Zod validation
+  const {
+    register,
+    handleSubmit,
+    control,
+    formState: { errors, isSubmitting },
+  } = useForm({
+    resolver: zodResolver(couponSchema),
+    mode: "onBlur", // Validate when user leaves field
+    defaultValues: {
+      code: existingCoupon?.code || "",
+      discount_percentage: existingCoupon?.discount_percentage?.toString() || "",
+      description: existingCoupon?.description || "",
+      max_uses_per_customer:
+        existingCoupon?.max_uses_per_customer?.toString() || "",
+      max_total_uses: existingCoupon?.max_total_uses?.toString() || "",
+      valid_from: existingCoupon?.valid_from
+        ? new Date(existingCoupon.valid_from)
+        : undefined,
+      valid_until: existingCoupon?.valid_until
+        ? new Date(existingCoupon.valid_until)
+        : undefined,
+    },
+  });
 
   const handleWheel = (e) => {
     e.target.blur();
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-
-    if (!hasDates()) {
-      toast.error("Please select valid dates");
-      setIsSubmitting(false);
-      return;
-    }
-
-    if (!isValidDate()) {
-      toast.error("Valid From must be before Valid Until");
-      setIsSubmitting(false);
-      return;
-    }
-
-    const formData = new FormData(e.target);
-
-    // Extract all form data including dates from hidden inputs
+  // Form submission handler (validated by Zod)
+  const onSubmit = async (data) => {
+    // Prepare coupon data with validated form data
     const couponData = {
       ...(isEditMode && { id: existingCoupon.id }),
-      code: formData.get("code"),
-      discount_percentage: formData.get("discount_percentage"),
-      description: formData.get("description"),
-      max_uses_per_customer: formData.get("max_uses_per_customer"),
-      max_total_uses: formData.get("max_total_uses"),
-      valid_from: formData.get("valid_from"), // ISO string from DateTimePicker
-      valid_until: formData.get("valid_until"), // ISO string from DateTimePicker
+      ...data, // Spread all validated data (already transformed by Zod)
     };
 
     const actionToUse = isEditMode ? updateCouponAction : createNewCouponAction;
@@ -98,13 +90,11 @@ export default function CouponCreateEditForm({ existingCoupon = null }) {
       }
     } catch (error) {
       toast.error(error.message, { id: toastId });
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="mt-10">
+    <form onSubmit={handleSubmit(onSubmit)} className="mt-10">
       <div className="max-w-7xl mx-auto space-y-10">
         {/* Header */}
         <div className="flex items-center justify-between">
@@ -145,38 +135,53 @@ export default function CouponCreateEditForm({ existingCoupon = null }) {
               <CardContent>
                 <div className="space-y-8">
                   <div className="space-y-3">
-                    <Label>Coupon Code</Label>
+                    <Label htmlFor="code">
+                      Coupon Code<span className="text-destructive">*</span>
+                    </Label>
                     <Input
+                      {...register("code")}
+                      id="code"
                       type="text"
-                      name="code"
-                      required
-                      defaultValue={existingCoupon?.code || ""}
                       disabled={isSubmitting}
+                      className={cn(errors.code && "border-destructive")}
+                      placeholder="e.g., SAVE20"
                     />
+                    {errors.code && <FormError message={errors.code.message} />}
                   </div>
 
                   <div className="space-y-3">
-                    <Label>Discount Percentage (%)</Label>
+                    <Label htmlFor="discount_percentage">
+                      Discount Percentage (%)<span className="text-destructive">*</span>
+                    </Label>
                     <Input
+                      {...register("discount_percentage")}
+                      id="discount_percentage"
                       type="number"
-                      name="discount_percentage"
-                      required
                       min="0"
                       max="100"
+                      step="0.01"
                       onWheel={handleWheel}
-                      defaultValue={existingCoupon?.discount_percentage || ""}
                       disabled={isSubmitting}
+                      className={cn(errors.discount_percentage && "border-destructive")}
+                      placeholder="0.00"
                     />
+                    {errors.discount_percentage && (
+                      <FormError message={errors.discount_percentage.message} />
+                    )}
                   </div>
 
                   <div className="space-y-3">
-                    <Label>Coupon Description (Optional)</Label>
+                    <Label htmlFor="description">Coupon Description (Optional)</Label>
                     <Textarea
-                      name="description"
-                      maxLength={255}
-                      defaultValue={existingCoupon?.description || ""}
+                      {...register("description")}
+                      id="description"
                       disabled={isSubmitting}
+                      className={cn(errors.description && "border-destructive")}
+                      placeholder="Brief description of the coupon..."
                     />
+                    {errors.description && (
+                      <FormError message={errors.description.message} />
+                    )}
                   </div>
                 </div>
               </CardContent>
@@ -189,27 +194,42 @@ export default function CouponCreateEditForm({ existingCoupon = null }) {
               <CardContent>
                 <div className="space-y-8">
                   <div className="space-y-3">
-                    <Label>Max Uses Per Customer</Label>
+                    <Label htmlFor="max_uses_per_customer">
+                      Max Uses Per Customer<span className="text-destructive">*</span>
+                    </Label>
                     <Input
+                      {...register("max_uses_per_customer")}
+                      id="max_uses_per_customer"
                       type="number"
-                      name="max_uses_per_customer"
                       min="1"
-                      required
                       onWheel={handleWheel}
-                      defaultValue={existingCoupon?.max_uses_per_customer || ""}
                       disabled={isSubmitting}
+                      className={cn(
+                        errors.max_uses_per_customer && "border-destructive"
+                      )}
+                      placeholder="1"
                     />
+                    {errors.max_uses_per_customer && (
+                      <FormError message={errors.max_uses_per_customer.message} />
+                    )}
                   </div>
                   <div className="space-y-3">
-                    <Label>Max Total Uses</Label>
+                    <Label htmlFor="max_total_uses">
+                      Max Total Uses (Leave empty for unlimited)
+                    </Label>
                     <Input
+                      {...register("max_total_uses")}
+                      id="max_total_uses"
                       type="number"
-                      name="max_total_uses"
                       min="1"
                       onWheel={handleWheel}
-                      defaultValue={existingCoupon?.max_total_uses || ""}
                       disabled={isSubmitting}
+                      className={cn(errors.max_total_uses && "border-destructive")}
+                      placeholder="Empty = unlimited"
                     />
+                    {errors.max_total_uses && (
+                      <FormError message={errors.max_total_uses.message} />
+                    )}
                   </div>
                 </div>
               </CardContent>
@@ -223,32 +243,44 @@ export default function CouponCreateEditForm({ existingCoupon = null }) {
             <CardContent>
               <div className="space-y-8">
                 <div className="space-y-3">
-                  <Label>Valid From</Label>
-                  <DateTimePicker24h
+                  <Label htmlFor="valid_from">
+                    Valid From<span className="text-destructive">*</span>
+                  </Label>
+                  <Controller
                     name="valid_from"
-                    value={validFrom}
-                    onChange={setValidFrom}
-                    disabled={isSubmitting}
+                    control={control}
+                    render={({ field }) => (
+                      <DateTimePicker24h
+                        name="valid_from"
+                        value={field.value}
+                        onChange={field.onChange}
+                        disabled={isSubmitting}
+                      />
+                    )}
                   />
-                  {hasDates() && !isValidDate() && (
-                    <p className="text-destructive text-sm mt-3">
-                      Valid From must be before Valid Until
-                    </p>
+                  {errors.valid_from && (
+                    <FormError message={errors.valid_from.message} />
                   )}
                 </div>
 
                 <div className="space-y-3">
-                  <Label>Valid Until</Label>
-                  <DateTimePicker24h
+                  <Label htmlFor="valid_until">
+                    Valid Until<span className="text-destructive">*</span>
+                  </Label>
+                  <Controller
                     name="valid_until"
-                    value={validUntil}
-                    onChange={setValidUntil}
-                    disabled={isSubmitting}
+                    control={control}
+                    render={({ field }) => (
+                      <DateTimePicker24h
+                        name="valid_until"
+                        value={field.value}
+                        onChange={field.onChange}
+                        disabled={isSubmitting}
+                      />
+                    )}
                   />
-                  {hasDates() && !isValidDate() && (
-                    <p className="text-destructive text-sm mt-3">
-                      Valid Until must be after Valid From
-                    </p>
+                  {errors.valid_until && (
+                    <FormError message={errors.valid_until.message} />
                   )}
                 </div>
               </div>
