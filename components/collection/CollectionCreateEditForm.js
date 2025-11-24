@@ -20,25 +20,41 @@ import {
 import { useRouter } from "next/navigation";
 import { useProductTableStore } from "@/store/useTableSelectionStore";
 
+// React Hook Form and Zod validation
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { collectionSchema } from "@/lib/validations/collection";
+import FormError from "@/components/FormError";
+import { cn } from "@/lib/utils";
+
 export default function CollectionCreateEditForm({
   children,
   existingCollection = null,
 }) {
   const isEditMode = !!existingCollection;
+  const router = useRouter();
 
-  const [name, setName] = useState(existingCollection?.name || "");
-  const [description, setDescription] = useState(
-    existingCollection?.description || ""
-  );
+  // React Hook Form setup with Zod validation
+  const {
+    register,
+    handleSubmit,
+    control,
+    formState: { errors, isSubmitting },
+  } = useForm({
+    resolver: zodResolver(collectionSchema),
+    mode: "onBlur", // Validate when user leaves field
+    defaultValues: {
+      name: existingCollection?.name || "",
+      description: existingCollection?.description || "",
+      is_active: existingCollection?.is_active ?? true,
+    },
+  });
+
+  // Keep these for file uploads (not in schema)
   const [bannerFile, setBannerFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(
     existingCollection?.banner_image_url || null
   );
-  const [isActive, setIsActive] = useState(
-    existingCollection?.is_active ?? true
-  );
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const router = useRouter();
 
   const { getSelectedItems, clearSelection } = useProductTableStore();
 
@@ -77,10 +93,8 @@ export default function CollectionCreateEditForm({
     };
   }, [previewUrl]);
 
-  const handleSubmit = async (e) => {
-    setIsSubmitting(true);
-    e.preventDefault();
-
+  // Form submission handler (validated by Zod)
+  const onSubmit = async (data) => {
     const selectedProductIds = getSelectedItems();
 
     const actionToUse = isEditMode
@@ -93,16 +107,14 @@ export default function CollectionCreateEditForm({
 
     const toastId = toast.loading(loadingMessage);
 
-    const formData = new FormData(e.target);
+    // Prepare collection data with validated form data
     const collectionData = {
       ...(isEditMode && { id: existingCollection.id }),
       ...(isEditMode && {
         existing_banner_image_url: existingCollection.banner_image_url,
       }),
-      name: formData.get("name"),
-      description: formData.get("description"),
+      ...data, // Spread all validated data (name, description, is_active)
       banner_file: bannerFile,
-      is_active: isActive,
       selected_product_ids: selectedProductIds,
     };
 
@@ -126,13 +138,12 @@ export default function CollectionCreateEditForm({
     } catch (error) {
       toast.error(error.message, { id: toastId });
     } finally {
-      setIsSubmitting(false);
       clearSelection();
     }
   };
 
   return (
-    <form className="mt-10" onSubmit={handleSubmit}>
+    <form className="mt-10" onSubmit={handleSubmit(onSubmit)}>
       <div className="max-w-7xl mx-auto space-y-10">
         {/* Header */}
         <div className="flex items-center justify-between">
@@ -175,25 +186,31 @@ export default function CollectionCreateEditForm({
               <CardContent>
                 <div className="space-y-8">
                   <div className="space-y-3">
-                    <Label>Collection Name</Label>
+                    <Label htmlFor="name">
+                      Collection Name<span className="text-destructive">*</span>
+                    </Label>
                     <Input
+                      {...register("name")}
+                      id="name"
                       type="text"
-                      name="name"
-                      required
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
                       disabled={isSubmitting}
+                      className={cn(errors.name && "border-destructive")}
                     />
+                    {errors.name && <FormError message={errors.name.message} />}
                   </div>
 
                   <div className="space-y-3">
-                    <Label>Collection Description</Label>
+                    <Label htmlFor="description">Collection Description (Optional)</Label>
                     <Textarea
-                      name="description"
-                      value={description}
-                      onChange={(e) => setDescription(e.target.value)}
+                      {...register("description")}
+                      id="description"
                       disabled={isSubmitting}
+                      className={cn(errors.description && "border-destructive")}
+                      placeholder="Brief description of the collection..."
                     />
+                    {errors.description && (
+                      <FormError message={errors.description.message} />
+                    )}
                   </div>
                 </div>
               </CardContent>
@@ -244,11 +261,17 @@ export default function CollectionCreateEditForm({
                   </div>
 
                   <div className="flex items-center gap-2">
-                    <Checkbox
-                      id="is_active"
+                    <Controller
                       name="is_active"
-                      checked={isActive}
-                      onCheckedChange={setIsActive}
+                      control={control}
+                      render={({ field }) => (
+                        <Checkbox
+                          id="is_active"
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                          disabled={isSubmitting}
+                        />
+                      )}
                     />
                     <Label htmlFor="is_active">Active Collection</Label>
                   </div>

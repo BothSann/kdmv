@@ -4,13 +4,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import FormError from "@/components/FormError";
+import { cn } from "@/lib/utils";
 
-export default function ProductDetail({
-  name,
-  description,
-  onNameChange,
-  onDescriptionChange,
-}) {
+export default function ProductDetail({ register, errors, isSubmitting }) {
   return (
     <Card>
       <CardHeader>
@@ -19,24 +16,33 @@ export default function ProductDetail({
 
       <CardContent className="space-y-8">
         <div className="space-y-3">
-          <Label>Name</Label>
+          <Label htmlFor="name">
+            Name<span className="text-destructive">*</span>
+          </Label>
           <Input
+            {...register("name")}
+            id="name"
             type="text"
-            name="name"
-            value={name}
-            required
-            onChange={(e) => onNameChange(e.target.value)}
+            placeholder="Enter product name"
+            disabled={isSubmitting}
+            className={cn("w-full", errors.name && "border-destructive")}
           />
+          {errors.name && <FormError message={errors.name.message} />}
         </div>
 
         <div className="space-y-3">
-          <Label>Description (Optional)</Label>
+          <Label htmlFor="description">Description (Optional)</Label>
           <Textarea
-            name="description"
+            {...register("description")}
+            id="description"
             rows={4}
-            value={description}
-            onChange={(e) => onDescriptionChange(e.target.value)}
+            placeholder="Enter product description"
+            disabled={isSubmitting}
+            className={cn("w-full", errors.description && "border-destructive")}
           />
+          {errors.description && (
+            <FormError message={errors.description.message} />
+          )}
         </div>
       </CardContent>
     </Card>

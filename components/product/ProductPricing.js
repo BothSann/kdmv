@@ -5,38 +5,29 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
-import { formatCurrency } from "@/lib/utils";
-import { TriangleAlert } from "lucide-react";
+import { formatCurrency, cn } from "@/lib/utils";
+import { Controller } from "react-hook-form";
+import FormError from "@/components/FormError";
 
 export default function ProductPricing({
-  basePrice,
-  discountPercentage,
-  isActive,
-  onBasePriceChange,
-  onDiscountPercentageChange,
-  onIsActiveChange,
+  register,
+  control,
+  errors,
+  isSubmitting,
   onWheel,
 }) {
-  // Validation logic
+  // Watch values for price preview
+  const basePrice = control._formValues?.base_price || "";
+  const discountPercentage = control._formValues?.discount_percentage || "";
+
+  // Calculate discounted price for preview
   const price = parseFloat(basePrice) || 0;
-  const discount = parseInt(discountPercentage) || 0;
-
-  const basePriceError = price <= 0 ? "Price must be greater than 0" : null;
-  const discountError =
-    (discount < 0 || discount > 100) && discountPercentage !== ""
-      ? "Discount must be between 0-100%"
-      : null;
-
-  // Calculate discounted price
+  const discount = parseFloat(discountPercentage) || 0;
   const discountedPrice = discount > 0 ? price * (1 - discount / 100) : price;
 
   // Show preview only if valid inputs
   const showPreview =
-    basePrice &&
-    discountPercentage &&
-    price > 0 &&
-    discount > 0 &&
-    discount <= 100;
+    basePrice && discountPercentage && price > 0 && discount > 0 && discount <= 100;
 
   return (
     <Card>
@@ -45,44 +36,46 @@ export default function ProductPricing({
       </CardHeader>
       <CardContent className="space-y-8">
         <div className="space-y-3">
-          <Label>Price ($)</Label>
+          <Label htmlFor="base_price">
+            Price ($)<span className="text-destructive">*</span>
+          </Label>
           <Input
+            {...register("base_price")}
+            id="base_price"
             type="number"
             min="0.01"
             step="0.01"
-            name="base_price"
-            value={basePrice}
-            onChange={(e) => onBasePriceChange(e.target.value)}
-            required
             placeholder="0.00"
+            disabled={isSubmitting}
             onWheel={onWheel}
+            className={cn("w-full", errors.base_price && "border-destructive")}
           />
-          {basePriceError && (
-            <div className="flex items-center gap-2 text-warning">
-              <TriangleAlert size={18} className="" />
-              <p className="text-sm">{basePriceError}</p>
-            </div>
+          {errors.base_price && (
+            <FormError message={errors.base_price.message} />
           )}
         </div>
 
         {/* Discount Percentage */}
         <div className="space-y-3">
-          <Label>Discount Percentage (%)</Label>
+          <Label htmlFor="discount_percentage">
+            Discount Percentage (%)
+          </Label>
           <Input
+            {...register("discount_percentage")}
+            id="discount_percentage"
             type="number"
             min="0"
             max="100"
-            name="discount_percentage"
-            value={discountPercentage}
-            onChange={(e) => onDiscountPercentageChange(e.target.value)}
-            placeholder="0%"
+            placeholder="0"
+            disabled={isSubmitting}
             onWheel={onWheel}
+            className={cn(
+              "w-full",
+              errors.discount_percentage && "border-destructive"
+            )}
           />
-          {discountError && (
-            <div className="flex items-center gap-2 text-warning">
-              <TriangleAlert size={18} className="" />
-              <p className="text-sm">{discountError}</p>
-            </div>
+          {errors.discount_percentage && (
+            <FormError message={errors.discount_percentage.message} />
           )}
 
           {/* Price Preview */}
@@ -111,14 +104,20 @@ export default function ProductPricing({
 
         {/* Active Toggle */}
         <div className="flex items-center gap-2">
-          <Checkbox
-            id="is_active"
+          <Controller
             name="is_active"
-            checked={isActive}
-            onCheckedChange={onIsActiveChange}
+            control={control}
+            render={({ field }) => (
+              <Checkbox
+                id="is_active"
+                checked={field.value}
+                onCheckedChange={field.onChange}
+                disabled={isSubmitting}
+              />
+            )}
           />
           <Label htmlFor="is_active">Active Product</Label>
-          {!isActive && (
+          {!control._formValues?.is_active && (
             <span className="text-xs text-muted-foreground">
               (Product will be hidden from customers)
             </span>

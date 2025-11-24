@@ -8,23 +8,26 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { TriangleAlert } from "lucide-react";
 import { Label } from "../ui/label";
-import { Badge } from "../ui/badge";
+import { Controller } from "react-hook-form";
+import FormError from "@/components/FormError";
+import { cn } from "@/lib/utils";
 
 export default function ProductCategories({
   categories = [],
   subcategories = [],
   selectedCategory,
-  selectedSubcategory,
+  subcategoryId,
+  control,
+  errors,
+  isSubmitting,
   onCategoryChange,
-  onSubcategoryChange,
 }) {
   // Filter subcategories based on selected category
   const filteredSubcategories =
     subcategories?.filter((sub) => sub.category_id === selectedCategory) || [];
 
-  const showPreview = selectedCategory && selectedSubcategory;
+  const showPreview = selectedCategory && subcategoryId;
 
   return (
     <Card>
@@ -32,48 +35,64 @@ export default function ProductCategories({
         <CardTitle>Categories</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        {/* Category Select */}
-        <Select
-          value={selectedCategory}
-          onValueChange={onCategoryChange}
-          required
-        >
-          <SelectTrigger className="w-full" required>
-            <SelectValue placeholder="Select a category" />
-          </SelectTrigger>
-          <SelectContent required>
-            {categories?.map((category) => (
-              <SelectItem key={category.id} value={category.id} required>
-                {category.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        {/* Category Select (UI only - for filtering) */}
+        <div className="space-y-2">
+          <Label htmlFor="category">Category (for filtering)</Label>
+          <Select
+            value={selectedCategory}
+            onValueChange={onCategoryChange}
+            disabled={isSubmitting}
+          >
+            <SelectTrigger className="w-full" id="category">
+              <SelectValue placeholder="Select a category" />
+            </SelectTrigger>
+            <SelectContent>
+              {categories?.map((category) => (
+                <SelectItem key={category.id} value={category.id}>
+                  {category.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
 
-        {/* Subcategory Select */}
-        <Select
-          value={selectedSubcategory}
-          onValueChange={onSubcategoryChange}
-          disabled={!selectedCategory}
-          required
-        >
-          <SelectTrigger className="w-full">
-            <SelectValue placeholder="Select a sub category" />
-          </SelectTrigger>
-          <SelectContent>
-            {filteredSubcategories.map((subcategory) => (
-              <SelectItem key={subcategory.id} value={subcategory.id}>
-                {subcategory.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        {selectedCategory && !selectedSubcategory && (
-          <div className="flex items-center gap-2 text-warning">
-            <TriangleAlert size={18} className="" />
-            <span className="text-sm">Please select a subcategory</span>
-          </div>
-        )}
+        {/* Subcategory Select (actual form field) */}
+        <div className="space-y-2">
+          <Label htmlFor="subcategory_id">
+            Subcategory<span className="text-destructive">*</span>
+          </Label>
+          <Controller
+            name="subcategory_id"
+            control={control}
+            render={({ field }) => (
+              <Select
+                value={field.value}
+                onValueChange={field.onChange}
+                disabled={!selectedCategory || isSubmitting}
+              >
+                <SelectTrigger
+                  className={cn(
+                    "w-full",
+                    errors.subcategory_id && "border-destructive"
+                  )}
+                  id="subcategory_id"
+                >
+                  <SelectValue placeholder="Select a subcategory" />
+                </SelectTrigger>
+                <SelectContent>
+                  {filteredSubcategories.map((subcategory) => (
+                    <SelectItem key={subcategory.id} value={subcategory.id}>
+                      {subcategory.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
+          />
+          {errors.subcategory_id && (
+            <FormError message={errors.subcategory_id.message} />
+          )}
+        </div>
 
         {/* Preview */}
         {showPreview && (
@@ -93,11 +112,7 @@ export default function ProductCategories({
                 <span className="text-muted-foreground">Subcategory</span>
                 <span>&rarr;</span>
                 <span className="font-medium">
-                  {
-                    filteredSubcategories.find(
-                      (sub) => sub.id === selectedSubcategory
-                    )?.name
-                  }
+                  {filteredSubcategories.find((sub) => sub.id === subcategoryId)?.name}
                 </span>
               </div>
             </div>
