@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Upload, Trash } from "lucide-react";
 import Image from "next/image";
+import FormError from "../FormError";
 
 export default function ProductImages({
   bannerPreviewUrl: initialBannerPreviewUrl, // only for existing banner in edit mode
@@ -19,6 +20,8 @@ export default function ProductImages({
   onRemoveAdditionalImage,
   onClearAllAdditionalImages,
   onRemoveExistingImage,
+  bannerError = null, // Error message for banner
+  additionalImagesError = null, // Error message for additional images
 }) {
   const fileInputRef = useRef(null);
   const additionalImagesInputRef = useRef(null);
@@ -133,6 +136,7 @@ export default function ProductImages({
             onChange={handleBannerFileChange}
             ref={fileInputRef}
           />
+          {bannerError && <FormError message={bannerError} />}
 
           {bannerPreviewUrl && (
             <div className="flex items-end justify-between mt-4">
@@ -177,6 +181,9 @@ export default function ProductImages({
             onChange={handleAdditionalImagesChangeInternal}
             ref={additionalImagesInputRef}
           />
+          {additionalImagesError && additionalImages.length === 0 && (
+            <FormError message={additionalImagesError} />
+          )}
 
           {/* Image Previews */}
           {additionalImages.length > 0 && (

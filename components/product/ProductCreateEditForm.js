@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useForm, Controller, useFieldArray } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 import { ChevronLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -9,11 +11,12 @@ import {
   createNewProductAction,
   updateProductAction,
 } from "@/server/actions/product-action";
-import { useFormStatus } from "react-dom";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Spinner from "../Spinner";
-import { hasDuplicateVariants } from "@/lib/utils";
+import { productWithVariantsSchema } from "@/lib/validations/product";
+import FormError from "@/components/FormError";
+import { cn } from "@/lib/utils";
 import ProductDetail from "./ProductDetail";
 import ProductPricing from "./ProductPricing";
 import ProductCategories from "./ProductCategories";
@@ -30,128 +33,116 @@ export default function ProductCreateEditForm({
   existingProduct = null,
   isEditing = false,
 }) {
-  const [name, setName] = useState(existingProduct?.name || "");
-  const [description, setDescription] = useState(
-    existingProduct?.description || ""
-  );
-  const [basePrice, setBasePrice] = useState(existingProduct?.base_price || "");
-  const [discountPercentage, setDiscountPercentage] = useState(
-    existingProduct?.discount_percentage || ""
-  );
-  const [isActive, setIsActive] = useState(existingProduct?.is_active || true);
-  const [selectedCollection, setSelectedCollection] = useState(
-    existingProduct?.collection_id || ""
-  );
+  const router = useRouter();
 
-  const [isInitialized, setIsInitialized] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState("");
-  const [selectedSubcategory, setSelectedSubcategory] = useState("");
+  // React Hook Form setup with Zod validation
+  const {
+    register,
+    handleSubmit,
+    control,
+    setValue,
+    watch,
+    formState: { errors, isSubmitting },
+  } = useForm({
+    resolver: zodResolver(productWithVariantsSchema),
+    mode: "onBlur", // Validate when user leaves field
+    defaultValues: {
+      name: existingProduct?.name || "",
+      description: existingProduct?.description || "",
+      base_price: existingProduct?.base_price?.toString() || "",
+      discount_percentage:
+        existingProduct?.discount_percentage?.toString() || "",
+      subcategory_id: existingProduct?.subcategory_id || "",
+      is_active: existingProduct?.is_active ?? true,
+      collection_id: existingProduct?.collection_id || "",
+      variants:
+        existingProduct?.product_variants?.length > 0
+          ? existingProduct.product_variants.map((variant) => ({
+              id: variant.id,
+              color_id: variant.colors?.id || "",
+              size_id: variant.sizes?.id || "",
+              quantity: variant.quantity || 0,
+              sku: variant.sku || "",
+            }))
+          : [{ color_id: "", size_id: "", quantity: 0, sku: "" }],
+    },
+  });
+
+  // useFieldArray for dynamic variants management
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "variants",
+  });
+
+  // Keep these for file uploads (not in schema)
   const [bannerFile, setBannerFile] = useState(null);
   const [imageFiles, setImageFiles] = useState([]);
   const [existingImages, setExistingImages] = useState(
     existingProduct?.product_images || []
   );
 
-  const [variants, setVariants] = useState([
-    { color_id: "", size_id: "", quantity: 0, sku: "" },
-  ]);
-  const router = useRouter();
+  // File upload error state
+  const [bannerError, setBannerError] = useState(null);
+  const [additionalImagesError, setAdditionalImagesError] = useState(null);
+
+  // Keep these for UI state
+  const [isInitialized, setIsInitialized] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState("");
+
+  // Watch subcategory_id from form
+  const subcategoryId = watch("subcategory_id");
+  const formName = watch("name");
 
   // Initialize form data and control loading state
   useEffect(() => {
     if (isEditing && existingProduct) {
-      // EDIT MODE: Initialize all data from existing product
+      // EDIT MODE: Find category from subcategory for UI filtering
+      const subcategory = subcategories?.find(
+        (sub) => sub.id === existingProduct.subcategory_id
+      );
+      const categoryId = subcategory?.category_id;
 
-      // Find the category ID from the subcategory relationship
-      const categoryId = existingProduct.subcategories?.categories?.id;
       if (categoryId) {
         setSelectedCategory(categoryId);
       }
 
-      // Set Subcategory
-      if (existingProduct.subcategory_id) {
-        setSelectedSubcategory(existingProduct.subcategory_id);
-      }
-
-      // Set Collection (if product belongs to a collection)
-      if (existingProduct.collection_id) {
-        setSelectedCollection(existingProduct.collection_id);
-      }
-
-      // Set active status
-      setIsActive(existingProduct.is_active || false);
-
-      // Set variants from existing product
-      if (
-        existingProduct.product_variants &&
-        existingProduct.product_variants.length > 0
-      ) {
-        const formattedVariants = existingProduct.product_variants.map(
-          (variant) => ({
-            id: variant.id, // Include variant ID for proper update matching
-            color_id: variant.colors?.id || "",
-            size_id: variant.sizes?.id || "",
-            quantity: variant.quantity || 0,
-            sku: variant.sku || "",
-          })
-        );
-        setVariants(formattedVariants);
-      }
-
-      // Mark as initialized AFTER all data is set
       setIsInitialized(true);
     }
 
-    if (!isEditing) setIsInitialized(true);
-  }, [isEditing, existingProduct]);
+    if (!isEditing) {
+      setIsInitialized(true);
+    }
+  }, [isEditing, existingProduct, subcategories]);
 
+  // Auto-select "All Genders" subcategory for Unisex category
   useEffect(() => {
     if (selectedCategory && subcategories && categories) {
-      // Find category by ID to get its slug
       const selectedCategoryData = categories?.find(
         (cat) => cat.id === selectedCategory
       );
 
       if (selectedCategoryData?.slug === "unisex") {
-        // Find subcategory by slug (more reliable than ID)
         const allGendersSub = subcategories.find(
           (sub) =>
             sub.category_id === selectedCategory && sub.slug === "all-genders"
         );
 
-        if (allGendersSub && !selectedSubcategory) {
-          // Only if nothing selected
-          setSelectedSubcategory(allGendersSub.id);
+        if (allGendersSub && !subcategoryId) {
+          setValue("subcategory_id", allGendersSub.id);
         }
       }
     }
-  }, [selectedCategory, subcategories, categories, selectedSubcategory]);
+  }, [selectedCategory, subcategories, categories, subcategoryId, setValue]);
 
+  // Variant management functions
   const addVariant = () => {
-    setVariants([
-      ...variants,
-      { color_id: "", size_id: "", quantity: 0, sku: "" },
-    ]);
+    append({ color_id: "", size_id: "", quantity: 0, sku: "" });
   };
 
   const removeVariant = (index) => {
-    if (variants.length > 1) {
-      setVariants(variants.filter((_, i) => i !== index));
+    if (fields.length > 1) {
+      remove(index);
     }
-  };
-
-  const updateVariant = (index, field, value) => {
-    setVariants(
-      variants.map((variant, i) =>
-        i === index ? { ...variant, [field]: value } : variant
-      )
-    );
-  };
-
-  const validateVariants = () => {
-    return variants.every(
-      (variant) => variant.color_id && variant.size_id && variant.quantity >= 0
-    );
   };
 
   const handleRemoveExistingImage = (imageId) => {
@@ -165,41 +156,34 @@ export default function ProductCreateEditForm({
   // Reset subcategory when category changes
   const handleCategoryChange = (categoryId) => {
     setSelectedCategory(categoryId);
-    setSelectedSubcategory(""); // Reset subcategory selection
+    setValue("subcategory_id", ""); // Reset subcategory selection
   };
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+  // Form submission handler (validated by Zod)
+  const onSubmit = async (data) => {
+    // Reset file upload errors
+    setBannerError(null);
+    setAdditionalImagesError(null);
 
-    // Image validation - required for new products, optional for edits
+    // File upload validation (not in schema)
+    let hasFileErrors = false;
+
     if (!isEditing && !bannerFile) {
-      toast.warning("Please upload a banner image");
+      setBannerError("Banner image is required");
+      hasFileErrors = true;
+    }
+
+    if (!isEditing && imageFiles.length === 0) {
+      setAdditionalImagesError("At least one additional image is required");
+      hasFileErrors = true;
+    }
+
+    if (hasFileErrors) {
+      toast.warning("Please fix the file upload errors");
       return;
     }
 
-    // Add category/subcategory validation
-    if (!selectedCategory) {
-      toast.warning("Please select a category");
-      return;
-    }
-
-    if (!selectedSubcategory) {
-      toast.warning("Please select a subcategory");
-      return;
-    }
-
-    // Validate variants
-    if (!validateVariants()) {
-      toast.warning("Please fill in all variant fields");
-      return;
-    }
-
-    if (hasDuplicateVariants(variants)) {
-      toast.warning("Duplicate color/size combinations are not allowed");
-      return;
-    }
-
-    const formData = new FormData(event.target);
+    // Prepare product data with validated form data
     const productData = {
       ...(isEditing && { id: existingProduct.id }),
       ...(isEditing && {
@@ -208,17 +192,9 @@ export default function ProductCreateEditForm({
       ...(isEditing && {
         existing_image_ids: existingImages.map((image) => image.id),
       }),
-
-      name: formData.get("name"),
-      description: formData.get("description"),
-      base_price: formData.get("base_price"),
-      discount_percentage: formData.get("discount_percentage"),
-      subcategory_id: selectedSubcategory,
+      ...data, // Spread all validated data
       banner_file: bannerFile,
       image_files: imageFiles,
-      is_active: isActive,
-      collection_id: selectedCollection || null,
-      variants: variants.filter((v) => v.color_id && v.size_id),
     };
 
     const actionToUse = isEditing
@@ -260,7 +236,7 @@ export default function ProductCreateEditForm({
   }
 
   return (
-    <form className="mt-10" onSubmit={handleSubmit}>
+    <form className="mt-10" onSubmit={handleSubmit(onSubmit)}>
       <div className="max-w-7xl mx-auto space-y-10">
         {/* Header */}
         <div className="flex items-center justify-between">
@@ -271,7 +247,7 @@ export default function ProductCreateEditForm({
               </Link>
             </Button>
             <h1 className="text-4xl font-bold">
-              {isEditing ? `Editing ${name}` : "Add Products"}
+              {isEditing ? `Editing ${formName}` : "Add Products"}
             </h1>
           </div>
 
@@ -284,7 +260,7 @@ export default function ProductCreateEditForm({
             >
               <Link href="/admin/products">Cancel</Link>
             </Button>
-            <SubmitButton isEditing={isEditing} />
+            <SubmitButton isEditing={isEditing} isSubmitting={isSubmitting} />
           </div>
         </div>
 
@@ -293,10 +269,9 @@ export default function ProductCreateEditForm({
           <div className="space-y-8">
             {/* Product Details */}
             <ProductDetail
-              name={name}
-              description={description}
-              onNameChange={setName}
-              onDescriptionChange={setDescription}
+              register={register}
+              errors={errors}
+              isSubmitting={isSubmitting}
             />
 
             {/* Product Images */}
@@ -307,9 +282,13 @@ export default function ProductCreateEditForm({
               bannerFile={bannerFile}
               existingImages={existingImages}
               isEditing={isEditing}
-              onBannerFileChange={setBannerFile}
+              onBannerFileChange={(file) => {
+                setBannerFile(file);
+                if (file) setBannerError(null); // Clear error when file is selected
+              }}
               onAdditionalImagesChange={(files) => {
                 setImageFiles((prev) => [...prev, ...files]);
+                if (files.length > 0) setAdditionalImagesError(null); // Clear error when files are added
               }}
               onRemoveBanner={() => {
                 setBannerFile(null);
@@ -323,16 +302,21 @@ export default function ProductCreateEditForm({
                 setImageFiles([]);
               }}
               onRemoveExistingImage={handleRemoveExistingImage}
+              bannerError={bannerError}
+              additionalImagesError={additionalImagesError}
             />
 
             {/* Variants */}
             <ProductVariantEditor
-              variants={variants}
+              fields={fields}
               colors={colors}
               sizes={sizes}
+              control={control}
+              register={register}
+              errors={errors}
+              isSubmitting={isSubmitting}
               onAddVariant={addVariant}
               onRemoveVariant={removeVariant}
-              onUpdateVariant={updateVariant}
             />
           </div>
 
@@ -340,12 +324,10 @@ export default function ProductCreateEditForm({
           <div className="space-y-8">
             {/* Pricing */}
             <ProductPricing
-              basePrice={basePrice}
-              discountPercentage={discountPercentage}
-              isActive={isActive}
-              onBasePriceChange={setBasePrice}
-              onDiscountPercentageChange={setDiscountPercentage}
-              onIsActiveChange={setIsActive}
+              register={register}
+              control={control}
+              errors={errors}
+              isSubmitting={isSubmitting}
               onWheel={handleWheel}
             />
 
@@ -354,16 +336,19 @@ export default function ProductCreateEditForm({
               categories={categories}
               subcategories={subcategories}
               selectedCategory={selectedCategory}
-              selectedSubcategory={selectedSubcategory}
+              subcategoryId={subcategoryId}
+              control={control}
+              errors={errors}
+              isSubmitting={isSubmitting}
               onCategoryChange={handleCategoryChange}
-              onSubcategoryChange={setSelectedSubcategory}
             />
 
             {/* Collections */}
             <ProductCollection
               collections={collections}
-              selectedCollection={selectedCollection}
-              onCollectionChange={setSelectedCollection}
+              control={control}
+              errors={errors}
+              isSubmitting={isSubmitting}
               isEditing={isEditing}
             />
           </div>
@@ -373,12 +358,10 @@ export default function ProductCreateEditForm({
   );
 }
 
-function SubmitButton({ isEditing }) {
-  const { pending } = useFormStatus();
-
+function SubmitButton({ isEditing, isSubmitting }) {
   return (
-    <Button type="submit" className="px-4 py-2" disabled={pending}>
-      {pending
+    <Button type="submit" className="px-4 py-2" disabled={isSubmitting}>
+      {isSubmitting
         ? isEditing
           ? "Updating..."
           : "Creating..."
