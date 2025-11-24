@@ -21,6 +21,7 @@ import {
   createBannerAction,
   updateBannerAction,
 } from "@/server/actions/banner-action";
+import FormError from "@/components/FormError";
 
 /**
  * BannerForm Component
@@ -185,9 +186,7 @@ export default function BannerForm({ existingBanner = null }) {
                 disabled={isSubmitting}
                 className={cn(errors.title && "border-destructive")}
               />
-              {errors.title && (
-                <p className="text-sm text-destructive">{errors.title.message}</p>
-              )}
+              {errors.title && <FormError message={errors.title.message} />}
             </div>
 
             {/* Subtitle */}
@@ -201,7 +200,7 @@ export default function BannerForm({ existingBanner = null }) {
                 className={cn(errors.subtitle && "border-destructive")}
               />
               {errors.subtitle && (
-                <p className="text-sm text-destructive">{errors.subtitle.message}</p>
+                <FormError message={errors.subtitle.message} />
               )}
               <p className="text-xs text-muted-foreground">
                 Supporting text displayed below the title
@@ -219,7 +218,7 @@ export default function BannerForm({ existingBanner = null }) {
                 className={cn(errors.link_url && "border-destructive")}
               />
               {errors.link_url && (
-                <p className="text-sm text-destructive">{errors.link_url.message}</p>
+                <FormError message={errors.link_url.message} />
               )}
               <p className="text-xs text-muted-foreground">
                 Where the button should link to. Use /path for internal pages or
@@ -238,7 +237,7 @@ export default function BannerForm({ existingBanner = null }) {
                 className={cn(errors.link_text && "border-destructive")}
               />
               {errors.link_text && (
-                <p className="text-sm text-destructive">{errors.link_text.message}</p>
+                <FormError message={errors.link_text.message} />
               )}
               <p className="text-xs text-muted-foreground">
                 Text displayed on the call-to-action button
@@ -258,7 +257,7 @@ export default function BannerForm({ existingBanner = null }) {
                 className={cn(errors.display_order && "border-destructive")}
               />
               {errors.display_order && (
-                <p className="text-sm text-destructive">{errors.display_order.message}</p>
+                <FormError message={errors.display_order.message} />
               )}
               <p className="text-xs text-muted-foreground">
                 Lower numbers appear first in the carousel
@@ -286,7 +285,7 @@ export default function BannerForm({ existingBanner = null }) {
                 Active (Show on homepage)
               </Label>
               {errors.is_active && (
-                <p className="text-sm text-destructive">{errors.is_active.message}</p>
+                <FormError message={errors.is_active.message} />
               )}
             </div>
 
