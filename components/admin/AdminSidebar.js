@@ -92,7 +92,7 @@ export function AdminSidebar() {
                     size="lg"
                     className={cn(
                       "text-base gap-2.5 rounded-none px-10",
-                      pathname === item.url && "bg-accent"
+                      pathname.startsWith(item.url) && "bg-accent"
                     )}
                     asChild
                   >
