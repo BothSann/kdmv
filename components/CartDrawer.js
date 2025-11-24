@@ -111,7 +111,7 @@ export default function CartDrawer() {
                     asChild
                     className="w-full font-normal text-xs lg:text-sm"
                   >
-                    <Link href="/">Continue Shopping</Link>
+                    <Link href="/products">Continue Shopping</Link>
                   </Button>
                 </div>
               </div>
