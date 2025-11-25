@@ -1,7 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: ["kdmv.store"],
     unoptimized: true,
 
     remotePatterns: [
