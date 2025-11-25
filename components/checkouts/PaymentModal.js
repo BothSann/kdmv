@@ -51,7 +51,6 @@ export default function PaymentModal({ paymentData, orderId, onClose }) {
 
       try {
         const result = await checkPaymentStatus(paymentData.transactionId);
-        console.log("Payment status check:", result);
 
         if (result.status === "COMPLETED") {
           stopPolling();
@@ -76,7 +75,6 @@ export default function PaymentModal({ paymentData, orderId, onClose }) {
     }, 10000); // Check every 10 seconds
 
     pollingIntervalRef.current = intervalId;
-    console.log("Polling started, interval ID:", intervalId);
   };
 
   const handleClose = useCallback(() => {
