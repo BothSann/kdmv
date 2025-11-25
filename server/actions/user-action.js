@@ -74,6 +74,16 @@ export async function updateCurrentUserProfileAction(formData) {
     }
 
     // ════════════════════════════════════════════════════════════
+    // 5. DEMO ACCOUNT CHECK - Block all profile modifications
+    // ════════════════════════════════════════════════════════════
+    if (profile.is_demo_account) {
+      return {
+        error:
+          "Demo accounts cannot modify profile information. Please create a regular account to access all features.",
+      };
+    }
+
+    // ════════════════════════════════════════════════════════════
     // 5. BUSINESS LOGIC VALIDATIONS - Check phone number uniqueness
     // ════════════════════════════════════════════════════════════
     // ✅ Use authenticated client for read operations (RLS allows SELECT for all)
