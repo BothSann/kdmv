@@ -51,6 +51,7 @@ next-env.d.ts
 docs/
 .github/
 migrations/
+khqr-proxy/
 
 
 supabase-schema.sql
