@@ -81,7 +81,7 @@ export default function AddressCreateEditForm({
     }
   };
   return (
-    <Card className="w-full lg:w-3/4">
+    <Card className="w-full">
       <CardContent>
         <form
           className="grid grid-cols-2 gap-4 space-y-4"

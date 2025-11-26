@@ -35,7 +35,7 @@ function CustomTooltip({ active, payload }) {
           <span className="text-xs uppercase text-muted-foreground">
             {data.name}
           </span>
-          <span className="font-semibold text-muted-foreground">
+          <span className="font-semibold text-muted-foreground text-sm">
             {data.value} {data.value === 1 ? "order" : "orders"}
           </span>
         </div>

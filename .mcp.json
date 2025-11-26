@@ -5,8 +5,9 @@
       "url": "https://mcp.supabase.com/mcp?project_ref=rbcppmhhbzilsypviyrg"
     },
     "next-devtools": {
-      "command": "npx",
-      "args": ["-y", "next-devtools-mcp@latest"]
+      "type": "stdio",
+      "command": "cmd",
+      "args": ["/c", "npx", "-y", "next-devtools-mcp@latest"]
     }
   }
 }

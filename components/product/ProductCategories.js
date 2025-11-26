@@ -82,7 +82,7 @@ export default function ProductCategories({
                 <SelectContent>
                   {filteredSubcategories.map((subcategory) => (
                     <SelectItem key={subcategory.id} value={subcategory.id}>
-                      {subcategory.name}
+                      {subcategory.product_types?.name || subcategory.name}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -109,10 +109,14 @@ export default function ProductCategories({
               </div>
 
               <div className="flex items-center gap-2 text-sm">
-                <span className="text-muted-foreground">Subcategory</span>
+                <span className="text-muted-foreground">Product Type</span>
                 <span>&rarr;</span>
                 <span className="font-medium">
-                  {filteredSubcategories.find((sub) => sub.id === subcategoryId)?.name}
+                  {filteredSubcategories.find((sub) => sub.id === subcategoryId)
+                    ?.product_types?.name ||
+                    filteredSubcategories.find(
+                      (sub) => sub.id === subcategoryId
+                    )?.name}
                 </span>
               </div>
             </div>

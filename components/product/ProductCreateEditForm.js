@@ -114,25 +114,6 @@ export default function ProductCreateEditForm({
     }
   }, [isEditing, existingProduct, subcategories]);
 
-  // Auto-select "All Genders" subcategory for Unisex category
-  useEffect(() => {
-    if (selectedCategory && subcategories && categories) {
-      const selectedCategoryData = categories?.find(
-        (cat) => cat.id === selectedCategory
-      );
-
-      if (selectedCategoryData?.slug === "unisex") {
-        const allGendersSub = subcategories.find(
-          (sub) =>
-            sub.category_id === selectedCategory && sub.slug === "all-genders"
-        );
-
-        if (allGendersSub && !subcategoryId) {
-          setValue("subcategory_id", allGendersSub.id);
-        }
-      }
-    }
-  }, [selectedCategory, subcategories, categories, subcategoryId, setValue]);
 
   // Variant management functions
   const addVariant = () => {
