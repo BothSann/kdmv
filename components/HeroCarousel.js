@@ -126,71 +126,69 @@ export default function HeroCarousel({ banners = null }) {
       >
         {slidesData.map((slide, index) => (
           <SwiperSlide key={slide.id}>
-            <div className="relative w-full h-full">
-              <motion.div
-                key={`image-${slide.id}-${activeIndex}`}
-                variants={imageVariants}
-                initial="hidden"
-                animate={activeIndex === index ? "visible" : "hidden"}
-                className="relative w-full h-full"
-              >
-                <Image
-                  src={slide.image}
-                  alt={slide.title}
-                  fill
-                  quality={50}
-                  sizes="100vw"
-                  className="object-cover object-top"
-                  priority={index === 0}
-                />
-              </motion.div>
+            <motion.div
+              key={`image-${slide.id}-${activeIndex}`}
+              variants={imageVariants}
+              initial="hidden"
+              animate={activeIndex === index ? "visible" : "hidden"}
+              className="relative w-full h-full"
+            >
+              <Image
+                src={slide.image}
+                alt={slide.title}
+                fill
+                quality={50}
+                sizes="100vw"
+                className="object-cover object-top"
+                priority={index === 0}
+              />
+            </motion.div>
 
-              {/* Content Overlay */}
-              <div className="absolute inset-0 bg-foreground/50 dark:bg-background/50 flex flex-col items-center justify-center text-background dark:text-foreground px-4 font-poppins text-center space-y-1.5 lg:space-y-2.5">
-                {slide.title && (
-                  <motion.h2
-                    key={`title-${slide.id}-${activeIndex}`}
-                    variants={titleVariants}
-                    initial="hidden"
-                    animate={activeIndex === index ? "visible" : "hidden"}
-                    className="text-3xl md:text-4xl lg:text-[3.5rem] leading-none font-bold"
-                  >
-                    {slide.title}
-                  </motion.h2>
-                )}
+            {/* Content Overlay */}
+            <div className="absolute inset-0 bg-foreground/50 dark:bg-background/50 flex flex-col items-center justify-center text-background dark:text-foreground px-4 font-poppins text-center space-y-1.5 lg:space-y-2.5">
+              {slide.title && (
+                <motion.h2
+                  key={`title-${slide.id}-${activeIndex}`}
+                  variants={titleVariants}
+                  initial="hidden"
+                  animate={activeIndex === index ? "visible" : "hidden"}
+                  className="text-3xl md:text-4xl lg:text-[3.5rem] leading-none font-bold"
+                >
+                  {slide.title}
+                </motion.h2>
+              )}
 
-                {slide.subtitle && (
-                  <motion.p
-                    key={`subtitle-${slide.id}-${activeIndex}`}
-                    variants={subtitleVariants}
-                    initial="hidden"
-                    animate={activeIndex === index ? "visible" : "hidden"}
-                    className="uppercase text-sm lg:text-lg tracking-widest"
-                  >
-                    {slide.subtitle}
-                  </motion.p>
-                )}
+              {slide.subtitle && (
+                <motion.p
+                  key={`subtitle-${slide.id}-${activeIndex}`}
+                  variants={subtitleVariants}
+                  initial="hidden"
+                  animate={activeIndex === index ? "visible" : "hidden"}
+                  className="uppercase text-sm lg:text-lg tracking-widest"
+                >
+                  {slide.subtitle}
+                </motion.p>
+              )}
 
-                {slide.link && (
-                  <motion.div
-                    key={`button-${slide.id}-${activeIndex}`}
-                    variants={buttonVariants}
-                    initial="hidden"
-                    animate={activeIndex === index ? "visible" : "hidden"}
+              {slide.link && (
+                <motion.div
+                  key={`button-${slide.id}-${activeIndex}`}
+                  variants={buttonVariants}
+                  initial="hidden"
+                  animate={activeIndex === index ? "visible" : "hidden"}
+                >
+                  <Button
+                    className="border-border border bg-transparent hover:bg-primary/20 dark:text-foreground dark:border-foreground dark:hover:bg-foreground/20 group font-medium mt-1.5 text-xs md:text-sm has-[>svg]:px-3.5"
+                    size="sm"
+                    asChild
                   >
-                    <Button
-                      className="border-border border bg-transparent hover:bg-primary/20 dark:text-foreground dark:border-foreground dark:hover:bg-foreground/20 group font-medium mt-1.5 text-xs md:text-sm has-[>svg]:px-3.5"
-                      size="sm"
-                      asChild
-                    >
-                      <Link href={slide.link}>
-                        {slide.linkText}
-                        <MoveRight className="transition-all duration-300 ease-in-out group-hover:opacity-100 group-hover:translate-x-0.5 group-hover:scale-110" />
-                      </Link>
-                    </Button>
-                  </motion.div>
-                )}
-              </div>
+                    <Link href={slide.link}>
+                      {slide.linkText}
+                      <MoveRight className="transition-all duration-300 ease-in-out group-hover:opacity-100 group-hover:translate-x-0.5 group-hover:scale-110" />
+                    </Link>
+                  </Button>
+                </motion.div>
+              )}
             </div>
           </SwiperSlide>
         ))}
