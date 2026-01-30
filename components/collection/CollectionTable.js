@@ -1,4 +1,4 @@
-import { getAllCollections } from "@/lib/api/collections";
+import { getAllCollections } from "@/lib/data/collections";
 import CollectionTableClient from "./CollectionTableClient";
 import EmptyState from "../EmptyState";
 import { Combine } from "lucide-react";

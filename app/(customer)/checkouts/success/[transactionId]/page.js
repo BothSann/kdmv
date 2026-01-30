@@ -1,10 +1,10 @@
 import { Suspense } from "react";
-import { getPayment, getPaymentWithOwnership } from "@/lib/api/payments";
+import { getPayment, getPaymentWithOwnership } from "@/lib/data/payments";
 
 import NotFound from "@/components/NotFound";
 import OrderSuccessCard from "@/components/OrderSuccessCard";
 import Spinner from "@/components/Spinner";
-import { getCurrentUser } from "@/lib/api/users";
+import { getCurrentUser } from "@/lib/data/users";
 import { redirect } from "next/navigation";
 
 export default async function CheckoutsSuccessPage({ params }) {

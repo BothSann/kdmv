@@ -1,6 +1,6 @@
-import { getAllCoupons } from "@/lib/api/coupons";
+import { getAllCoupons } from "@/lib/data/coupons";
 import CouponTableClient from "./CouponTableClient";
-import { getCurrentUser, getUserRole } from "@/lib/api/users";
+import { getCurrentUser, getUserRole } from "@/lib/data/users";
 import EmptyState from "../EmptyState";
 
 export default async function CouponTable({ searchParams }) {

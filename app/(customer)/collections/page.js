@@ -3,7 +3,7 @@ import CollectionList from "@/components/collection/CollectionList";
 import EmptyState from "@/components/EmptyState";
 import NotFound from "@/components/NotFound";
 import CustomerPagination from "@/components/product/CustomerPagination";
-import { getAllCollections } from "@/lib/api/collections";
+import { getAllCollections } from "@/lib/data/collections";
 
 // METADATA (SEO)
 export const metadata = {

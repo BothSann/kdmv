@@ -1,4 +1,4 @@
-import { searchProducts } from "@/lib/api/products";
+import { searchProducts } from "@/lib/data/products";
 import ProductList from "@/components/product/ProductList";
 import CustomerPagination from "@/components/product/CustomerPagination";
 import EmptyState from "@/components/EmptyState";

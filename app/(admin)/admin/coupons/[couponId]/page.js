@@ -22,7 +22,7 @@ import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
 
 import Link from "next/link";
-import { getCouponById } from "@/lib/api/coupons";
+import { getCouponById } from "@/lib/data/coupons";
 import {
   cn,
   formatISODateToDayDateMonthYearWithAtTime,
@@ -82,15 +82,15 @@ function Header({ coupon }) {
               coupon.isReachedUsageLimit || coupon.isExpired
                 ? "bg-destructive dark:text-foreground"
                 : coupon.isNotYetValid
-                ? "bg-warning dark:text-foreground"
-                : "bg-success dark:text-foreground"
+                  ? "bg-warning dark:text-foreground"
+                  : "bg-success dark:text-foreground"
             )}
           >
             {coupon.isReachedUsageLimit || coupon.isExpired
               ? "Inactive"
               : coupon.isNotYetValid
-              ? "Not Yet Active"
-              : "Active"}
+                ? "Not Yet Active"
+                : "Active"}
           </Badge>
         </div>
       </div>

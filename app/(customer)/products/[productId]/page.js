@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import NotFound from "@/app/not-found";
 import ProductCustomerDetail from "@/components/product/ProductCustomerDetail";
 import ProductImageSlider from "@/components/product/ProductImageSlider";
-import { getProductById, getRelatedProducts } from "@/lib/api/products";
+import { getProductById, getRelatedProducts } from "@/lib/data/products";
 import Spinner from "@/components/Spinner";
 import RelatedProducts from "@/components/product/RelatedProducts";
 
@@ -70,8 +70,8 @@ export default async function ProductDetailPage({ params }) {
   }
 
   const { relatedProducts } = await getRelatedProducts(productId, {
-    subcategoryId: product.subcategory_id,
-    categoryId: product.category_id,
+    productTypeId: product.product_type_id,
+    gender: product.gender,
     collectionId: product.collection_id,
     basePrice: product.base_price,
     limit: 8,

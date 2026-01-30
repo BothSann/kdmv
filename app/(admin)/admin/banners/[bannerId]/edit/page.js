@@ -1,5 +1,5 @@
 import BannerForm from "@/components/admin/banner/BannerForm";
-import { getBannerById } from "@/lib/api/banners";
+import { getBannerById } from "@/lib/data/banners";
 import { notFound } from "next/navigation";
 
 /**

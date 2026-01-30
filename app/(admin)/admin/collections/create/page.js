@@ -1,6 +1,6 @@
 import CollectionCreateEditForm from "@/components/collection/CollectionCreateEditForm";
 import CollectionProductSelector from "@/components/collection/CollectionProductSelector";
-import { getAllProducts } from "@/lib/api/products";
+import { getAllProducts } from "@/lib/data/products";
 
 export default async function AdminCreateCollectionPage() {
   const { products } = await getAllProducts({

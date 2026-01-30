@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/table";
 
 import AdminRow from "@/components/admin/AdminRow";
-import { getAllAdmins } from "@/lib/api/users";
+import { getAllAdmins } from "@/lib/data/users";
 import EmptyState from "../EmptyState";
 import { Users } from "lucide-react";
 

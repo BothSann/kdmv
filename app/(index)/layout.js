@@ -1,7 +1,7 @@
 import ConditionalFooter from "@/components/ConditionalFooter";
 import DisclaimerBanner from "@/components/DisclaimerBanner";
 import HeaderWithCarousel from "@/components/HeaderWithCarousel";
-import { getActiveBanners } from "@/lib/api/banners";
+import { getActiveBanners } from "@/lib/data/banners";
 
 export const metadata = {
   title: "KDMV | Khmer Digital Marketing Venture",

@@ -2,8 +2,8 @@ import EmptyState from "@/components/EmptyState";
 import NotFound from "@/components/NotFound";
 import OrdersList from "@/components/order/OrdersList";
 import Spinner from "@/components/Spinner";
-import { getUserOrders } from "@/lib/api/orders";
-import { getCurrentUser } from "@/lib/api/users";
+import { getUserOrders } from "@/lib/data/orders";
+import { getCurrentUser } from "@/lib/data/users";
 import { Package } from "lucide-react";
 import { Suspense } from "react";
 

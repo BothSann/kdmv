@@ -13,7 +13,7 @@ import {
   getCurrentUser,
   getUserProfile,
   isPhoneNumberTaken,
-} from "@/lib/api/users";
+} from "@/lib/data/users";
 import { registerSchema } from "@/lib/validations/auth";
 
 export async function registerUserAction(formData) {

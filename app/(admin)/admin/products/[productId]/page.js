@@ -1,4 +1,4 @@
-import { getProductById } from "@/lib/api/products";
+import { getProductById } from "@/lib/data/products";
 import { Button } from "@/components/ui/button";
 import { PenLine, ChevronLeft } from "lucide-react";
 

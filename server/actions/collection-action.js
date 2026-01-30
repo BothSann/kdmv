@@ -9,12 +9,12 @@ import {
   sanitizeSlug,
 } from "@/lib/utils";
 
-import { getCurrentUser, getUserProfile } from "@/lib/api/users";
+import { getCurrentUser, getUserProfile } from "@/lib/data/users";
 
 import {
   cleanUpCreatedCollection,
   clearCollectionProducts,
-} from "@/lib/api/collections";
+} from "@/lib/data/collections";
 
 export async function createNewCollectionAction(formData) {
   try {
@@ -302,9 +302,8 @@ export async function bulkDeleteCollectionsAction(collectionIds) {
     revalidatePath("/admin/collections");
     return {
       success: true,
-      message: `Successfully deleted ${collectionIds.length} collection${
-        collectionIds.length > 1 ? "s" : ""
-      }`,
+      message: `Successfully deleted ${collectionIds.length} collection${collectionIds.length > 1 ? "s" : ""
+        }`,
     };
   } catch (err) {
     console.error("Unexpected error:", err);

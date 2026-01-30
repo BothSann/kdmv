@@ -1,5 +1,5 @@
 import CustomerUpdateProfileForm from "@/components/UserUpdateProfileForm";
-import { getCurrentUser } from "@/lib/api/users";
+import { getCurrentUser } from "@/lib/data/users";
 
 export async function generateMetadata() {
   const { user } = await getCurrentUser();

@@ -3,9 +3,9 @@ import { Button } from "@/components/ui/button";
 import { ChevronLeft } from "lucide-react";
 import AddressCreateEditForm from "@/components/address/AddressCreateEditForm";
 import NotFound from "@/components/NotFound";
-import { getCurrentUser } from "@/lib/api/users";
+import { getCurrentUser } from "@/lib/data/users";
 import { redirect } from "next/navigation";
-import { getAddressById } from "@/lib/api/addresses";
+import { getAddressById } from "@/lib/data/addresses";
 
 export const metadata = {
   title: "KDMV | Edit Address",

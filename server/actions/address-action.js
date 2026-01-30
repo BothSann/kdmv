@@ -1,6 +1,6 @@
 "use server";
 
-import { getCustomerAddresses } from "@/lib/api/addresses";
+import { getCustomerAddresses } from "@/lib/data/addresses";
 import { addressSchema } from "@/lib/validations/address";
 import { sanitizeName } from "@/lib/utils";
 import { createSupabaseServerClient } from "@/utils/supabase/server";

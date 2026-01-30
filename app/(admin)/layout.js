@@ -4,7 +4,7 @@ import ProtectedRoute from "@/components/ProtectedRoute";
 import { AdminSidebar } from "@/components/admin/AdminSidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import PageOverlay from "@/components/PageOverlay";
-import { getCurrentUser, getUserRole } from "@/lib/api/users";
+import { getCurrentUser, getUserRole } from "@/lib/data/users";
 import { redirect } from "next/navigation";
 
 // Force dynamic rendering for all admin routes (they use authentication cookies)

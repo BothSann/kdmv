@@ -86,7 +86,12 @@ export default function ProductRow({ product }) {
           ? `${product.discount_percentage}%`
           : "No Discount"}
       </TableCell>
-      <TableCell>{product.category_name || "No Category"}</TableCell>
+      <TableCell>
+        {product.product_type_name || "No Type"}{" "}
+        <span className="text-muted-foreground capitalize">
+          ({product.gender || "unisex"})
+        </span>
+      </TableCell>
       <TableCell>{product.collection_name || "No Collection"}</TableCell>
       <TableCell>{product.total_stock}</TableCell>
       <TableCell>{product.product_code || "No Code"}</TableCell>

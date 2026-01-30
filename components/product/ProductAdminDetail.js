@@ -74,12 +74,17 @@ export default function ProductAdminDetail({ product }) {
           </div>
         </div>
 
-        {/* Category */}
+        {/* Product Type & Gender */}
         <div className="hover:border-primary/30 bg-muted border p-4 flex items-center gap-4">
           <LayoutGrid className="text-muted-foreground self-start" />
           <div className="flex flex-col gap-1">
-            <span className="text-sm text-muted-foreground">Category</span>
-            <span className="font-semibold">{product.category_name}</span>
+            <span className="text-sm text-muted-foreground">Type / Gender</span>
+            <span className="font-semibold">
+              {product.product_type_name}{" "}
+              <span className="text-muted-foreground font-normal capitalize">
+                ({product.gender})
+              </span>
+            </span>
           </div>
         </div>
       </div>
@@ -107,9 +112,15 @@ export default function ProductAdminDetail({ product }) {
                   </TableCell>
                 </TableRow>
                 <TableRow>
-                  <TableCell className="font-medium">Subcategory</TableCell>
+                  <TableCell className="font-medium">Product Type</TableCell>
                   <TableCell className="text-right text-muted-foreground">
-                    {product.subcategory_name}
+                    {product.product_type_name}
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell className="font-medium">Gender</TableCell>
+                  <TableCell className="text-right text-muted-foreground capitalize">
+                    {product.gender}
                   </TableCell>
                 </TableRow>
                 {/* Collection - Only show if product belongs to a collection */}
@@ -125,12 +136,6 @@ export default function ProductAdminDetail({ product }) {
                   <TableCell className="font-medium">Total Stock</TableCell>
                   <TableCell className="text-right text-muted-foreground">
                     {product.total_stock}
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell className="font-medium">Slug</TableCell>
-                  <TableCell className="text-right text-muted-foreground">
-                    {product.slug}
                   </TableCell>
                 </TableRow>
               </TableBody>

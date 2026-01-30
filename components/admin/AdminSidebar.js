@@ -66,11 +66,6 @@ const items = [
     url: "/admin/banners",
     icon: Tv,
   },
-  {
-    title: "Settings",
-    url: "/admin/settings",
-    icon: Settings,
-  },
 ];
 
 export function AdminSidebar() {

@@ -6,7 +6,7 @@ import { createSupabaseServerClient } from "@/utils/supabase/server";
 import { revalidatePath } from "next/cache";
 import { isValidCambodiaPhoneNumber, sanitizeName } from "@/lib/utils";
 
-import { getCurrentUser, getUserProfile } from "@/lib/api/users";
+import { getCurrentUser, getUserProfile } from "@/lib/data/users";
 import { profileUpdateServerSchema } from "@/lib/validations/profile";
 import { changePasswordServerSchema } from "@/lib/validations/password";
 

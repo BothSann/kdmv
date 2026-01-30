@@ -5,12 +5,12 @@ import { supabaseAdmin } from "@/utils/supabase/supabaseAdmin";
 import { revalidatePath } from "next/cache";
 import { sanitizeCode } from "@/lib/utils";
 
-import { getCurrentUser, getUserProfile, getUserRole } from "@/lib/api/users";
+import { getCurrentUser, getUserProfile, getUserRole } from "@/lib/data/users";
 import {
   isCouponCodeTaken,
   isCouponCodeTakenByOther,
   validateCoupon,
-} from "@/lib/api/coupons";
+} from "@/lib/data/coupons";
 
 export async function createNewCouponAction(formData) {
   try {
@@ -288,9 +288,8 @@ export async function bulkDeleteCouponsAction(couponIds) {
 
     return {
       success: true,
-      message: `Successfully deleted ${couponIds.length} coupon${
-        couponIds.length > 1 ? "s" : ""
-      }`,
+      message: `Successfully deleted ${couponIds.length} coupon${couponIds.length > 1 ? "s" : ""
+        }`,
     };
   } catch (err) {
     console.error("Unexpected error:", err);

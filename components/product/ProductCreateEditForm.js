@@ -19,14 +19,13 @@ import FormError from "@/components/FormError";
 import { cn } from "@/lib/utils";
 import ProductDetail from "./ProductDetail";
 import ProductPricing from "./ProductPricing";
-import ProductCategories from "./ProductCategories";
+import ProductTypeAndGender from "./ProductTypeAndGender";
 import ProductCollection from "./ProductCollection";
 import ProductVariantEditor from "./ProductVariantEditor";
 import ProductImages from "./ProductImages";
 
 export default function ProductCreateEditForm({
-  categories,
-  subcategories,
+  productTypes,
   colors,
   sizes,
   collections,
@@ -52,7 +51,8 @@ export default function ProductCreateEditForm({
       base_price: existingProduct?.base_price?.toString() || "",
       discount_percentage:
         existingProduct?.discount_percentage?.toString() || "",
-      subcategory_id: existingProduct?.subcategory_id || "",
+      product_type_id: existingProduct?.product_type_id || "",
+      gender: existingProduct?.gender || "unisex",
       is_active: existingProduct?.is_active ?? true,
       collection_id: existingProduct?.collection_id || "",
       variants:
@@ -87,32 +87,22 @@ export default function ProductCreateEditForm({
 
   // Keep these for UI state
   const [isInitialized, setIsInitialized] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState("");
 
-  // Watch subcategory_id from form
-  const subcategoryId = watch("subcategory_id");
+  // Watch form values
+  const productTypeId = watch("product_type_id");
+  const gender = watch("gender");
   const formName = watch("name");
 
   // Initialize form data and control loading state
   useEffect(() => {
     if (isEditing && existingProduct) {
-      // EDIT MODE: Find category from subcategory for UI filtering
-      const subcategory = subcategories?.find(
-        (sub) => sub.id === existingProduct.subcategory_id
-      );
-      const categoryId = subcategory?.category_id;
-
-      if (categoryId) {
-        setSelectedCategory(categoryId);
-      }
-
       setIsInitialized(true);
     }
 
     if (!isEditing) {
       setIsInitialized(true);
     }
-  }, [isEditing, existingProduct, subcategories]);
+  }, [isEditing, existingProduct]);
 
 
   // Variant management functions
@@ -132,12 +122,6 @@ export default function ProductCreateEditForm({
 
   const handleWheel = (e) => {
     e.target.blur();
-  };
-
-  // Reset subcategory when category changes
-  const handleCategoryChange = (categoryId) => {
-    setSelectedCategory(categoryId);
-    setValue("subcategory_id", ""); // Reset subcategory selection
   };
 
   // Form submission handler (validated by Zod)
@@ -312,16 +296,14 @@ export default function ProductCreateEditForm({
               onWheel={handleWheel}
             />
 
-            {/* Categories */}
-            <ProductCategories
-              categories={categories}
-              subcategories={subcategories}
-              selectedCategory={selectedCategory}
-              subcategoryId={subcategoryId}
+            {/* Product Type & Gender */}
+            <ProductTypeAndGender
+              productTypes={productTypes}
               control={control}
               errors={errors}
               isSubmitting={isSubmitting}
-              onCategoryChange={handleCategoryChange}
+              productTypeId={productTypeId}
+              gender={gender}
             />
 
             {/* Collections */}

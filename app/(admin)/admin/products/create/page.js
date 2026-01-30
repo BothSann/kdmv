@@ -1,26 +1,23 @@
 import {
   getAllColors,
   getAllSizes,
-  getAllCategories,
-  getAllSubcategories,
-} from "@/lib/api/products";
+  getAllProductTypes,
+} from "@/lib/data/products";
 
-import { getAllCollections } from "@/lib/api/collections";
+import { getAllCollections } from "@/lib/data/collections";
 import ProductCreateEditForm from "@/components/product/ProductCreateEditForm";
 
 export default async function AdminAddProductPage() {
   const { colors } = await getAllColors();
   const { sizes } = await getAllSizes();
-  const { categories } = await getAllCategories();
-  const { subcategories } = await getAllSubcategories();
+  const { productTypes } = await getAllProductTypes();
   const { collections } = await getAllCollections();
 
   return (
     <ProductCreateEditForm
       colors={colors}
       sizes={sizes}
-      categories={categories}
-      subcategories={subcategories}
+      productTypes={productTypes}
       collections={collections}
     />
   );

@@ -1,6 +1,6 @@
 import NotFound from "@/components/NotFound";
 import OrderTableClient from "./OrderTableClient";
-import { getAllOrders } from "@/lib/api/orders";
+import { getAllOrders } from "@/lib/data/orders";
 import EmptyState from "../EmptyState";
 import { FileCheck } from "lucide-react";
 

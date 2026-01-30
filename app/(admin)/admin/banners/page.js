@@ -1,6 +1,6 @@
 import BannerTable from "@/components/admin/banner/BannerTable";
 import { Button } from "@/components/ui/button";
-import { getAllBanners } from "@/lib/api/banners";
+import { getAllBanners } from "@/lib/data/banners";
 import { Plus } from "lucide-react";
 import Link from "next/link";
 import { Suspense } from "react";

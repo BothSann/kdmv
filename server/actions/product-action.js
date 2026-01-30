@@ -7,15 +7,15 @@ import {
   cleanUpCreatedProduct,
   generateUniqueProductCode,
   generateSKU,
-} from "@/lib/api/products/helpers";
+} from "@/lib/data/products/helpers";
 import {
   uploadProductGalleryImages,
   handleBannerImageUpload,
   handleGalleryImagesUpdate,
-} from "@/lib/api/products/imageService";
-import { getCurrentUser, getUserProfile, getUserRole } from "@/lib/api/users";
-import { syncProductVariants } from "@/lib/api/products/variantService";
-import { updateProductCollections } from "@/lib/api/products/collectionService";
+} from "@/lib/data/products/imageService";
+import { getCurrentUser, getUserProfile, getUserRole } from "@/lib/data/users";
+import { syncProductVariants } from "@/lib/data/products/variantService";
+import { updateProductCollections } from "@/lib/data/products/collectionService";
 
 export async function createNewProductAction(formData) {
   try {
@@ -45,7 +45,8 @@ export async function createNewProductAction(formData) {
         product_code: productCode,
         base_price: parseFloat(formData.base_price),
         discount_percentage: parseInt(formData.discount_percentage) || 0,
-        subcategory_id: formData.subcategory_id,
+        product_type_id: formData.product_type_id,
+        gender: formData.gender || "unisex",
         banner_image_url: imagePath || null,
         is_active: formData.is_active ?? true,
         created_by: user.id,
@@ -179,7 +180,8 @@ export async function updateProductAction(formData) {
         description: formData.description,
         base_price: parseFloat(formData.base_price),
         discount_percentage: parseInt(formData.discount_percentage) || 0,
-        subcategory_id: formData.subcategory_id,
+        product_type_id: formData.product_type_id,
+        gender: formData.gender || "unisex",
         banner_image_url: imagePath,
         is_active: formData.is_active ?? true,
         updated_at: new Date().toISOString(),
@@ -361,9 +363,8 @@ export async function bulkDeleteProductsAction(productIds) {
 
     return {
       success: true,
-      message: `Successfully deleted ${productIds.length} product${
-        productIds.length > 1 ? "s" : ""
-      }`,
+      message: `Successfully deleted ${productIds.length} product${productIds.length > 1 ? "s" : ""
+        }`,
     };
   } catch (err) {
     console.error("Unexpected error:", err);

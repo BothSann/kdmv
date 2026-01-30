@@ -24,6 +24,11 @@ import {
 import BulkDeleteProductDialog from "./BulkDeleteProductDialog";
 import { useProductTableStore } from "@/store/useTableSelectionStore";
 import EmptyState from "../EmptyState";
+import SortSelect from "@/components/ui/sort-select";
+import {
+  PRODUCT_SORT_OPTIONS,
+  DEFAULT_PRODUCT_SORT,
+} from "@/lib/constants";
 
 export default function ProductTableClient({ products, pagination }) {
   const [isBulkDeleteDialogOpen, setIsBulkDeleteDialogOpen] = useState(false);
@@ -64,7 +69,7 @@ export default function ProductTableClient({ products, pagination }) {
     { label: "Product Name", key: "name" },
     { label: "Base Price", key: "base_price" },
     { label: "Discount", key: "discount_percentage" },
-    { label: "Category", key: "category_name" },
+    { label: "Type / Gender", key: "product_type_name" },
     { label: "Collection", key: "collection_name" },
     { label: "Stock", key: "total_stock" },
     { label: "Code", key: "product_code" },
@@ -74,6 +79,14 @@ export default function ProductTableClient({ products, pagination }) {
 
   return (
     <div>
+      {/* Sort Controls */}
+      <div className="flex justify-end mt-6">
+        <SortSelect
+          options={PRODUCT_SORT_OPTIONS}
+          defaultValue={DEFAULT_PRODUCT_SORT}
+        />
+      </div>
+
       {/* Bulk Actions Bar */}
       {selectedCount > 0 && (
         <div className="px-4 py-2 bg-muted/50 border border-border mt-10">

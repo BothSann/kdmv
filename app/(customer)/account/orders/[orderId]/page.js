@@ -1,7 +1,7 @@
 import OrderDetail from "@/components/order/OrderDetail";
 
-import { getOrderDetails } from "@/lib/api/orders";
-import { getCurrentUser } from "@/lib/api/users";
+import { getOrderDetails } from "@/lib/data/orders";
+import { getCurrentUser } from "@/lib/data/users";
 
 import NotFound from "@/components/NotFound";
 import { ChevronLeft } from "lucide-react";

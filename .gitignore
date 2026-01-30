@@ -46,12 +46,17 @@ next-env.d.ts
 .claude
 .vscode
 .claude
+CLAUDE.md
 
 
 docs/
 .github/
 migrations/
 khqr-proxy/
+COMPONENT
+COMPONENT-PATTERNS.md
+NEXTJS-16-PATTERNS-GUIDE.md
+NEXTJS-COMPOSITION-PATTERNS.md
 
 
 supabase-schema.sql

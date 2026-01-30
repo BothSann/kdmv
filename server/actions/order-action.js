@@ -1,12 +1,12 @@
 "use server";
 
-import { validateCartStock } from "@/lib/api/carts";
+import { validateCartStock } from "@/lib/data/carts";
 import { decodeKHQR, generateIndividualKHQR } from "@/lib/bakong-khqr";
 import {
   getOrderById,
   updateOrder,
   addOrderStatusHistory,
-} from "@/lib/api/orders";
+} from "@/lib/data/orders";
 
 import {
   generateUniqueOrderNumber,
