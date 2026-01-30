@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { createProfileForConfirmedUser } from "@/lib/data/users";
+import { createProfileForConfirmedUserAction } from "@/server/actions/auth-action";
 import { createSupabaseServerClient } from "@/utils/supabase/server";
 
 // Creating a handler to a GET request to route /auth/confirm
@@ -31,7 +31,7 @@ export async function GET(request) {
 
       // Only create profile for NEW user signups
       if (type === "email") {
-        const profileResult = await createProfileForConfirmedUser(data.user);
+        const profileResult = await createProfileForConfirmedUserAction(data.user);
 
         if (profileResult.error) {
           console.error("Profile creation error:", profileResult.error);

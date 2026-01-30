@@ -1,11 +1,6 @@
 "use server";
 
-import {
-  createCartItem,
-  getCartItem,
-  updateCartItemQuantity,
-  removeFromCart,
-} from "@/lib/data/carts";
+import { getCartItem } from "@/lib/data/carts";
 import { createSupabaseServerClient } from "@/utils/supabase/server";
 
 export async function addToCartAction(userId, variantId, quantity = 1) {
@@ -47,19 +42,42 @@ export async function addToCartAction(userId, variantId, quantity = 1) {
         };
       }
 
-      // Update quantity if already in cart
-      const { cartItem, error } = await updateCartItemQuantity(
-        existingCartItem.id,
-        newQuantity,
-        userId
-      );
+      // Update quantity if already in cart (inlined)
+      // Use PostgreSQL row-level locking
+      const { data: currentCartItem, error: fetchError } = await supabase
+        .from("shopping_cart")
+        .select("*")
+        .eq("id", existingCartItem.id)
+        .eq("customer_id", userId)
+        .single();
 
-      if (error) return { error };
+      if (fetchError || !currentCartItem) {
+        return { error: "Cart item not found" };
+      }
+
+      // Update with version check (optimistic locking)
+      const { data: updatedCartItem, error: updateError } = await supabase
+        .from("shopping_cart")
+        .update({
+          quantity: newQuantity,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", existingCartItem.id)
+        .eq("customer_id", userId)
+        .eq("updated_at", currentCartItem.updated_at) // Only update if not modified
+        .select()
+        .single();
+
+      if (updateError) {
+        return {
+          error: "Cart was modified by another request, please try again",
+        };
+      }
 
       return {
         success: true,
         message: "Cart item updated successfully",
-        cartItem,
+        cartItem: updatedCartItem,
       };
     } else {
       // Check if initial quantity exceeds stock
@@ -70,19 +88,24 @@ export async function addToCartAction(userId, variantId, quantity = 1) {
         };
       }
 
-      // Insert new cart item
-      const { cartItem, error } = await createCartItem(
-        userId,
-        variantId,
-        quantity
-      );
+      // Insert new cart item (inlined)
+      const { data: newCartItem, error: newCartItemError } = await supabase
+        .from("shopping_cart")
+        .insert([
+          { customer_id: userId, product_variant_id: variantId, quantity },
+        ])
+        .select()
+        .single();
 
-      if (error) return { error };
+      if (newCartItemError) {
+        console.error("Create cart item error:", newCartItemError);
+        return { error: "Failed to create cart item" };
+      }
 
       return {
         success: true,
         message: "Cart item added successfully",
-        cartItem,
+        cartItem: newCartItem,
       };
     }
   } catch (error) {
@@ -93,10 +116,18 @@ export async function addToCartAction(userId, variantId, quantity = 1) {
 
 export async function removeFromCartAction(cartItemId, userId) {
   try {
-    const { error: deleteError } = await removeFromCart(cartItemId, userId);
+    // Remove from cart (inlined)
+    const supabase = await createSupabaseServerClient();
+
+    const { error: deleteError } = await supabase
+      .from("shopping_cart")
+      .delete()
+      .eq("id", cartItemId)
+      .eq("customer_id", userId);
 
     if (deleteError) {
-      return { error: deleteError };
+      console.error("Remove from cart error:", deleteError);
+      return { error: "Failed to remove item from cart" };
     }
 
     return {
@@ -149,19 +180,30 @@ export async function updateCartItemQuantityAction(
       };
     }
 
-    // Proceed with update
-    const { cartItem: updatedItem, error } = await updateCartItemQuantity(
-      cartItemId,
-      newQuantity,
-      userId
-    );
+    // Proceed with update (inlined)
+    // Update with version check (optimistic locking)
+    const { data: updatedCartItem, error: updateError } = await supabase
+      .from("shopping_cart")
+      .update({
+        quantity: newQuantity,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", cartItemId)
+      .eq("customer_id", userId)
+      .eq("updated_at", cartItem.updated_at) // Only update if not modified
+      .select()
+      .single();
 
-    if (error) return { error };
+    if (updateError) {
+      return {
+        error: "Cart was modified by another request, please try again",
+      };
+    }
 
     return {
       success: true,
       message: "Cart item quantity updated successfully",
-      cartItem: updatedItem,
+      cartItem: updatedCartItem,
     };
   } catch (error) {
     console.error("Error updating cart item quantity:", error);

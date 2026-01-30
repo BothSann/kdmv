@@ -11,14 +11,9 @@ import {
 } from "@/components/ui/select";
 import { X } from "lucide-react";
 
-const GENDER_OPTIONS = [
-  { value: "men", label: "Men" },
-  { value: "women", label: "Women" },
-  { value: "unisex", label: "Unisex" },
-];
-
 export default function ProductFilters({
   productTypes = [],
+  genders = [],
   currentProductTypeId,
   currentGender,
 }) {
@@ -87,14 +82,14 @@ export default function ProductFilters({
           >
             All
           </Button>
-          {GENDER_OPTIONS.map((option) => (
+          {genders.map((option) => (
             <Button
-              key={option.value}
-              variant={currentGender === option.value ? "default" : "outline"}
+              key={option.slug}
+              variant={currentGender === option.slug ? "default" : "outline"}
               size="sm"
-              onClick={() => updateFilter("gender", option.value)}
+              onClick={() => updateFilter("gender", option.slug)}
             >
-              {option.label}
+              {option.name}
             </Button>
           ))}
         </div>

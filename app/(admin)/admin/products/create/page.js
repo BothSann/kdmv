@@ -2,6 +2,7 @@ import {
   getAllColors,
   getAllSizes,
   getAllProductTypes,
+  getAllGenders,
 } from "@/lib/data/products";
 
 import { getAllCollections } from "@/lib/data/collections";
@@ -11,6 +12,7 @@ export default async function AdminAddProductPage() {
   const { colors } = await getAllColors();
   const { sizes } = await getAllSizes();
   const { productTypes } = await getAllProductTypes();
+  const { genders } = await getAllGenders();
   const { collections } = await getAllCollections();
 
   return (
@@ -18,6 +20,7 @@ export default async function AdminAddProductPage() {
       colors={colors}
       sizes={sizes}
       productTypes={productTypes}
+      genders={genders}
       collections={collections}
     />
   );

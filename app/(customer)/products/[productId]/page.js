@@ -71,7 +71,7 @@ export default async function ProductDetailPage({ params }) {
 
   const { relatedProducts } = await getRelatedProducts(productId, {
     productTypeId: product.product_type_id,
-    gender: product.gender,
+    genderId: product.gender_id,
     collectionId: product.collection_id,
     basePrice: product.base_price,
     limit: 8,

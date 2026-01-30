@@ -6,14 +6,9 @@ import { getCurrentUser, getUserProfile } from "@/lib/data/users";
 import { generateUniqueImageName, sanitizeName } from "@/lib/utils";
 
 import {
-  createBanner,
-  updateBanner,
-  deleteBanner,
-  toggleBannerActive,
   uploadBannerImage,
   deleteBannerImage,
-  reorderBanners,
-} from "@/lib/data/banners";
+} from "@/server/services/banners/imageService";
 
 import {
   createBannerSchema,
@@ -98,18 +93,27 @@ export async function createBannerAction(formData) {
       return { error: `Image upload failed: ${uploadResult.error}` };
     }
 
-    // Create banner in database
-    const bannerData = {
-      ...validatedData,
-      image_url: uploadResult.imageUrl,
-    };
+    // Create banner in database (inlined)
+    const { data: banner, error: bannerError } = await supabaseAdmin
+      .from("hero_banners")
+      .insert({
+        title: validatedData.title,
+        subtitle: validatedData.subtitle || null,
+        image_url: uploadResult.imageUrl,
+        link_url: validatedData.link_url || null,
+        link_text: validatedData.link_text || "Shop Now",
+        display_order: validatedData.display_order ?? 0,
+        is_active: validatedData.is_active ?? true,
+        created_by: user.id,
+      })
+      .select()
+      .single();
 
-    const result = await createBanner(bannerData, user.id);
-
-    if (result.error) {
+    if (bannerError) {
       // Cleanup: Delete uploaded image if banner creation fails
       await deleteBannerImage(uploadResult.imageUrl);
-      return { error: result.error };
+      console.error("Banner creation error:", bannerError);
+      return { error: bannerError.message };
     }
 
     // Revalidate pages
@@ -118,7 +122,7 @@ export async function createBannerAction(formData) {
 
     return {
       success: true,
-      banner: result.banner,
+      banner,
       message: "Banner created successfully",
     };
   } catch (err) {
@@ -195,19 +199,43 @@ export async function updateBannerAction(formData) {
       }
     }
 
-    // Remove fields that shouldn't be sent to updateBanner
+    // Remove fields that shouldn't be sent to database update
     delete updates.id;
     delete updates.existing_image_url;
 
-    // Update banner
-    const result = await updateBanner(bannerId, updates);
+    // Build update object with only provided fields (inlined)
+    const updateData = {
+      updated_at: new Date().toISOString(),
+    };
 
-    if (result.error) {
+    if (updates.title !== undefined) updateData.title = updates.title;
+    if (updates.subtitle !== undefined)
+      updateData.subtitle = updates.subtitle || null;
+    if (updates.image_url !== undefined)
+      updateData.image_url = updates.image_url;
+    if (updates.link_url !== undefined)
+      updateData.link_url = updates.link_url || null;
+    if (updates.link_text !== undefined)
+      updateData.link_text = updates.link_text;
+    if (updates.display_order !== undefined)
+      updateData.display_order = updates.display_order;
+    if (updates.is_active !== undefined)
+      updateData.is_active = updates.is_active;
+
+    const { data: banner, error: bannerError } = await supabaseAdmin
+      .from("hero_banners")
+      .update(updateData)
+      .eq("id", bannerId)
+      .select()
+      .single();
+
+    if (bannerError) {
       // Rollback: If update failed but new image was uploaded, delete it
       if (updates.image_url && updates.image_url !== oldImageUrl) {
         await deleteBannerImage(updates.image_url);
       }
-      return { error: result.error };
+      console.error("Banner update error:", bannerError);
+      return { error: bannerError.message };
     }
 
     // Revalidate pages
@@ -217,7 +245,7 @@ export async function updateBannerAction(formData) {
 
     return {
       success: true,
-      banner: result.banner,
+      banner,
       message: "Banner updated successfully",
     };
   } catch (err) {
@@ -243,11 +271,15 @@ export async function deleteBannerAction(bannerId, imageUrl) {
       return { error: "Banner ID is required" };
     }
 
-    // Delete banner from database
-    const result = await deleteBanner(bannerId);
+    // Delete banner from database (inlined)
+    const { error: bannerError } = await supabaseAdmin
+      .from("hero_banners")
+      .delete()
+      .eq("id", bannerId);
 
-    if (result.error) {
-      return { error: result.error };
+    if (bannerError) {
+      console.error("Banner delete error:", bannerError);
+      return { error: bannerError.message };
     }
 
     // Delete associated image from storage
@@ -294,11 +326,20 @@ export async function toggleBannerActiveAction(bannerId, isActive) {
       return { error: errors };
     }
 
-    // Toggle status
-    const result = await toggleBannerActive(bannerId, isActive);
+    // Toggle status (inlined)
+    const { data: banner, error: bannerError } = await supabaseAdmin
+      .from("hero_banners")
+      .update({
+        is_active: isActive,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", bannerId)
+      .select()
+      .single();
 
-    if (result.error) {
-      return { error: result.error };
+    if (bannerError) {
+      console.error("Toggle banner active error:", bannerError);
+      return { error: bannerError.message };
     }
 
     // Revalidate pages
@@ -307,8 +348,8 @@ export async function toggleBannerActiveAction(bannerId, isActive) {
 
     return {
       success: true,
-      banner: result.banner,
-      message: result.message,
+      banner,
+      message: `Banner ${isActive ? "activated" : "deactivated"} successfully`,
     };
   } catch (err) {
     console.error("Unexpected error in toggleBannerActiveAction:", err);
@@ -339,11 +380,22 @@ export async function reorderBannersAction(bannerOrders) {
       return { error: errors };
     }
 
-    // Reorder banners
-    const result = await reorderBanners(validation.data.banner_orders);
+    // Reorder banners (inlined)
+    const updatePromises = validation.data.banner_orders.map(
+      ({ id, display_order }) =>
+        supabaseAdmin
+          .from("hero_banners")
+          .update({ display_order, updated_at: new Date().toISOString() })
+          .eq("id", id)
+    );
 
-    if (result.error) {
-      return { error: result.error };
+    const results = await Promise.all(updatePromises);
+
+    // Check if any updates failed
+    const failedUpdates = results.filter((result) => result.error);
+    if (failedUpdates.length > 0) {
+      console.error("Some banner reorders failed:", failedUpdates);
+      return { error: "Failed to reorder some banners" };
     }
 
     // Revalidate pages
@@ -352,7 +404,7 @@ export async function reorderBannersAction(bannerOrders) {
 
     return {
       success: true,
-      message: result.message,
+      message: "Banners reordered successfully",
     };
   } catch (err) {
     console.error("Unexpected error in reorderBannersAction:", err);

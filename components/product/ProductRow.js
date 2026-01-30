@@ -89,7 +89,7 @@ export default function ProductRow({ product }) {
       <TableCell>
         {product.product_type_name || "No Type"}{" "}
         <span className="text-muted-foreground capitalize">
-          ({product.gender || "unisex"})
+          ({product.gender_name || "N/A"})
         </span>
       </TableCell>
       <TableCell>{product.collection_name || "No Collection"}</TableCell>

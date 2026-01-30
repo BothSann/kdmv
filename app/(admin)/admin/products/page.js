@@ -4,7 +4,7 @@ import PaginationStateManager from "@/components/PaginationStateManager";
 
 import { Suspense } from "react";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { Plus, Settings2 } from "lucide-react";
 import ProductTableSkeleton from "@/components/TableSkeleton";
 
 export default async function AdminProductsPage({ searchParams }) {
@@ -18,12 +18,20 @@ export default async function AdminProductsPage({ searchParams }) {
             Manage products in the store
           </p>
         </div>
-        <Button asChild>
-          <Link href="/admin/products/create">
-            <Plus />
-            Add Product
-          </Link>
-        </Button>
+        <div className="flex gap-3">
+          <Button variant="outline" asChild>
+            <Link href="/admin/products/attributes">
+              <Settings2 />
+              Attributes
+            </Link>
+          </Button>
+          <Button asChild>
+            <Link href="/admin/products/create">
+              <Plus />
+              Add Product
+            </Link>
+          </Button>
+        </div>
       </div>
 
       <Suspense fallback={<ProductTableSkeleton />}>

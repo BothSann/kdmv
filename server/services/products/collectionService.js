@@ -1,7 +1,4 @@
-import {
-  addProductToCollection,
-  removeProductFromCollection,
-} from "../collections";
+import { supabaseAdmin } from "@/utils/supabase/supabaseAdmin";
 
 /**
  * Product Collection Service
@@ -49,23 +46,29 @@ export async function updateProductCollections(productId, newCollectionId) {
 
     // STEP 1: Remove from existing collections
     // This handles both reassignment and removal scenarios
-    const { success: removeSuccess, error: removeError } =
-      await removeProductFromCollection(productId);
+    const { error: removeError } = await supabaseAdmin
+      .from("collection_products")
+      .delete()
+      .eq("product_id", productId);
 
-    if (!removeSuccess) {
+    if (removeError) {
       console.error("Remove from collections error:", removeError);
-      return { error: removeError };
+      return { error: removeError.message };
     }
 
     // STEP 2: Add to new collection (if specified)
     // null or empty string = remove from all collections (already done in step 1)
     if (newCollectionId) {
-      const { success: addSuccess, error: addError } =
-        await addProductToCollection(productId, newCollectionId);
+      const { error: addError } = await supabaseAdmin
+        .from("collection_products")
+        .insert({
+          collection_id: newCollectionId,
+          product_id: productId,
+        });
 
-      if (!addSuccess) {
+      if (addError) {
         console.error("Add to collection error:", addError);
-        return { error: addError };
+        return { error: addError.message };
       }
     }
 

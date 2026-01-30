@@ -1,5 +1,5 @@
 import { supabaseAdmin } from "@/utils/supabase/supabaseAdmin";
-import { generateSKU } from "./helpers";
+import { generateSKU } from "@/lib/data/products/helpers";
 
 /**
  * Product Variant Service
@@ -122,10 +122,10 @@ async function categorizeVariantOperations(
         // Generate new SKU if color/size changed
         const newSKU = needsNewSKU
           ? await generateSKU(
-              productCode,
-              formVariant.color_id,
-              formVariant.size_id
-            )
+            productCode,
+            formVariant.color_id,
+            formVariant.size_id
+          )
           : existing.sku;
 
         toUpdate.push({
@@ -133,7 +133,7 @@ async function categorizeVariantOperations(
           color_id: formVariant.color_id,
           size_id: formVariant.size_id,
           quantity: parseInt(formVariant.quantity),
-          // ✅ FIX: Prioritize generated SKU when attributes change
+          // Prioritize generated SKU when attributes change
           sku: needsNewSKU ? newSKU : formVariant.sku || existing.sku,
         });
         variantIdsToKeep.push(existing.id);
