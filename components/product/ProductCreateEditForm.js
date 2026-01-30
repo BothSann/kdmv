@@ -26,6 +26,7 @@ import ProductImages from "./ProductImages";
 
 export default function ProductCreateEditForm({
   productTypes,
+  genders,
   colors,
   sizes,
   collections,
@@ -52,7 +53,7 @@ export default function ProductCreateEditForm({
       discount_percentage:
         existingProduct?.discount_percentage?.toString() || "",
       product_type_id: existingProduct?.product_type_id || "",
-      gender: existingProduct?.gender || "unisex",
+      gender_id: existingProduct?.gender_id || "",
       is_active: existingProduct?.is_active ?? true,
       collection_id: existingProduct?.collection_id || "",
       variants:
@@ -90,7 +91,7 @@ export default function ProductCreateEditForm({
 
   // Watch form values
   const productTypeId = watch("product_type_id");
-  const gender = watch("gender");
+  const genderId = watch("gender_id");
   const formName = watch("name");
 
   // Initialize form data and control loading state
@@ -299,11 +300,12 @@ export default function ProductCreateEditForm({
             {/* Product Type & Gender */}
             <ProductTypeAndGender
               productTypes={productTypes}
+              genders={genders}
               control={control}
               errors={errors}
               isSubmitting={isSubmitting}
               productTypeId={productTypeId}
-              gender={gender}
+              genderId={genderId}
             />
 
             {/* Collections */}

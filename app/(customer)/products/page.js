@@ -4,7 +4,7 @@ import CustomerPagination from "@/components/product/CustomerPagination";
 import ProductList from "@/components/product/ProductList";
 import ProductFilters from "@/components/product/ProductFilters";
 import SortSelect from "@/components/ui/sort-select";
-import { getAllProducts, getAllProductTypes } from "@/lib/data/products";
+import { getAllProducts, getAllProductTypes, getAllGenders } from "@/lib/data/products";
 import {
   PRODUCT_SORT_OPTIONS,
   DEFAULT_PRODUCT_SORT,
@@ -24,20 +24,28 @@ export default async function AllProductsPage({ searchParams }) {
   const productTypeId = resolvedParams?.type || null;
   const gender = resolvedParams?.gender || null;
 
-  // Fetch products and product types
-  const [productsResult, productTypesResult] = await Promise.all([
-    getAllProducts({
-      page: currentPage,
-      perPage: 20,
-      sortBy: currentSort,
-      productTypeId,
-      gender,
-    }),
+  // Fetch product types and genders first (needed to resolve gender slug)
+  const [productTypesResult, gendersResult] = await Promise.all([
     getAllProductTypes(),
+    getAllGenders(),
   ]);
 
-  const { products, pagination, error } = productsResult;
   const { productTypes } = productTypesResult;
+  const { genders } = gendersResult;
+
+  // Resolve gender slug to UUID for the query
+  const genderId = gender && genders
+    ? genders.find((g) => g.slug === gender)?.id || null
+    : null;
+
+  // Fetch products with resolved gender ID
+  const { products, pagination, error } = await getAllProducts({
+    page: currentPage,
+    perPage: 20,
+    sortBy: currentSort,
+    productTypeId,
+    genderId,
+  });
 
   if (error) {
     return <NotFound href="/products" title="Product" />;
@@ -46,8 +54,9 @@ export default async function AllProductsPage({ searchParams }) {
   // Build page title based on filters
   const getPageTitle = () => {
     const parts = [];
-    if (gender) {
-      parts.push(gender.charAt(0).toUpperCase() + gender.slice(1) + "'s");
+    if (gender && genders) {
+      const genderObj = genders.find((g) => g.slug === gender);
+      if (genderObj) parts.push(genderObj.name + "'s");
     }
     if (productTypeId) {
       const productType = productTypes?.find((pt) => pt.id === productTypeId);
@@ -64,6 +73,7 @@ export default async function AllProductsPage({ searchParams }) {
       <div className="space-y-8">
         <ProductFilters
           productTypes={productTypes || []}
+          genders={genders || []}
           currentProductTypeId={productTypeId}
           currentGender={gender}
         />
@@ -84,6 +94,7 @@ export default async function AllProductsPage({ searchParams }) {
       {/* Filters */}
       <ProductFilters
         productTypes={productTypes || []}
+        genders={genders || []}
         currentProductTypeId={productTypeId}
         currentGender={gender}
       />

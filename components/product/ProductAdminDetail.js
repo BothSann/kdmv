@@ -81,8 +81,8 @@ export default function ProductAdminDetail({ product }) {
             <span className="text-sm text-muted-foreground">Type / Gender</span>
             <span className="font-semibold">
               {product.product_type_name}{" "}
-              <span className="text-muted-foreground font-normal capitalize">
-                ({product.gender})
+              <span className="text-muted-foreground font-normal">
+                ({product.gender_name})
               </span>
             </span>
           </div>
@@ -119,8 +119,8 @@ export default function ProductAdminDetail({ product }) {
                 </TableRow>
                 <TableRow>
                   <TableCell className="font-medium">Gender</TableCell>
-                  <TableCell className="text-right text-muted-foreground capitalize">
-                    {product.gender}
+                  <TableCell className="text-right text-muted-foreground">
+                    {product.gender_name}
                   </TableCell>
                 </TableRow>
                 {/* Collection - Only show if product belongs to a collection */}

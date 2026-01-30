@@ -4,12 +4,13 @@ import { supabaseAdmin } from "@/utils/supabase/supabaseAdmin";
 import { createSupabaseServerClient } from "@/utils/supabase/server";
 
 import { revalidatePath } from "next/cache";
-import { sanitizeName } from "@/lib/utils";
+import {
+  sanitizeName,
+  generateUniqueTelephonePlaceholder,
+} from "@/lib/utils";
 import { getBaseUrl } from "@/lib/config";
 
 import {
-  cleanUpCreatedAdmin,
-  createProfileForAdmin,
   getCurrentUser,
   getUserProfile,
   isPhoneNumberTaken,
@@ -154,16 +155,25 @@ export async function registerAdminAction(formData) {
       return { error: authError.message };
     }
 
-    const profileResult = await createProfileForAdmin(authData.user);
+    // Create admin profile (inlined)
+    const { error: profileCreationError } = await supabaseAdmin
+      .from("profiles")
+      .insert({
+        id: authData.user.id,
+        email: authData.user.email,
+        first_name: authData.user.user_metadata?.first_name,
+        last_name: authData.user.user_metadata?.last_name,
+        gender: "prefer not to say",
+        telephone: generateUniqueTelephonePlaceholder(),
+        city_province: "Phnom Penh",
+        role: "admin",
+      });
 
-    if (profileResult.error) {
-      await cleanUpCreatedAdmin(authData.user.id);
-      console.error("Profile creation error:", profileResult.error);
-      return { error: profileResult.error };
-    }
-
-    if (profileResult.success) {
-      console.log("Profile creation success:", profileResult.message);
+    if (profileCreationError) {
+      // Clean up created admin (inlined)
+      await supabaseAdmin.auth.admin.deleteUser(authData.user.id);
+      console.error("Profile creation error:", profileCreationError);
+      return { error: "Failed to create admin profile" };
     }
 
     revalidatePath("/admin/users");
@@ -269,5 +279,48 @@ export async function sendPasswordResetEmailAction(email) {
       message:
         "If an account exists with that email, we've sent a password reset link. Please check your inbox.",
     };
+  }
+}
+
+/**
+ * Creates a profile for a confirmed user (called from email confirmation callback)
+ * This function is used when a user confirms their email address
+ */
+export async function createProfileForConfirmedUserAction(user) {
+  try {
+    // Check if profile already exists (safety check)
+    const { data: existingProfile } = await supabaseAdmin
+      .from("profiles")
+      .select("id")
+      .eq("id", user.id)
+      .maybeSingle();
+
+    if (existingProfile) {
+      return { success: true };
+    }
+
+    const { error: profileError } = await supabaseAdmin
+      .from("profiles")
+      .insert({
+        id: user.id,
+        email: user.email,
+        first_name: user.user_metadata?.first_name,
+        last_name: user.user_metadata?.last_name,
+        gender: user.user_metadata?.gender,
+        telephone: user.user_metadata?.telephone,
+        city_province: user.user_metadata?.city_province,
+        role: "customer",
+      });
+
+    if (profileError) {
+      console.error("Profile creation error:", profileError);
+      return { error: "Failed to create user profile" };
+    }
+
+    revalidatePath("/");
+    return { success: true, message: "Profile created successfully" };
+  } catch (err) {
+    console.error("Unexpected error in createProfileForConfirmedUserAction:", err);
+    return { error: "An unexpected error occurred while creating profile" };
   }
 }

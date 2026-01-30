@@ -4,18 +4,18 @@ import { supabaseAdmin } from "@/utils/supabase/supabaseAdmin";
 import { revalidatePath } from "next/cache";
 import { generateUniqueImageName } from "@/lib/utils";
 import {
-  cleanUpCreatedProduct,
   generateUniqueProductCode,
   generateSKU,
 } from "@/lib/data/products/helpers";
+import { cleanUpCreatedProduct } from "@/server/services/products/helpers";
 import {
   uploadProductGalleryImages,
   handleBannerImageUpload,
   handleGalleryImagesUpdate,
-} from "@/lib/data/products/imageService";
+} from "@/server/services/products/imageService";
 import { getCurrentUser, getUserProfile, getUserRole } from "@/lib/data/users";
-import { syncProductVariants } from "@/lib/data/products/variantService";
-import { updateProductCollections } from "@/lib/data/products/collectionService";
+import { syncProductVariants } from "@/server/services/products/variantService";
+import { updateProductCollections } from "@/server/services/products/collectionService";
 
 export async function createNewProductAction(formData) {
   try {
@@ -46,7 +46,7 @@ export async function createNewProductAction(formData) {
         base_price: parseFloat(formData.base_price),
         discount_percentage: parseInt(formData.discount_percentage) || 0,
         product_type_id: formData.product_type_id,
-        gender: formData.gender || "unisex",
+        gender_id: formData.gender_id,
         banner_image_url: imagePath || null,
         is_active: formData.is_active ?? true,
         created_by: user.id,
@@ -181,7 +181,7 @@ export async function updateProductAction(formData) {
         base_price: parseFloat(formData.base_price),
         discount_percentage: parseInt(formData.discount_percentage) || 0,
         product_type_id: formData.product_type_id,
-        gender: formData.gender || "unisex",
+        gender_id: formData.gender_id,
         banner_image_url: imagePath,
         is_active: formData.is_active ?? true,
         updated_at: new Date().toISOString(),

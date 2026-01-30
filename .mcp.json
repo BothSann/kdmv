@@ -8,6 +8,11 @@
       "type": "stdio",
       "command": "cmd",
       "args": ["/c", "npx", "-y", "next-devtools-mcp@latest"]
+    },
+    "context7": {
+      "type": "stdio",
+      "command": "cmd",
+      "args": ["/c", "npx", "-y", "@upstash/context7-mcp", "--api-key", "ctx7sk-e59a33bd-e629-4afe-9250-f744fcdbe5c5"]
     }
   }
 }

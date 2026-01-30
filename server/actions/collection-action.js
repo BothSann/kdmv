@@ -11,12 +11,9 @@ import {
 
 import { getCurrentUser, getUserProfile } from "@/lib/data/users";
 
-import {
-  cleanUpCreatedCollection,
-  clearCollectionProducts,
-} from "@/lib/data/collections";
-
 export async function createNewCollectionAction(formData) {
+  let createdCollectionId = null;
+
   try {
     const cleanCollectionName = sanitizeName(formData.name);
     const cleanCollectionSlug = sanitizeSlug(cleanCollectionName);
@@ -42,8 +39,6 @@ export async function createNewCollectionAction(formData) {
       };
     }
 
-    let createdCollectionId = null;
-
     const imageName = generateUniqueImageName(formData.banner_file);
     let imagePath = null;
     if (formData.banner_file && formData.banner_file.size > 0) {
@@ -67,6 +62,8 @@ export async function createNewCollectionAction(formData) {
       return { error: collectionError.message };
     }
 
+    createdCollectionId = collection.id;
+
     if (formData.selected_product_ids?.length > 0) {
       const collectionProductsToInsert = formData.selected_product_ids.map(
         (productId) => ({
@@ -82,6 +79,11 @@ export async function createNewCollectionAction(formData) {
 
       if (collectionProductsError) {
         console.error("Collection products error:", collectionProductsError);
+        // Clean up created collection (inlined)
+        await supabaseAdmin
+          .from("collections")
+          .delete()
+          .eq("id", createdCollectionId);
         return { error: collectionProductsError.message };
       }
     }
@@ -93,7 +95,11 @@ export async function createNewCollectionAction(formData) {
 
       if (storageError) {
         console.error("Storage error:", storageError);
-        await cleanUpCreatedCollection(createdCollectionId);
+        // Clean up created collection (inlined)
+        await supabaseAdmin
+          .from("collections")
+          .delete()
+          .eq("id", createdCollectionId);
         return { error: storageError.message };
       }
     }
@@ -107,7 +113,11 @@ export async function createNewCollectionAction(formData) {
   } catch (err) {
     console.error("Unexpected error:", err);
     if (createdCollectionId) {
-      await cleanUpCreatedCollection(createdCollectionId);
+      // Clean up created collection (inlined)
+      await supabaseAdmin
+        .from("collections")
+        .delete()
+        .eq("id", createdCollectionId);
     }
     return { error: "An unexpected error occurred during collection creation" };
   }
@@ -177,16 +187,15 @@ export async function updateCollectionAction(formData) {
 
     // 2. Update collection products relationships
     if (formData.selected_product_ids !== undefined) {
-      // Delete existing collection products
-      const { error: clearCollectionProductsError } =
-        await clearCollectionProducts(collectionId);
+      // Clear existing collection products (inlined)
+      const { error: clearError } = await supabaseAdmin
+        .from("collection_products")
+        .delete()
+        .eq("collection_id", collectionId);
 
-      if (clearCollectionProductsError) {
-        console.error(
-          "Clear collection products error:",
-          clearCollectionProductsError
-        );
-        return { error: clearCollectionProductsError.message };
+      if (clearError) {
+        console.error("Clear collection products error:", clearError);
+        return { error: clearError.message };
       }
 
       // Insert new collection products (if any selected)
@@ -302,8 +311,9 @@ export async function bulkDeleteCollectionsAction(collectionIds) {
     revalidatePath("/admin/collections");
     return {
       success: true,
-      message: `Successfully deleted ${collectionIds.length} collection${collectionIds.length > 1 ? "s" : ""
-        }`,
+      message: `Successfully deleted ${collectionIds.length} collection${
+        collectionIds.length > 1 ? "s" : ""
+      }`,
     };
   } catch (err) {
     console.error("Unexpected error:", err);

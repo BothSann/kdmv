@@ -2,17 +2,14 @@
 
 import { validateCartStock } from "@/lib/data/carts";
 import { decodeKHQR, generateIndividualKHQR } from "@/lib/bakong-khqr";
-import {
-  getOrderById,
-  updateOrder,
-  addOrderStatusHistory,
-} from "@/lib/data/orders";
+import { getOrderById } from "@/lib/data/orders";
 
 import {
   generateUniqueOrderNumber,
   generateStatusChangeNote,
 } from "@/lib/utils";
 import { createSupabaseServerClient } from "@/utils/supabase/server";
+import { supabaseAdmin } from "@/utils/supabase/supabaseAdmin";
 import { revalidatePath } from "next/cache";
 
 export async function createOrderAndInitiatePaymentAction(orderData) {
@@ -38,7 +35,7 @@ export async function createOrderAndInitiatePaymentAction(orderData) {
     // PHASE 2: CREATE ORDER (PENDING)
     const orderNumber = generateUniqueOrderNumber();
 
-    // ✅ Use authenticated client - RLS allows customers to create their own orders
+    // Use authenticated client - RLS allows customers to create their own orders
     const supabase = await createSupabaseServerClient();
     const { data: order, error: orderError } = await supabase
       .from("orders")
@@ -89,7 +86,7 @@ export async function createOrderAndInitiatePaymentAction(orderData) {
       };
     });
 
-    // ✅ Use authenticated client - RLS allows customers to create order items for their own orders
+    // Use authenticated client - RLS allows customers to create order items for their own orders
     const { error: orderItemsError } = await supabase
       .from("order_items")
       .insert(orderItems)
@@ -119,7 +116,7 @@ export async function createOrderAndInitiatePaymentAction(orderData) {
     // Decode KHQR to get payment details (optional, for display)
     const decodedKHQR = decodeKHQR(qrString);
 
-    // ✅ Use authenticated client - RLS allows customers to create payment transactions for their own orders
+    // Use authenticated client - RLS allows customers to create payment transactions for their own orders
     const { data: paymentTransaction, error: paymentError } = await supabase
       .from("payment_transactions")
       .insert({
@@ -145,7 +142,7 @@ export async function createOrderAndInitiatePaymentAction(orderData) {
     }
 
     // PHASE 6: CREATE ORDER STATUS HISTORY
-    // ✅ Use authenticated client - RLS allows customers to create status history for their own orders
+    // Use authenticated client - RLS allows customers to create status history for their own orders
     await supabase.from("order_status_history").insert({
       order_id: order.id,
       status: "PENDING",
@@ -195,9 +192,8 @@ export async function updateOrderStatusAction(
     ];
 
     // STEP 2: Get current order (for validation)
-    const { data: currentOrder, error: fetchError } = await getOrderById(
-      orderId
-    );
+    const { data: currentOrder, error: fetchError } =
+      await getOrderById(orderId);
 
     if (fetchError) {
       console.error("Order fetch error:", fetchError);
@@ -213,28 +209,35 @@ export async function updateOrderStatusAction(
       return { error: `Order is already ${newStatus}` };
     }
 
-    // STEP 3: Update orders.status (CURRENT STATE) ✅
-    const { data: updatedOrder, error: updateError } = await updateOrder(
-      orderId,
-      {
+    // STEP 3: Update orders.status (CURRENT STATE) - inlined
+    const { data: updatedOrder, error: updateError } = await supabaseAdmin
+      .from("orders")
+      .update({
         status: newStatus,
         updated_at: new Date().toISOString(),
-      }
-    );
+      })
+      .eq("id", orderId)
+      .select()
+      .single();
 
     if (updateError) {
-      return { error: updateError };
+      console.error("Order update error:", updateError);
+      return { error: "Failed to update order" };
     }
 
-    // STEP 4: Insert into order_status_history (AUDIT TRAIL)
+    // STEP 4: Insert into order_status_history (AUDIT TRAIL) - inlined
     const defaultNotes =
       notes || generateStatusChangeNote(currentOrder.status, newStatus);
-    const { error: historyError } = await addOrderStatusHistory(
-      orderId,
-      newStatus,
-      defaultNotes,
-      adminId
-    );
+
+    const { error: historyError } = await supabaseAdmin
+      .from("order_status_history")
+      .insert({
+        order_id: orderId,
+        status: newStatus,
+        notes: defaultNotes,
+        changed_by: adminId,
+        changed_at: new Date().toISOString(),
+      });
 
     if (historyError) {
       console.error("History insert error:", historyError);
