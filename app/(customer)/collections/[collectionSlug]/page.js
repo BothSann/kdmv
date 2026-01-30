@@ -2,11 +2,16 @@ import NotFound from "@/components/NotFound";
 import EmptyState from "@/components/EmptyState";
 import ProductList from "@/components/product/ProductList";
 import CustomerPagination from "@/components/product/CustomerPagination";
+import SortSelect from "@/components/ui/sort-select";
 import {
   getCollectionBySlug,
   getCollectionProducts,
-} from "@/lib/api/collections";
+} from "@/lib/data/collections";
 import CollectionBanner from "@/components/collection/CollectionBanner";
+import {
+  PRODUCT_SORT_OPTIONS,
+  DEFAULT_PRODUCT_SORT,
+} from "@/lib/constants";
 
 // METADATA (SEO)
 export async function generateMetadata({ params, searchParams }) {
@@ -26,9 +31,8 @@ export async function generateMetadata({ params, searchParams }) {
   }
 
   return {
-    title: `${collection.name}${
-      currentPage > 1 ? ` - Page ${currentPage}` : ""
-    } | KDMV`,
+    title: `${collection.name}${currentPage > 1 ? ` - Page ${currentPage}` : ""
+      } | KDMV`,
     description:
       collection.description || `Browse ${collection.name} collection products`,
   };
@@ -40,6 +44,7 @@ export default async function CollectionPage({ params, searchParams }) {
   const resolvedSearchParams = await searchParams;
   const collectionSlug = resolvedParams.collectionSlug;
   const currentPage = Math.max(1, Number(resolvedSearchParams?.page) || 1);
+  const currentSort = resolvedSearchParams?.sort || DEFAULT_PRODUCT_SORT;
 
   // 2. Fetch paginated products for this collection
   const { products, pagination, error } = await getCollectionProducts(
@@ -47,6 +52,7 @@ export default async function CollectionPage({ params, searchParams }) {
     {
       page: currentPage,
       perPage: 20,
+      sortBy: currentSort,
     }
   );
 
@@ -83,9 +89,15 @@ export default async function CollectionPage({ params, searchParams }) {
       </section>
 
       <div className="space-y-4">
-        <h2 className="text-4xl lg:text-5xl leading-none font-bold">
-          {products[0].collection_name}
-        </h2>
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <h2 className="text-4xl lg:text-5xl leading-none font-bold">
+            {products[0].collection_name}
+          </h2>
+          <SortSelect
+            options={PRODUCT_SORT_OPTIONS}
+            defaultValue={DEFAULT_PRODUCT_SORT}
+          />
+        </div>
         {products[0].collection_description && (
           <p className="text-lg text-muted-foreground">
             {products[0].collection_description}
@@ -107,6 +119,7 @@ export default async function CollectionPage({ params, searchParams }) {
           hasNextPage={pagination.hasNextPage}
           hasPreviousPage={pagination.hasPreviousPage}
           basePath={`/collections/${products[0].collection_slug}`}
+          currentSort={currentSort}
         />
       )}
     </div>

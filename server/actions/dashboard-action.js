@@ -23,7 +23,7 @@ import {
   getLowStockProducts,
   getTotalProductsCount,
   getTotalCustomersCount,
-} from "@/lib/api/dashboard";
+} from "@/lib/data/dashboard";
 
 /**
  * Get all dashboard data for the specified filter period

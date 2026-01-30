@@ -1,11 +1,10 @@
 import {
   getAllColors,
   getAllSizes,
-  getAllCategories,
-  getAllSubcategories,
+  getAllProductTypes,
   getProductById,
-} from "@/lib/api/products";
-import { getAllCollections } from "@/lib/api/collections";
+} from "@/lib/data/products";
+import { getAllCollections } from "@/lib/data/collections";
 import ProductCreateEditForm from "@/components/product/ProductCreateEditForm";
 
 export async function generateMetadata({ params }) {
@@ -23,8 +22,7 @@ export default async function AdminEditProductPage({ params }) {
 
   const { colors } = await getAllColors();
   const { sizes } = await getAllSizes();
-  const { categories } = await getAllCategories();
-  const { subcategories } = await getAllSubcategories();
+  const { productTypes } = await getAllProductTypes();
   const { collections } = await getAllCollections();
 
   // Fetch the product for editing
@@ -34,8 +32,7 @@ export default async function AdminEditProductPage({ params }) {
     <ProductCreateEditForm
       colors={colors}
       sizes={sizes}
-      categories={categories}
-      subcategories={subcategories}
+      productTypes={productTypes}
       collections={collections}
       existingProduct={product}
       isEditing={true}

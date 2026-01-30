@@ -5,7 +5,7 @@ import {
   getCartItem,
   updateCartItemQuantity,
   removeFromCart,
-} from "@/lib/api/carts";
+} from "@/lib/data/carts";
 import { createSupabaseServerClient } from "@/utils/supabase/server";
 
 export async function addToCartAction(userId, variantId, quantity = 1) {

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Button } from "../ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { DEFAULT_PRODUCT_SORT } from "@/lib/constants";
 
 export default function CustomerPagination({
   currentPage,
@@ -10,13 +11,35 @@ export default function CustomerPagination({
   hasNextPage,
   hasPreviousPage,
   basePath = "/products", // Dynamic base path, defaults to /products for backwards compatibility
+  currentSort, // Current sort value to preserve in pagination links
+  extraParams = {}, // Additional params to preserve (e.g., filters)
 }) {
+  // Build URL with pagination and optional sort param
+  const buildUrl = (page) => {
+    const params = new URLSearchParams();
+    params.set("page", page.toString());
+
+    // Only add sort param if it's not the default
+    if (currentSort && currentSort !== DEFAULT_PRODUCT_SORT) {
+      params.set("sort", currentSort);
+    }
+
+    // Add any extra params (filters, etc.)
+    Object.entries(extraParams).forEach(([key, value]) => {
+      if (value) {
+        params.set(key, value);
+      }
+    });
+
+    return `${basePath}?${params.toString()}`;
+  };
+
   return (
     <div className="flex justify-center gap-4 items-center">
       {/* Previous Button */}
       <PaginationArrow
         direction="prev"
-        href={`${basePath}?page=${currentPage - 1}`}
+        href={buildUrl(currentPage - 1)}
         disabled={!hasPreviousPage}
         icon={ChevronLeft}
       />
@@ -29,7 +52,7 @@ export default function CustomerPagination({
       {/* Next Button */}
       <PaginationArrow
         direction="next"
-        href={`${basePath}?page=${currentPage + 1}`}
+        href={buildUrl(currentPage + 1)}
         disabled={!hasNextPage}
         icon={ChevronRight}
       />

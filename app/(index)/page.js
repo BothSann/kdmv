@@ -1,9 +1,9 @@
 import HomePageClient from "@/components/index/HomePageClient";
-import { getCollectionProducts } from "@/lib/api/collections";
+import { getCollectionProducts } from "@/lib/data/collections";
 import {
   getFeaturedCollections,
   getFeaturedProducts,
-} from "@/lib/api/products";
+} from "@/lib/data/products";
 
 export default async function Home() {
   let data = { collectionsWithProducts: [], featuredProducts: [] };

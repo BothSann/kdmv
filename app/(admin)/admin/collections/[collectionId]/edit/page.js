@@ -1,5 +1,5 @@
-import { getCollectionById } from "@/lib/api/collections";
-import { getAllProducts } from "@/lib/api/products";
+import { getCollectionById } from "@/lib/data/collections";
+import { getAllProducts } from "@/lib/data/products";
 import NotFound from "@/components/NotFound";
 import CollectionCreateEditForm from "@/components/collection/CollectionCreateEditForm";
 import CollectionProductSelector from "@/components/collection/CollectionProductSelector";

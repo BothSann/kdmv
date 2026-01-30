@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
-import { getCurrentUser } from "@/lib/api/users";
-import { getCustomerAddresses } from "@/lib/api/addresses";
+import { getCurrentUser } from "@/lib/data/users";
+import { getCustomerAddresses } from "@/lib/data/addresses";
 import CheckoutClient from "../../../components/checkouts/CheckoutClient";
 
 export const metadata = {

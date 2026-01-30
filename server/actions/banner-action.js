@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { supabaseAdmin } from "@/utils/supabase/supabaseAdmin";
-import { getCurrentUser, getUserProfile } from "@/lib/api/users";
+import { getCurrentUser, getUserProfile } from "@/lib/data/users";
 import { generateUniqueImageName, sanitizeName } from "@/lib/utils";
 
 import {
@@ -13,7 +13,7 @@ import {
   uploadBannerImage,
   deleteBannerImage,
   reorderBanners,
-} from "@/lib/api/banners";
+} from "@/lib/data/banners";
 
 import {
   createBannerSchema,

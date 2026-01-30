@@ -1,5 +1,5 @@
 import NotFound from "@/components/NotFound";
-import { getCollectionById } from "@/lib/api/collections";
+import { getCollectionById } from "@/lib/data/collections";
 import { Button } from "@/components/ui/button";
 import {
   ChevronLeft,

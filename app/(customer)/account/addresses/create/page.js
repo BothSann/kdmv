@@ -1,7 +1,7 @@
 import AddressCreateEditForm from "@/components/address/AddressCreateEditForm";
 import NotFound from "@/components/NotFound";
 import { Button } from "@/components/ui/button";
-import { getCurrentUser } from "@/lib/api/users";
+import { getCurrentUser } from "@/lib/data/users";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 
