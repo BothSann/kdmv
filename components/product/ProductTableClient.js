@@ -25,12 +25,17 @@ import BulkDeleteProductDialog from "./BulkDeleteProductDialog";
 import { useProductTableStore } from "@/store/useTableSelectionStore";
 import EmptyState from "../EmptyState";
 import SortSelect from "@/components/ui/sort-select";
+import ProductFilters from "./ProductFilters";
 import {
   PRODUCT_SORT_OPTIONS,
   DEFAULT_PRODUCT_SORT,
 } from "@/lib/constants";
 
-export default function ProductTableClient({ products, pagination }) {
+export default function ProductTableClient({
+  products,
+  pagination,
+  currentSearch,
+}) {
   const [isBulkDeleteDialogOpen, setIsBulkDeleteDialogOpen] = useState(false);
   const {
     selectedItems,
@@ -56,11 +61,27 @@ export default function ProductTableClient({ products, pagination }) {
 
   if (!products || products.length === 0) {
     return (
-      <EmptyState
-        icon={Package}
-        title="No products yet"
-        description="Create your first product to display in the store"
-      />
+      <div>
+        {/* Filters and Sort Controls */}
+        <div className="flex flex-wrap items-center justify-between gap-4 mt-6">
+          <ProductFilters currentSearch={currentSearch} />
+          <SortSelect
+            options={PRODUCT_SORT_OPTIONS}
+            defaultValue={DEFAULT_PRODUCT_SORT}
+          />
+        </div>
+        <div className="mt-10">
+          <EmptyState
+            icon={Package}
+            title={currentSearch ? "No products found" : "No products yet"}
+            description={
+              currentSearch
+                ? "Try adjusting your search to find what you're looking for"
+                : "Create your first product to display in the store"
+            }
+          />
+        </div>
+      </div>
     );
   }
 
@@ -79,8 +100,9 @@ export default function ProductTableClient({ products, pagination }) {
 
   return (
     <div>
-      {/* Sort Controls */}
-      <div className="flex justify-end mt-6">
+      {/* Filters and Sort Controls */}
+      <div className="flex flex-wrap items-center justify-between gap-4 mt-6">
+        <ProductFilters currentSearch={currentSearch} />
         <SortSelect
           options={PRODUCT_SORT_OPTIONS}
           defaultValue={DEFAULT_PRODUCT_SORT}
