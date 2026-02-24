@@ -21,6 +21,7 @@ export default function CustomerProfileDropdownMenu() {
   const { profile, isLoading } = useAuthStore();
   const { isAuthenticated } = useAuthorization();
   const fullName = `${profile?.first_name} ${profile?.last_name}`;
+  const role = profile?.role;
 
   const navItems = [
     { href: "/account/profile", icon: User, label: "Profile" },
@@ -29,6 +30,7 @@ export default function CustomerProfileDropdownMenu() {
     { href: "/account/appearances", icon: Palette, label: "Appearances" },
     { href: "/account/password", icon: Settings, label: "Settings" },
   ];
+
 
   return (
     <DropdownMenu>
