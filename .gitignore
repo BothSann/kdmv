@@ -48,6 +48,10 @@ next-env.d.ts
 CLAUDE.md
 
 
+generate_guidebook.py
+
+
+
 docs/
 .github/
 migrations/
@@ -56,6 +60,8 @@ COMPONENT
 COMPONENT-PATTERNS.md
 NEXTJS-16-PATTERNS-GUIDE.md
 NEXTJS-COMPOSITION-PATTERNS.md
+script.md
+presentation.md
 
 
 supabase-schema.sql
