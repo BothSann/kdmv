@@ -156,15 +156,15 @@ Payment confirmed → Order status → CONFIRMED
 
 ## Screenshots
 
-> **Note:** Add your own screenshots to the `docs/screenshots/` directory and update the paths below.
+<!-- > **Note:** Add your own screenshots to the `docs/screenshots/` directory and update the paths below. -->
 
 | | | |
 |:---:|:---:|:---:|
-| ![Homepage](docs/screenshots/customer/homepage.png) | ![Products](docs/screenshots/customer/products.png) | ![Product Detail](docs/screenshots/customer/product-detail.png) |
+| ![Homepage](public/screenshots/customer/homepage.png) | ![Products](public/screenshots/customer/products.jpg) | ![Product Detail](public/screenshots/customer/product-detail.jpg) |
 | Homepage | Product Listing | Product Detail |
-| ![Cart](docs/screenshots/customer/cart.png) | ![Checkout](docs/screenshots/customer/checkout.png) | ![Payment QR](docs/screenshots/customer/payment-qr.png) |
+| ![Cart](public/screenshots/customer/cart.jpg) | ![Checkout](public/screenshots/customer/checkout.jpg) | ![Payment QR](public/screenshots/customer/payment-qr.jpg) |
 | Shopping Cart | Checkout | KHQR Payment |
-| ![Dashboard](docs/screenshots/admin/dashboard.png) | ![Admin Products](docs/screenshots/admin/products.png) | ![Admin Orders](docs/screenshots/admin/orders.png) |
+| ![Dashboard](public/screenshots/admin/dashboard.jpg) | ![Admin Products](public/screenshots/admin/products.jpg) | ![Admin Orders](public/screenshots/admin/orders.jpg) |
 | Admin Dashboard | Product Management | Order Management |
 
 ---
