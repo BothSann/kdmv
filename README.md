@@ -165,7 +165,11 @@ Payment confirmed → Order status → CONFIRMED
 | ![Cart](public/screenshots/customer/cart.jpg) | ![Checkout](public/screenshots/customer/checkout.jpg) | ![Payment QR](public/screenshots/customer/payment-qr.jpg) |
 | Shopping Cart | Checkout | KHQR Payment |
 | ![Dashboard](public/screenshots/admin/dashboard.jpg) | ![Admin Products](public/screenshots/admin/products.jpg) | ![Admin Orders](public/screenshots/admin/orders.jpg) |
-| Admin Dashboard | Product Management | Order Management |
+| Admin Dashboard | Product Management | Order Management | 
+| ![Admin Coupons](public/screenshots/admin/coupons.jpg) | ![Admin Order Detail](public/screenshots/admin/order-detail.jpg) | ![Admin Users](public/screenshots/admin/users.jpg) |
+| Coupon Management | Order Detail | User Management |
+| ![Admin Banners](public/screenshots/admin/banners.jpg) |
+| Banner Management |
 
 ---
 
